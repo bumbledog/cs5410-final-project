@@ -23,10 +23,13 @@ navigation.initialize = function(){
 
   //change this to menu when nav is more set up
   this.showScreen('game');
+  game.initialize();
 }
 
 navigation.screens['game'] = function(){
   let that = {};
-  that.initialize = function(){};
+  that.initialize = function(){
+    graphics.initialize();
+  };
   return that;
 }();

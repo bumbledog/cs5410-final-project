@@ -1,10 +1,15 @@
 var game = (function(){
   let that = {};
-  let time, canceled;
+  let time, canceled, maze;
 
   that.initialize = function(){
     canceled = false;
     time = performance.now();
+    maze = that.Maze({
+      height: 16,
+      width: 16,
+      biomes: 4
+    });
     gameLoop();
   };
 
@@ -22,7 +27,9 @@ var game = (function(){
 
   function handleInput(elapsedTime){};
   function update(elapsedTime){};
-  function render(elapsedTime){};
+  function render(elapsedTime){
+    graphics.renderMaze(maze);
+  };
 
   return that;
-});
+}());
