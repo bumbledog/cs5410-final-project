@@ -14,6 +14,8 @@ var graphics = (function(){
     };
   };
 
+
+  //just for testing
   that.renderMaze = function(maze) {
     context.beginPath();
   	context.moveTo(0, 0);
@@ -35,7 +37,26 @@ var graphics = (function(){
 
   };
 
+  //just for testing
   function drawCell(cell) {
+    switch (cell.biome) {
+      case 0:
+        context.fillStyle = 'rgb(200,200,0)';
+        break;
+      case 1:
+        context.fillStyle = 'rgb(200,0,200)';
+        break;
+      case 2:
+        context.fillStyle = 'rgb(0,200,200)';
+        break;
+      case 3:
+        context.fillStyle = 'rgb(200,200,200)';
+        break;
+      default:
+        context.fillStyle = 'rgb(0,0,0)';
+    }
+
+    context.fillRect(cell.x * (1000 / 16), cell.y * (1000 / 16), 1000 / 16, 1000 / 16);
 
   	if (cell.edges.n === null) {
   		context.moveTo(cell.x * (1000 / 16), cell.y * (1000 / 16));
