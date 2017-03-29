@@ -1,10 +1,15 @@
 var game = (function(){
   let that = {};
-  let time, canceled;
+  let time, canceled, maze;
 
   that.initialize = function(){
     canceled = false;
     time = performance.now();
+    maze = Maze({
+      height: 16,
+      length: 16,
+      biomes: 4
+    });
     gameLoop();
   };
 
