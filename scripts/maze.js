@@ -56,30 +56,33 @@ game.Maze = function(spec){
   let neighbors = NeighborList(0,0);
   grid[0][0].visited = true;
   while(neighbors.length !== 0){
-    let nextCell = neighbors[getRandom(neighbors.length)];
-    if(grid[nextCell.x][nextCell.y].visited !== true){
-      grid[nextCell.x][nextCell.y].visited = true;
+    let rand = getRandom(neighbors.length);
+    let nextCell = neighbors[rand];
+    let x = nextCell.x;
+    let y = nextCell.y;
+    if(grid[x][y].visited !== true){
+      grid[x][y].visited = true;
       let dir = nextCell.dir;
       //connect walls
       if(dir === 'n'){
-        grid[nextCell.x][nextCell.y].edges.n = grid[nextCell.x][nextCell.y - 1];
-        grid[nextCell.x][nextCell.y - 1].edges.s = grid[nextCell.x][nextCell.y];
+        grid[x][y].edges.n = grid[x][y - 1];
+        grid[x][y - 1].edges.s = grid[x][y];
       }
       else if(dir === 's'){
-        grid[nextCell.x][nextCell.y].edges.s = grid[nextCell.x][nextCell.y + 1];
-        grid[nextCell.x][nextCell.y + 1].edges.n = grid[nextCell.x][nextCell.y];
+        grid[x][y].edges.s = grid[x][y + 1];
+        grid[x][y + 1].edges.n = grid[x][y];
       }
       else if(dir === 'w'){
-        grid[nextCell.x][nextCell.y].edges.w = grid[nextCell.x - 1][nextCell.y];
-        grid[nextCell.x - 1][nextCell.y].edges.e = grid[nextCell.x][nextCell.y];
+        grid[x][y].edges.w = grid[x - 1][y];
+        grid[x - 1][y].edges.e = grid[x][y];
       }
       else if(dir === 'e'){
-        grid[nextCell.x][nextCell.y].edges.e = grid[nextCell.x + 1][nextCell.y];
-        grid[nextCell.x + 1][nextCell.y].edges.w = grid[nextCell.x][nextCell.y];
+        grid[x][y].edges.e = grid[x + 1][y];
+        grid[x + 1][y].edges.w = grid[x][y];
       }
-      neighbors.addNeighbors(nextCell.x, nextCell.y);
+      neighbors.addNeighbors(x, y);
     }
-    neighbors.splice(nextCell, 1);
+    neighbors.splice(rand, 1);
   }
 
 
