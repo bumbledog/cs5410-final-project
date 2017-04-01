@@ -17,6 +17,7 @@ var graphics = (function(){
 
   //just for testing
   that.renderMaze = function(maze) {
+    context.clear();
     context.beginPath();
   	context.moveTo(0, 0);
   	context.lineTo(999, 0);
@@ -28,8 +29,8 @@ var graphics = (function(){
 
   	context.lineWidth = 6;
 
-  	for (let row = 0; row < 16; row++) {
-  		for (let col = 0; col < 16; col++) {
+  	for (let row = 0; row < 3; row++) {
+  		for (let col = 0; col < 3; col++) {
   			drawCell(maze[row][col]);
   		}
   	}
@@ -56,35 +57,34 @@ var graphics = (function(){
         context.fillStyle = 'rgb(0,0,0)';
     }
 
-    context.fillRect(cell.x * (1000 / 16), cell.y * (1000 / 16), 1000 / 16, 1000 / 16);
+    context.fillRect(cell.x * (1000 / 3), cell.y * (1000 / 3), 1000 / 3, 1000 / 3);
 
   	if (cell.edges.n === null) {
-  		context.moveTo(cell.x * (1000 / 16), cell.y * (1000 / 16));
-  		context.lineTo((cell.x + 1) * (1000 / 16), cell.y * (1000 / 16));
+  		context.moveTo(cell.x * (1000 / 3), cell.y * (1000 / 3));
+  		context.lineTo((cell.x + 1) * (1000 / 3), cell.y * (1000 / 3));
   	}
 
   	if (cell.edges.s === null) {
-  		context.moveTo(cell.x * (1000 / 16), (cell.y + 1) * (1000 / 16));
-  		context.lineTo((cell.x + 1) * (1000 / 16), (cell.y + 1) * (1000 / 16));
+  		context.moveTo(cell.x * (1000 / 3), (cell.y + 1) * (1000 / 3));
+  		context.lineTo((cell.x + 1) * (1000 / 3), (cell.y + 1) * (1000 / 3));
   	}
 
   	if (cell.edges.e === null) {
-  		context.moveTo((cell.x + 1) * (1000 / 16), cell.y * (1000 / 16));
-  		context.lineTo((cell.x + 1) * (1000 / 16), (cell.y + 1) * (1000 / 16));
+  		context.moveTo((cell.x + 1) * (1000 / 3), cell.y * (1000 / 3));
+  		context.lineTo((cell.x + 1) * (1000 / 3), (cell.y + 1) * (1000 / 3));
   	}
 
   	if (cell.edges.w === null) {
-  		context.moveTo(cell.x * (1000 / 16), cell.y * (1000 / 16));
-  		context.lineTo(cell.x * (1000 / 16), (cell.y + 1) * (1000 / 16));
+  		context.moveTo(cell.x * (1000 / 3), cell.y * (1000 / 3));
+  		context.lineTo(cell.x * (1000 / 3), (cell.y + 1) * (1000 / 3));
   	}
     context.stroke();
   }
 
-  function drawCharacter(spec){
+  that.drawCharacter = function(spec){
     context.drawImage(spec.image,
-    spec.x, spec.y, 1000/spec.width, 1000/spec.height)
-    //need to define character size
-  }
+    spec.x + 10, spec.y + 15, 1000/(spec.width), 1000/spec.height)
+  };
 
   return that;
 }());

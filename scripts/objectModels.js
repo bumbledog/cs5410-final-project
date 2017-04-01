@@ -1,30 +1,26 @@
-var width = 16;
-var height = 16;
+var width = 16,
+    height = 16;
 var usePrevious = false,        //variables used to find gaussian distribution
     y2;
-
-var character; //= {x:canvas.width/2, y:canvas.height/2, isHit:false, isDead:false};//initialize character position and states
-var characterSizePercent;
+var character, //= {x:canvas.width/2, y:canvas.height/2, isHit:false, isDead:false};//initialize character position and states
+    characterSizePercent;
+var characterInventory = {};    //contains an inventory of all items that the character holds
+var enemies = [];               //array of all enemies
+var pots = [];                  //array of breakable pots
+var movingLeft = false, movingRight = false,
+    movingDown = false, movingUp = false;
+var keyboard;
 
 let imgChar = new Image();
-imgChar.src = "assets/linkSprite.png";
+imgChar.src = "assets/linkToThePast.png";
 
 let imgEnemy = new Image();
 imgEnemy.src = "assets/skeletonSprite.png";
 
-
-var keyboard = input.Keyboard();
-
-var characterInventory = {};    //contains an inventory of all items that the character holds
-
-var enemies = [];               //array of all enemies
-
-var pots = [];                  //array of breakable pots
-
 function gaussian(mean, stdDev){   //performs a gaussian distribution. 
     if(usePrevious){               //I use this function to initialize how many enemies are generated.
         usePrevious = false;
-        return mean + y2Dev;
+        return mean + y2*stdDev;
     }
 
     usePrevious = true;
@@ -42,13 +38,13 @@ function gaussian(mean, stdDev){   //performs a gaussian distribution.
 }
 
 function randomLocation(){         
-    let randLoc = {x:Math.random()*width, y:Math.random()*height};
+    let randLoc = {x:Math.random()*1000, y:Math.random()*1000};
 
     return randLoc;
 }
 
 function randPotLocation(){
-    let randLoc = {x:Math.random()*width, y:Math.random()*height}; 
+    let randLoc = {x:Math.random()*1000, y:Math.random()*1000}; 
       //This function needs to be changed. Pots should
       //only generate next to walls and in clusters.
       //could this generation be added to the Prim's generation algo?
@@ -76,9 +72,9 @@ function initializeEnemies(){
     var dev = 10;
     for(let i = 0; i < gaussian(avgEnemyCount, dev); i++){
         enemies.push(Character({
-            image:ImgEnemy,
+            image:imgEnemy,
             view:{width:1000, height:1000},
-            moveRate: 75/1000, //pixels per millisecond
+            moveRate: 1/100000, //pixels per millisecond
             isDead:false,
             isHit:false,
             center: randomLocation(),
@@ -92,7 +88,7 @@ function initializeCharacter(){
     character = Character({
         image: imgChar,
         view:{width:1000, height:1000},
-        moveRate: 100/1000, //pixels per millisecond
+        moveRate: 350/10000, //pixels per millisecond
         isDead:false,
         isHit:false,
         center: {x:1000/2, y:1000/2},
@@ -169,7 +165,7 @@ function Character(spec){
         //WILL NEED TO BE CHANGED. JUST WRITTEN LIKE THIS FOR CHARACTER MOVEMENT TESTING
     }
 
-    that.render = function(graphics){
+    that.render = function(){
         graphics.drawCharacter({
             x:spec.center.x,
             y:spec.center.y,
@@ -182,7 +178,9 @@ function Character(spec){
     return that;
 }
 
-
+function processInput(elapsedTime){
+    keyboard.update(elapsedTime);
+}
 
 
 function updateGame(elapsedTime){
@@ -201,9 +199,9 @@ function updateGame(elapsedTime){
                 enemies[i].isDead = true;
             }
     }
-
+    
     if(character.isHit !== 0){
-        character.health -= character.health - character.isHit;
+        character.health -= character.isHit;
         character.isHit = 0;
     }
 
