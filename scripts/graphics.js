@@ -80,5 +80,11 @@ var graphics = (function(){
     context.stroke();
   }
 
+  function drawCharacter(spec){
+    context.drawImage(spec.image,
+    spec.x, spec.y, 1000/spec.width, 1000/spec.height)
+    //need to define character size
+  }
+
   return that;
 }());

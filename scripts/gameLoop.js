@@ -5,6 +5,9 @@ var game = (function(){
   that.initialize = function(){
     canceled = false;
     time = performance.now();
+    characterSizePercent = {x:2,y:3};
+    initializeCharacter();
+    initializeEnemies();
     maze = that.Maze({
       height: 16,
       width: 16,
@@ -26,9 +29,12 @@ var game = (function(){
   }
 
   function handleInput(elapsedTime){};
-  function update(elapsedTime){};
+  function update(elapsedTime){
+    updateGame(elapsedTime);
+  };
   function render(elapsedTime){
     graphics.renderMaze(maze);
+    renderPlayers();
   };
 
   return that;
