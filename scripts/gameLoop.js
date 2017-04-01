@@ -5,9 +5,16 @@ var game = (function(){
   that.initialize = function(){
     canceled = false;
     time = performance.now();
+    characterSizePercent = {x:3,y:3};
+    keyboard = input.Keyboard();
+    initializeCharacter();
+    initializeEnemies();
+    window.addEventListener("keydown", keyboard.keyPress, false);
+    window.addEventListener("keyup", keyboard.keyRelease, false);
+
     maze = that.Maze({
-      height: 16,
-      width: 16,
+      height: 3,
+      width: 3,
       biomes: 4
     });
     gameLoop();
@@ -16,19 +23,28 @@ var game = (function(){
   function gameLoop(){
     let newTime = performance.now();
     let elapsedTime = newTime - time;
-    time = newTime;
+    
 
     handleInput(elapsedTime);
     update(elapsedTime);
     render(elapsedTime);
 
+    time = newTime;
+
     if(!canceled) requestAnimationFrame(gameLoop);
   }
 
-  function handleInput(elapsedTime){};
-  function update(elapsedTime){};
+  function handleInput(elapsedTime){
+    keyboard.update(elapsedTime);
+    processInput(elapsedTime);
+  };
+
+  function update(elapsedTime){
+    updateGame(elapsedTime);
+  };
   function render(elapsedTime){
     graphics.renderMaze(maze);
+    renderPlayers();
   };
 
   return that;
