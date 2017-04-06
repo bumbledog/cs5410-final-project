@@ -8,8 +8,8 @@ var game = (function(){
     time = performance.now();
 
     maze = that.Maze({
-      height: 3,
-      width: 3,
+      height: 16,
+      width: 16,
       biomes: 4
     });
 
@@ -20,7 +20,7 @@ var game = (function(){
     character = objects.Character({
         image: imgChar,
         view:{width:1000, height:1000},
-        moveRate: 350/10000, //pixels per millisecond
+        moveRate: 450/1000, //pixels per millisecond
         isDead:false,
         isHit:false,
         center: {x:1000/2, y:1000/2},
@@ -49,7 +49,6 @@ var game = (function(){
     let newTime = performance.now();
     let elapsedTime = newTime - time;
 
-
     handleInput(elapsedTime);
     update(elapsedTime);
     render(elapsedTime);
@@ -70,15 +69,20 @@ var game = (function(){
     for(i = 0; i < enemies.length; i++){
             enemies[i].update(elapsedTime);
     }
-
+    graphics.setOffset(character.center.x, character.center.y);
     //PARTICLE SYSTEM UPDATES SHOULD BE ADDED HERE
   };
 
   function render(elapsedTime){
+    //TODO: use quad tree to only render on-screen enemies
+    //TODO: only render this (and tiles) if character moves
     graphics.renderMaze(maze);
-    //TODO: render enemies and character seperately, control own rendering
-    //probably add when spritesheets are added
-    objects.renderPlayers(character, enemies);
+    // TODO: function could be changed so that only enemies
+    //close to Link are updated. This would improve efficiency
+    for(i = 0; i < enemies.length; i++){
+      enemies[i].render(elapsedTime);
+    }
+    character.render(elapsedTime);
   };
 
   return that;
