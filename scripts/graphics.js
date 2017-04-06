@@ -1,9 +1,10 @@
 var graphics = (function(){
   let that = {};
   let context = null;
+  let canvas = null;
 
   that.initialize = function(){
-    let canvas = document.getElementById('canvas-main');
+    canvas = document.getElementById('canvas-main');
     context = canvas.getContext('2d');
 
     CanvasRenderingContext2D.prototype.clear = function() {
@@ -12,6 +13,10 @@ var graphics = (function(){
       this.clearRect(0, 0, canvas.width, canvas.height);
       this.restore();
     };
+  };
+
+  that.returnCanvas = function(){
+    return canvas;
   };
 
 
