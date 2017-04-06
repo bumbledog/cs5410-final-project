@@ -18,7 +18,7 @@ var objects = (function(){
     movingRight = false;
     movingDown = false;
     movingUp = false;
-    characterSizePercent = {x:3,y:3};
+    characterSizePercent = {x:1,y:1};
 
     imgEnemy = new Image();
     imgEnemy.src = "assets/skeletonSprite.png";
@@ -179,15 +179,6 @@ var objects = (function(){
       }
 
       return that;
-  }
-
-  //Used for testing. Needs to be altered and probably added to graphics.
-  that.renderPlayers = function(character, enemies){
-      character.render();
-      for(let i = 0; i < enemies.length; i++){
-          //needs to be changed so only enemies in screen are rendered
-          enemies[i].render();
-      }
   }
 
   return that;
