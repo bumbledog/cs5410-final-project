@@ -1,8 +1,16 @@
 var game = (function(){
   let that = {};
   let time, canceled, maze;
+  var boxA;
 
   that.initialize = function(){
+
+    //physics initialize
+    physics.initialize();
+    boxA = physics.createRectangleBody(500, 500, 80, 80);
+    physics.setFrictionAir(0.075, boxA);
+    //end
+
     canceled = false;
     time = performance.now();
     characterSizePercent = {x:3,y:3};
@@ -23,9 +31,12 @@ var game = (function(){
   function gameLoop(){
     let newTime = performance.now();
     let elapsedTime = newTime - time;
-    
-
     handleInput(elapsedTime);
+
+    //physic input handling
+    physics.handleInput(boxA);
+    //end
+
     update(elapsedTime);
     render(elapsedTime);
 
