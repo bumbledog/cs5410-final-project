@@ -1,12 +1,13 @@
 var graphics = (function(){
   let that = {};
   let context = null;
+  let canvas = null;
   let width = 0;
   let height = 0;
   let offset = {x:0, y:0};
 
   that.initialize = function(){
-    let canvas = document.getElementById('canvas-main');
+    canvas = document.getElementById('canvas-main');
     context = canvas.getContext('2d');
     width = canvas.width;
     height = canvas.height;
@@ -22,6 +23,10 @@ var graphics = (function(){
   that.setOffset = function(x,y){
     offset.x = width/2 - x;
     offset.y = width/2 - y;
+  };
+  
+  that.returnCanvas = function(){
+    return canvas;
   };
 
   //just for testing

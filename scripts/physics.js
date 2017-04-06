@@ -1,91 +1,100 @@
 'use strict'
 
-
 var physics = (function(){
 
     var that = {};
 
-    var   b2Vec2 = Box2D.Common.Math.b2Vec2
-                ,  b2AABB = Box2D.Collision.b2AABB
-                ,	b2BodyDef = Box2D.Dynamics.b2BodyDef
-                ,	b2Body = Box2D.Dynamics.b2Body
-                ,	b2FixtureDef = Box2D.Dynamics.b2FixtureDef
-                ,	b2Fixture = Box2D.Dynamics.b2Fixture
-                ,	b2World = Box2D.Dynamics.b2World
-                ,	b2MassData = Box2D.Collision.Shapes.b2MassData
-                ,	b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
-                ,	b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
-                ,	b2DebugDraw = Box2D.Dynamics.b2DebugDraw
-                ,  b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
-                ;
+    //including my own input
+    var myInput = input.Keyboard();
 
-    var world;
-    var scale;
-    var shapeType;
-    var fixtureDefinition = new b2FixtureDef;
-    var bodyDefinition = new b2BodyDef;
+    var Engine = null,
+        Render = null,
+        World = null,
+        Bodies = null,
+        engine = null;
 
-//---------------------------------------------------------//
 
-    that.createWorld = function(gravityX, gravityY, toSleep){
-        world = new b2World(
-            new b2Vec2(gravityX, gravityX),
-            toSleep
-        );
+    //call first
+    that.initialize = function(){
+
+        //var myCanvas = graphics.returnCanvas();
+
+        //linking variables to Matter.js
+        Engine = Matter.Engine;
+        Render = Matter.Render;
+        World = Matter.World;
+        Bodies = Matter.Bodies;
+
+        //creating the main engine to run all of our physics
+        engine = Engine.create({
+            render: {
+                element : document.body,
+                canvas: graphics.returnCanvas(),   //where to render to
+                options: {
+                    width: 1000,
+                    height: 1000,
+                    wireframes: false,
+                }
+            }
+        });
+
+        // //create the world
+        // World.add(engine.world);
+
+        //sets the gravity to 0
+        //we do this because its top down, 
+        //there should be no gravity in any direction
+        engine.world.gravity.y = 0;
+
+        // run the engine
+        Engine.run(engine);
+
+        // run the renderer
+        Render.run(engine.render);
+
     };
 
-    //the scale so that the units are correct (should be 30)
-    that.setScale = function(newScale){
-        scale = newScale;
+    //allows the creation of a simple body
+    that.createRectangleBody = function(x, y, w, h){
+        var box = Bodies.rectangle(x, y, w, h);
+        World.add(engine.world, box);
+        return box;
     };
 
-    //creates the main factors that go into a fixture
-    that.createFixture = function(newDensity, newFriction, newRestitution){
-        fixtureDefinition.density = newDensity;
-        fixtureDefinition.friction = newFriction;
-        fixtureDefinition.restitution = newRestitution;
+    //allows you to set the incoming body as static or not
+    //static = true means it WILL NOT move
+    //static = false means it WILL move
+    that.setStaticBody = function(myBody, bool){
+        myBody.isStatic = bool;
     };
 
-    //determines what type of shape it will be
-    that.setFixtureShape = function(type){
-        shapeType = type;
-        if(shapeType === 'polygon'){
-            fixtureDefinition.shape = new b2PolygonShape;
+
+    //separate input for keyboard
+    that.handleInput = function(myBody){
+        if(myInput.keys.hasOwnProperty(KeyEvent.DOM_VK_A)){
+            //console.log(myBody.position);
+            Matter.Body.applyForce(myBody, myBody.position, {x: -0.001125 * myBody.mass, y:0});
         }
-        if(shapeType === 'circle'){
-            fixtureDefinition.shape = new b2CircleShape;
+        if(myInput.keys.hasOwnProperty(KeyEvent.DOM_VK_D)){
+            //console.log('D');
+            Matter.Body.applyForce(myBody, myBody.position, {x: 0.001125 * myBody.mass, y:0});
+        }
+        if(myInput.keys.hasOwnProperty(KeyEvent.DOM_VK_W)){
+            //console.log('W');
+            Matter.Body.applyForce(myBody, myBody.position, {x: 0, y:-0.001125 * myBody.mass});
+        }
+        if(myInput.keys.hasOwnProperty(KeyEvent.DOM_VK_S)){
+            //console.log('S');
+            Matter.Body.applyForce(myBody, myBody.position, {x: 0, y:0.001125 * myBody.mass});
         }
     };
 
-    //determines how big the body will be
-    that.setFixtureSize = function(width, height, radius){
-        if(shapeType === 'polygon'){
-            fixtureDefinition.shape.SetAsBox(width/scale, height/scale);
-        }
-        if(shapeType === 'circle'){
-            fixtureDefinition.shape.SetRadius(radius);
-        }
+    //apply custom fricitonAir
+    that.setFrictionAir = function(unit, myBody){
+        myBody.frictionAir = unit;
     };
 
-    //sets the body to static(NOT MOVING), or dynamic(MOVING)
-    that.setBodyType = function(type){
-        if(type === 'static'){
-            bodyDefinition.type = b2Body.b2_staticBody;
-        }
-        if(type === 'dynamic'){
-            bodyDefinition.type = b2Body.b2_dynamicBody;
-        }
-    };
-
-    //positioning is based on the center of the body
-    that.setBodyPosition = function(x, y){
-        bodyDefinition.position.Set(x/scale, y/scale);
-    };
-
-    //creates the body in the world
-    that.sendToWorld = function(){
-        world.CreateBody(bodyDefinition).CreateFixture(fixtureDefinition);
-    };
+    
 
 
     return that;

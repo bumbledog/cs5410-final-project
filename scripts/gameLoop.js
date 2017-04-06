@@ -2,8 +2,16 @@ var game = (function(){
   let that = {};
   let time, canceled, maze, keyboard;
   let character, enemies;
+  let boxA
 
   that.initialize = function(){
+
+    //physics initialize
+    physics.initialize();
+    boxA = physics.createRectangleBody(500, 500, 80, 80);
+    physics.setFrictionAir(0.075, boxA);
+    //end
+
     canceled = false;
     time = performance.now();
 
@@ -50,6 +58,11 @@ var game = (function(){
     let elapsedTime = newTime - time;
 
     handleInput(elapsedTime);
+
+    //physic input handling
+    physics.handleInput(boxA);
+    //end
+
     update(elapsedTime);
     render(elapsedTime);
 
