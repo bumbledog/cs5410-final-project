@@ -12,7 +12,7 @@ navigation.showScreen = function(id){
   }
 
   document.getElementById(id).classList.add('active');
-}
+};
 
 navigation.initialize = function(){
   var screen = null;
@@ -21,15 +21,39 @@ navigation.initialize = function(){
     this.screens[screen].initialize();
   }
 
-  //change this to menu when nav is more set up
-  this.showScreen('game');
-  game.initialize();
-}
+  this.showScreen('menu');
+};
 
 navigation.screens['game'] = function(){
   let that = {};
   that.initialize = function(){
     graphics.initialize();
   };
+  return that;
+}();
+
+navigation.screens['menu'] = function(){
+  let that = {};
+  that.initialize = function(){
+    document.getElementById('newGame').addEventListener('click', function() {
+      navigation.showScreen('game');
+      game.initialize();
+    });
+    document.getElementById('toOptions').addEventListener('click', function() {
+      navigation.showScreen('options');
+    });
+  };
+
+  return that;
+}();
+
+navigation.screens['options'] = function(){
+  let that = {};
+  that.initialize = function(){
+    document.getElementById('options-menu').addEventListener('click', function() {
+      navigation.showScreen('menu');
+    });
+  };
+
   return that;
 }();
