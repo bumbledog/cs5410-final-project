@@ -54,7 +54,7 @@ var game = (function(){
     updateGame(elapsedTime);
   };
   function render(elapsedTime){
-    graphics.renderMaze(maze);
+    //graphics.renderMaze(maze);
     renderPlayers();
   };
 
