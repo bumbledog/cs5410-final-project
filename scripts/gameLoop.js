@@ -87,6 +87,7 @@ var game = (function(){
   };
 
   function render(elapsedTime){
+    //graphics.renderMaze(maze);
     //TODO: use quad tree to only render on-screen enemies
     //TODO: only render this (and tiles) if character moves
     graphics.renderMaze(maze);
