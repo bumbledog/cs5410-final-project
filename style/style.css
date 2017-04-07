@@ -1,5 +1,24 @@
+html{
+  height: 100%;
+}
+
+body{
+  height: 95%;
+  
+  background-color: rgb(77, 19, 0);
+  background-image: url('background.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .screen{
   display: none;
+  text-align: center;
 }
 
 .active{
