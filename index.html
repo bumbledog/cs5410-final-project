@@ -7,14 +7,14 @@
   </head>
   <body onload="navigation.initialize()">
     <div id="game" class="screen">
-      <canvas id="canvas-main" width = "1000" height = "1000" style = "width: 100%; height: 100%"></canvas>
+      <canvas id="canvas-main" width = "1000" height = "1000" style = "width: 600px; height: 600px"></canvas>
     </div>
     <div id="menu" class="screen">
       <h1>Dungeon Crawler</h1>
       <button id="newGame">Start Game</button>
       <button>Load Game</button>
       <button id="toOptions">Options</button>
-      <button>About</button>
+      <button id="toAbout">About</button>
     </div>
     <div id="options" class="screen">
       <h1>Options</h1>
@@ -22,6 +22,16 @@
       <input type="range"></input>
       <p>reconfig controls</p>
       <button id="options-menu">Menu</button>
+    </div>
+    <div id="about" class="screen">
+      <h1>About</h1>
+      <p>
+      This game was created by:<br />
+      Aaron Lam<br />
+      Jesse Jensen<br />
+      Kylie Williamson
+      </p>
+      <button id="about-menu">Menu</button>
     </div>
     <script src="scripts/matter.js"></script>
     <script src="scripts/navigation.js"></script>

@@ -42,8 +42,10 @@ navigation.screens['menu'] = function(){
     document.getElementById('toOptions').addEventListener('click', function() {
       navigation.showScreen('options');
     });
+    document.getElementById('toAbout').addEventListener('click', function() {
+      navigation.showScreen('about');
+    });
   };
-
   return that;
 }();
 
@@ -54,6 +56,15 @@ navigation.screens['options'] = function(){
       navigation.showScreen('menu');
     });
   };
+  return that;
+}();
 
+navigation.screens['about'] = function(){
+  let that = {};
+  that.initialize = function(){
+    document.getElementById('about-menu').addEventListener('click', function() {
+      navigation.showScreen('menu');
+    });
+  };
   return that;
 }();
