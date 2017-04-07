@@ -2,7 +2,7 @@ var objects = (function(){
   let that = {};
 
   let width, height;
-  let usePrevious,by2;        //variables used to find gaussian distribution
+       //variables used to find gaussian distribution
   let characterSizePercent, characterInventory, enemies, pots;                  //array of breakable pots
   let movingLeft, movingRight,
       movingDown, movingUp;
@@ -11,7 +11,7 @@ var objects = (function(){
   that.initialize = function(gridWidth, gridHeight){
     width = gridWidth,
     height = gridHeight;
-    usePrevious = false
+    //usePrevious = false
     characterInventory = {};    //contains an inventory of all items that the character holds
     pots = [];                  //array of breakable pots
     movingLeft = false;
@@ -24,28 +24,10 @@ var objects = (function(){
     imgEnemy.src = "assets/skeletonSprite.png";
   }
 
-  function gaussian(mean, stdDev){   //performs a gaussian distribution.
-      if(usePrevious){               //I use this function to initialize how many enemies are generated.
-          usePrevious = false;
-          return mean + y2*stdDev;
-      }
-
-      usePrevious = true;
-
-      do{
-          x1 = 2*Math.random() - 1;
-          x2 = 2*Math.random() - 1;
-          z = (x1*x1) + (x2*x2);
-      } while(z>=1);
-
-      z = Math.sqrt((-2*Math.log(z)));
-      y1 = x1*z;
-      y2 = x2*z;
-      return mean + y1*stdDev;
-  }
+ 
 
   function randomLocation(){
-      let randLoc = {x:Math.random()*1000, y:Math.random()*1000};
+let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
 
       return randLoc;
   }
@@ -64,11 +46,11 @@ var objects = (function(){
       var dev = 15;
       var potsWithItems = 15;
       var dev2 = 5;
-      for(let i = 0; i < gaussian(avgPotCount, dev); i++){
+      for(let i = 0; i < math.gaussian(avgPotCount, dev); i++){
           pots.push({location:randPotLocation(), isBroken:false, hasItem:false})
       }
 
-      for(let i = 0; i < gaussian(potsWithItems, dev); i++){
+      for(let i = 0; i < math.gaussian(potsWithItems, dev); i++){
           pots[i].hasItem = true;
       }
 
@@ -76,9 +58,9 @@ var objects = (function(){
 
   that.initializeEnemies = function(){
       let enemies = [];
-      let avgEnemyCount = 25;
+      let avgEnemyCount = 100;
       let dev = 10;
-      for(let i = 0; i < gaussian(avgEnemyCount, dev); i++){
+      for(let i = 0; i < math.gaussian(avgEnemyCount, dev); i++){
           enemies.push(that.Character({
               image:imgEnemy,
               view:{width:1000, height:1000},
@@ -182,4 +164,30 @@ var objects = (function(){
   }
 
   return that;
+}());
+
+var math = (function(){
+    let that = {};
+    let usePrevious = false;
+    let y2, x1, x2, z;   
+ that.gaussian = function(mean, stdDev){   //performs a gaussian distribution.
+      if(usePrevious){               //I use this function to initialize how many enemies are generated.
+          usePrevious = false;
+          return mean + y2*stdDev;
+      }
+
+      usePrevious = true;
+
+      do{
+          x1 = 2*Math.random() - 1;
+          x2 = 2*Math.random() - 1;
+          z = (x1*x1) + (x2*x2);
+      } while(z>=1);
+
+      z = Math.sqrt((-2*Math.log(z)));
+      y1 = x1*z;
+      y2 = x2*z;
+      return mean + y1*stdDev;
+  }
+return that;
 }());
