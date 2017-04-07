@@ -33,19 +33,19 @@ var graphics = (function(){
   that.renderMaze = function(maze) {
     context.clear();
     context.beginPath();
-  	context.moveTo(offset.x, offset.y);
+  	/*context.moveTo(offset.x, offset.y);
   	context.lineTo(999 + offset.x, offset.y);
   	context.lineTo(999 + offset.x, 999 + offset.y);
   	context.lineTo(offset.x, 999 + offset.y);
   	context.closePath();
   	context.strokeStyle = 'rgb(0, 0, 0)';
-  	context.stroke();
+  	context.stroke();*/
 
   	context.lineWidth = 6;
 
-  	for (let row = 0; row < 3; row++) {
-  		for (let col = 0; col < 3; col++) {
-  			drawCell(maze[row][col]);
+  	for (let row = 0; row < maze.length; row++) {
+  		for (let col = 0; col < maze[row].length; col++) {
+  			drawCell(maze[row][col], width/2, width/2);
   		}
   	}
     context.stroke();
@@ -54,7 +54,7 @@ var graphics = (function(){
   };
 
   //just for testing
-  function drawCell(cell) {
+  function drawCell(cell, cellW, cellH) {
     switch (cell.biome) {
       case 0:
         context.fillStyle = 'rgb(200,200,0)';
@@ -72,8 +72,6 @@ var graphics = (function(){
         context.fillStyle = 'rgb(0,0,0)';
     }
 
-    let cellW = width / 3;
-    let cellH = height / 3;
     let cellLeft = cell.x * cellW + offset.x;
     let cellTop = cell.y * cellH + offset.y;
 
@@ -102,7 +100,7 @@ var graphics = (function(){
 
   that.drawCharacter = function(spec){
     context.drawImage(spec.image,
-    spec.x + 10, spec.y + 15, width/(spec.width), height/spec.height)
+    spec.x + 10 + offset.x, spec.y + 15 + offset.y, width/(spec.width), height/spec.height)
   };
 
   return that;
