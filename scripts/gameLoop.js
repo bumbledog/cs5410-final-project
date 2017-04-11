@@ -1,7 +1,8 @@
 var game = (function(){
   let that = {};
   let time, canceled, maze, keyboard;
-  let character, enemies;
+  let character, enemies, particles;
+  that.dustParticles;
   let boxA
 
   that.initialize = function(){
@@ -39,6 +40,12 @@ var game = (function(){
 
     keyboard = input.Keyboard();
     setupControlScheme();
+
+    particles = [];
+    //initialize dust trail
+    that.dustParticles = ParticleSystem({
+      image: "assets/dust.png"
+    });
 
     gameLoop();
   };
@@ -80,10 +87,18 @@ var game = (function(){
     // function could be changed so that only enemies
     //close to Link are updated. This would improve efficiency
     for(i = 0; i < enemies.length; i++){
-            enemies[i].update(elapsedTime);
+      enemies[i].update(elapsedTime);
     }
     graphics.setOffset(character.center.x, character.center.y);
-    //PARTICLE SYSTEM UPDATES SHOULD BE ADDED HERE
+
+    that.dustParticles.update(elapsedTime);
+    for(let i = 0; i < particles.length; i++){
+      particles[i].update(elapsedTime);
+      //delete unneeded particles
+      if(particles[i].length === 0){
+        particles.splice(i--, 0);
+      }
+    }
   };
 
   function render(elapsedTime){
@@ -91,6 +106,12 @@ var game = (function(){
     //TODO: use quad tree to only render on-screen enemies
     //TODO: only render this (and tiles) if character moves
     graphics.renderMaze(maze);
+
+    that.dustParticles.render();
+    for(let i = 0; i < particles.length; i++){
+      particles[i].render();
+    }
+
     // TODO: function could be changed so that only enemies
     //close to Link are updated. This would improve efficiency
     for(i = 0; i < enemies.length; i++){

@@ -24,7 +24,7 @@ var graphics = (function(){
     offset.x = width/2 - x;
     offset.y = width/2 - y;
   };
-  
+
   that.returnCanvas = function(){
     return canvas;
   };
@@ -33,13 +33,6 @@ var graphics = (function(){
   that.renderMaze = function(maze) {
     context.clear();
     context.beginPath();
-  	/*context.moveTo(offset.x, offset.y);
-  	context.lineTo(999 + offset.x, offset.y);
-  	context.lineTo(999 + offset.x, 999 + offset.y);
-  	context.lineTo(offset.x, 999 + offset.y);
-  	context.closePath();
-  	context.strokeStyle = 'rgb(0, 0, 0)';
-  	context.stroke();*/
 
   	context.lineWidth = 6;
 
@@ -100,7 +93,11 @@ var graphics = (function(){
 
   that.drawCharacter = function(spec){
     context.drawImage(spec.image,
-    spec.x + 10 + offset.x, spec.y + 15 + offset.y, width/(spec.width), height/spec.height)
+    spec.x - 20 + offset.x, spec.y - 30 + offset.y, width/(spec.width), height/spec.height);
+  };
+
+  that.drawParticle = function(image, x, y, size){
+    context.drawImage(image,x + offset.x, y + offset.y, size, size);
   };
 
   return that;
