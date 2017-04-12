@@ -1,14 +1,14 @@
 var game = (function(){
   let that = {};
   let time, canceled, maze, keyboard;
-  let renderGraphics = true;
-  let firstRender;
+  let renderGraphics;
   let character, enemies, particles;
   that.dustParticles;
   let boxA
 
   that.initialize = function(){
-    firstRender = true;
+
+    renderGraphics = true;
 
     //physics initialize
     physics.initialize();
@@ -141,7 +141,6 @@ var game = (function(){
 
 
   function render(elapsedTime){
-    //graphics.renderMaze(maze);
     //TODO: use quad tree to only render on-screen enemies
     //TODO: only render this (and tiles) if character moves
     //Added a key listener to the 'G' and 'H' Key
@@ -152,11 +151,7 @@ var game = (function(){
       //translates the context to where the characters center is
       graphics.drawCamera(character);
 
-      graphics.renderMaze(maze, firstRender, character);
-
-      //If the first rendering of the maze happens, then change this variable
-      //This helps control how the physics bodies are added
-      if(firstRender === true) firstRender = false;
+      graphics.renderMaze(maze);
     }
 
     that.dustParticles.render();

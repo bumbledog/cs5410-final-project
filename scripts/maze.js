@@ -16,13 +16,7 @@ game.Maze = function(spec){
           w: null
         },
         //this is only used for generating mazes
-        visited: false,
-        physicsWalls: {
-          wallN: null,
-          wallS: null,
-          wallE: null,
-          wallW: null,
-        }
+        visited: false
       });
     }
   }
@@ -81,7 +75,7 @@ game.Maze = function(spec){
       let wallCount = 0;
       if(grid[col][row].edges.n === null){
         wallCount++;
-
+        
       } 
       if(grid[col][row].edges.s === null){
         wallCount++;

@@ -37,7 +37,7 @@ var graphics = (function(){
   };
 
   //just for testing
-  that.renderMaze = function(maze, firstRender) {
+  that.renderMaze = function(maze) {
     context.clear();
     context.beginPath();
 
@@ -45,20 +45,18 @@ var graphics = (function(){
 
   	for (let row = 0; row < maze.length; row++) {
   		for (let col = 0; col < maze[row].length; col++) {
-  			drawCell(maze[row][col], width/2, width/2, firstRender);
+  			drawCell(maze[row][col], width/2, width/2);
   		}
   	}
+
     context.stroke();
     context.restore();
 
   };
 
-  that.addPhysicsWalls = function(maze){
-    
-  };
-
   //just for testing
-  function drawCell(cell, cellW, cellH, firstRender) {
+  function drawCell(cell, cellW, cellH) {
+    var box = physics.createRectangleBody(0, 0, 0, 0);
     switch (cell.biome) {
       case 0:
         context.fillStyle = 'rgb(200,200,0)';
@@ -76,9 +74,6 @@ var graphics = (function(){
         context.fillStyle = 'rgb(0,0,0)';
     }
 
-    //we dont need offset anymore since we translate the context
-    // let cellLeft = cell.x * cellW + offset.x;
-    // let cellTop = cell.y * cellH + offset.y;
     let cellLeft = cell.x * cellW;
     let cellTop = cell.y * cellH;
 
@@ -90,75 +85,64 @@ var graphics = (function(){
   		context.moveTo(cellLeft, cellTop);
   		context.lineTo(cellLeft + cellW, cellTop);
 
-      //if it is the first rendering of the maze. Add the physics bodies.
-      if(firstRender === true){
-        cell.physicsWalls.wallN = physics.createRectangleBody((cellLeft + (cellW)/2), cellTop, cellW, 50);
-        physics.setStaticBody(cell.physicsWalls.wallN , true);
-        physics.addToWorld(cell.physicsWalls.wallN);
-      }
-      else{ //else update the position of the body
-        physics.setPosition(cell.physicsWalls.wallN, (cellLeft + (cellW)/2), cellTop);
-      }
+      cell.edges.n = physics.createRectangleBody((cellLeft + (cellW)/2), cellTop, cellW, 50);
+      physics.setStaticBody(cell.edges.n , true);
+      physics.addToWorld(cell.edges.n);
   	}
+    else if(cell.edges.n.hasOwnProperty('position')){
+      context.moveTo(cellLeft, cellTop);
+  		context.lineTo(cellLeft + cellW, cellTop);
+    }
 
     //SOUTH
   	if (cell.edges.s === null) {
   		context.moveTo(cellLeft, cellTop + cellH);
   		context.lineTo(cellLeft + cellW, cellTop + cellH);
 
-      //South Physics body
-      if(firstRender === true){
-        cell.physicsWalls.wallS = physics.createRectangleBody((cellLeft + (cellW)/2), cellTop + cellH, cellW, 50);
-        physics.setStaticBody(cell.physicsWalls.wallS , true);
-        physics.addToWorld(cell.physicsWalls.wallS);
-      }
-      else{//else update the position of the body
-        physics.setPosition(cell.physicsWalls.wallS, (cellLeft + (cellW)/2), cellTop + cellH);
-      }
+      cell.edges.s = physics.createRectangleBody((cellLeft + (cellW)/2), cellTop + cellH, cellW, 50);
+      physics.setStaticBody(cell.edges.s , true);
+      physics.addToWorld(cell.edges.s);
   	}
+    else if(cell.edges.s.hasOwnProperty('position')){
+      context.moveTo(cellLeft, cellTop + cellH);
+  		context.lineTo(cellLeft + cellW, cellTop + cellH);
+    }
 
     //EAST
   	if (cell.edges.e === null) {
   		context.moveTo(cellLeft + cellW, cellTop);
   		context.lineTo(cellLeft + cellW, cellTop + cellH);
 
-      //East Physics body
-      if(firstRender === true){
-        cell.physicsWalls.wallE = physics.createRectangleBody(cellLeft+cellW, (cellTop + (cellH)/2), 50, cellW);
-        physics.setStaticBody(cell.physicsWalls.wallE , true);
-        physics.addToWorld(cell.physicsWalls.wallE);
-      }
-      else{ //else update the position of the body
-        physics.setPosition(cell.physicsWalls.wallE, (cellLeft + cellW), (cellTop + (cellH)/2));
-      }
+      cell.edges.e = physics.createRectangleBody(cellLeft+cellW, (cellTop + (cellH)/2), 50, cellW);
+      physics.setStaticBody(cell.edges.e , true);
+      physics.addToWorld(cell.edges.e);
   	}
+    else if(cell.edges.e.hasOwnProperty('position')){
+      context.moveTo(cellLeft + cellW, cellTop);
+  		context.lineTo(cellLeft + cellW, cellTop + cellH);
+    }
 
     //WEST
   	if (cell.edges.w === null) {
   		context.moveTo(cellLeft, cellTop);
   		context.lineTo(cellLeft, cellTop + cellH);
 
-      //West Physics body
-      if(firstRender === true){
-        cell.physicsWalls.wallW = physics.createRectangleBody(cellLeft, (cellTop + (cellH)/2), 50, cellW);
-        physics.setStaticBody(cell.physicsWalls.wallW , true);
-        physics.addToWorld(cell.physicsWalls.wallW);
-      }
-      else{ //else update the position of the body
-        physics.setPosition(cell.physicsWalls.wallW, cellLeft, (cellTop + (cellH)/2));
-      }
+      cell.edges.w = physics.createRectangleBody(cellLeft, (cellTop + (cellH)/2), 50, cellW);
+      physics.setStaticBody(cell.edges.w , true);
+      physics.addToWorld(cell.edges.w);
   	}
+    else if(cell.edges.w.hasOwnProperty('position')){
+      context.moveTo(cellLeft, cellTop);
+  		context.lineTo(cellLeft, cellTop + cellH);
+    }
   }
 
+  //draw the character
   that.drawCharacter = function(spec){
 
     //draw the character and the body in the same aread
     context.drawImage(spec.image,
     (spec.x - 50), (spec.y - 50), width/(spec.width), height/spec.height)
-    
-    // context.drawImage(spec.image,
-    // spec.x + 10 + offset.x, spec.y + 15 + offset.y, width/(spec.width), height/spec.height)
-    // spec.x - 20 + offset.x, spec.y - 30 + offset.y, width/(spec.width), height/spec.height);
   };
 
   that.drawParticle = function(image, x, y, size){
