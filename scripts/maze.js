@@ -16,7 +16,13 @@ game.Maze = function(spec){
           w: null
         },
         //this is only used for generating mazes
-        visited: false
+        visited: false,
+        physicsWalls: {
+          wallN: null,
+          wallS: null,
+          wallE: null,
+          wallW: null,
+        }
       });
     }
   }
@@ -73,10 +79,22 @@ game.Maze = function(spec){
   for(let col = 0; col < grid.length; col++){
     for(let row = 0; row < grid[0].length; row++){
       let wallCount = 0;
-      if(grid[col][row].edges.n === null) wallCount++;
-      if(grid[col][row].edges.s === null) wallCount++;
-      if(grid[col][row].edges.e === null) wallCount++;
-      if(grid[col][row].edges.w === null) wallCount++;
+      if(grid[col][row].edges.n === null){
+        wallCount++;
+
+      } 
+      if(grid[col][row].edges.s === null){
+        wallCount++;
+
+      }
+      if(grid[col][row].edges.e === null){
+        wallCount++;
+
+      }
+      if(grid[col][row].edges.w === null){
+        wallCount++;
+
+      }
       if(wallCount === 3) deadEnds.push({x: col, y: row})
     }
   }
