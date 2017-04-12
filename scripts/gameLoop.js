@@ -2,12 +2,13 @@ var game = (function(){
   let that = {};
   let time, canceled, maze, keyboard;
   let renderGraphics = true;
-  let firstRender = true;
+  let firstRender;
   let character, enemies, particles;
   that.dustParticles;
   let boxA
 
   that.initialize = function(){
+    firstRender = true;
 
     //physics initialize
     physics.initialize();
