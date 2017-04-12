@@ -1,11 +1,11 @@
 var game = (function(){
   let that = {};
   let time, canceled, maze, keyboard;
-  let character, enemies;
-  let characterBody;
-
   let renderGraphics = true;
   let firstRender = true;
+  let character, enemies, particles;
+  that.dustParticles;
+  let boxA
 
   that.initialize = function(){
 
@@ -52,6 +52,12 @@ var game = (function(){
 
     keyboard = input.Keyboard();
     setupControlScheme();
+
+    particles = [];
+    //initialize dust trail
+    that.dustParticles = ParticleSystem({
+      image: "assets/dust.png"
+    });
 
     gameLoop();
   };
@@ -113,13 +119,22 @@ var game = (function(){
     // function could be changed so that only enemies
     //close to Link are updated. This would improve efficiency
     for(i = 0; i < enemies.length; i++){
-            enemies[i].update(elapsedTime);
+      enemies[i].update(elapsedTime);
     }
     
     //set the offset to the body position
     //we dont use quite use offset anymore
     graphics.setOffset(character.returnCharacterBody().position.x, character.returnCharacterBody().position.y);
+    
     //PARTICLE SYSTEM UPDATES SHOULD BE ADDED HERE
+    that.dustParticles.update(elapsedTime);
+    for(let i = 0; i < particles.length; i++){
+      particles[i].update(elapsedTime);
+      //delete unneeded particles
+      if(particles[i].length === 0){
+        particles.splice(i--, 0);
+      }
+    }
   };
 
 
@@ -128,7 +143,6 @@ var game = (function(){
     //graphics.renderMaze(maze);
     //TODO: use quad tree to only render on-screen enemies
     //TODO: only render this (and tiles) if character moves
-
     //Added a key listener to the 'G' and 'H' Key
     //'G' -> Turns off rendering of Graphics
     //'H' -> Turns on rendering of Graphics
@@ -143,7 +157,12 @@ var game = (function(){
       //This helps control how the physics bodies are added
       if(firstRender === true) firstRender = false;
     }
-    //graphics.renderMaze(maze);
+
+    that.dustParticles.render();
+    for(let i = 0; i < particles.length; i++){
+      particles[i].render();
+    }
+
     // TODO: function could be changed so that only enemies
     //close to Link are updated. This would improve efficiency
     for(i = 0; i < enemies.length; i++){

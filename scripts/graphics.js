@@ -24,7 +24,7 @@ var graphics = (function(){
     offset.x = width/2 - x;
     offset.y = width/2 - y;
   };
-  
+
   that.returnCanvas = function(){
     return canvas;
   };
@@ -158,6 +158,11 @@ var graphics = (function(){
     
     // context.drawImage(spec.image,
     // spec.x + 10 + offset.x, spec.y + 15 + offset.y, width/(spec.width), height/spec.height)
+    // spec.x - 20 + offset.x, spec.y - 30 + offset.y, width/(spec.width), height/spec.height);
+  };
+
+  that.drawParticle = function(image, x, y, size){
+    context.drawImage(image,x - 25, y - 20, size, size);
   };
 
   return that;
