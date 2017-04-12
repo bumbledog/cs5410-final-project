@@ -24,7 +24,7 @@ var objects = (function(){
     imgEnemy.src = "assets/skeletonSprite.png";
   }
 
- 
+
 
   function randomLocation(){
 let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
@@ -100,6 +100,7 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
       };
 
       that.moveRight = function(elapsedTime){
+          game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
           spec.center.x += spec.moveRate * elapsedTime;
 
          //need bounds to keep character from moving off the map
@@ -107,6 +108,7 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
       }
 
       that.moveLeft = function(elapsedTime){
+        game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
           spec.center.x -= spec.moveRate*elapsedTime;
 
           //need bounds to keep character from moving off the map
@@ -114,6 +116,7 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
       }
 
       that.moveUp = function(elapsedTime){
+        game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
           spec.center.y -= spec.moveRate*elapsedTime;
 
           //need bounds to keep character from moving off the map;
@@ -121,6 +124,7 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
       }
 
       that.moveDown = function(elapsedTime){
+        game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
           spec.center.y += spec.moveRate*elapsedTime;
            //need bounds to keep character from moving off the map;
           //could be done with collision detection
@@ -169,7 +173,7 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
 var math = (function(){
     let that = {};
     let usePrevious = false;
-    let y2, x1, x2, z;   
+    let y2, x1, x2, z;
  that.gaussian = function(mean, stdDev){   //performs a gaussian distribution.
       if(usePrevious){               //I use this function to initialize how many enemies are generated.
           usePrevious = false;
@@ -189,5 +193,14 @@ var math = (function(){
       y2 = x2*z;
       return mean + y1*stdDev;
   }
+
+  that.circleVector = function() {
+		var angle = Math.random() * 2 * Math.PI;
+		return {
+			x: Math.cos(angle),
+			y: Math.sin(angle)
+		};
+	}
+
 return that;
 }());
