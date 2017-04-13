@@ -67,10 +67,25 @@ var game = (function(){
     window.addEventListener("keydown", keyboard.keyPress, false);
     window.addEventListener("keyup", keyboard.keyRelease, false);
 
-    keyboard.registerCommand(KeyEvent.DOM_VK_LEFT, character.moveLeft);
-    keyboard.registerCommand(KeyEvent.DOM_VK_RIGHT, character.moveRight);
-    keyboard.registerCommand(KeyEvent.DOM_VK_UP, character.moveUp);
-    keyboard.registerCommand(KeyEvent.DOM_VK_DOWN, character.moveDown);
+    let controlScheme = memory.getControls();
+    if(controlScheme === "Arrows"){
+      keyboard.registerCommand(KeyEvent.DOM_VK_LEFT, character.moveLeft);
+      keyboard.registerCommand(KeyEvent.DOM_VK_RIGHT, character.moveRight);
+      keyboard.registerCommand(KeyEvent.DOM_VK_UP, character.moveUp);
+      keyboard.registerCommand(KeyEvent.DOM_VK_DOWN, character.moveDown);
+    }
+    else if(controlScheme === "ASDW"){
+      keyboard.registerCommand(KeyEvent.DOM_VK_A, character.moveLeft);
+      keyboard.registerCommand(KeyEvent.DOM_VK_D, character.moveRight);
+      keyboard.registerCommand(KeyEvent.DOM_VK_W, character.moveUp);
+      keyboard.registerCommand(KeyEvent.DOM_VK_S, character.moveDown);
+    }
+    else if(controlScheme === "JKLI"){
+      keyboard.registerCommand(KeyEvent.DOM_VK_J, character.moveLeft);
+      keyboard.registerCommand(KeyEvent.DOM_VK_L, character.moveRight);
+      keyboard.registerCommand(KeyEvent.DOM_VK_I, character.moveUp);
+      keyboard.registerCommand(KeyEvent.DOM_VK_K, character.moveDown);
+    }
 
     //allows us to turn on and off the rendering of the maze
     keyboard.registerCommand(KeyEvent.DOM_VK_G, turnOffGraphics);
@@ -114,7 +129,7 @@ var game = (function(){
 
 
   function update(elapsedTime){
-    
+
     character.update(elapsedTime);
 
     // function could be changed so that only enemies
@@ -122,11 +137,11 @@ var game = (function(){
     for(i = 0; i < enemies.length; i++){
       enemies[i].update(elapsedTime);
     }
-    
+
     //set the offset to the body position
     //we dont use quite use offset anymore
     graphics.setOffset(character.returnCharacterBody().position.x, character.returnCharacterBody().position.y);
-    
+
     //PARTICLE SYSTEM UPDATES SHOULD BE ADDED HERE
     that.dustParticles.update(elapsedTime);
     for(let i = 0; i < particles.length; i++){
