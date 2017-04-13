@@ -15,12 +15,18 @@
       <button>Load Game</button>
       <button id="toOptions">Options</button>
       <button id="toAbout">About</button>
+      <button id="toHigh-scores">High Scores</button>
     </div>
     <div id="options" class="screen">
       <h1>Options</h1>
       <p>volume</p>
       <input type="range"></input>
-      <p>reconfig controls</p>
+      <p>Control Scheme:</p>
+      <form>
+        <input type="radio" name="controls" value="Arrows">Arrow Keys<br>
+        <input type="radio" name="controls" value="ASDW">ASDW<br>
+        <input type="radio" name="controls" value="JKLI">JKLI
+      </form>
       <button id="options-menu">Menu</button>
     </div>
     <div id="about" class="screen">
@@ -33,7 +39,12 @@
       </p>
       <button id="about-menu">Menu</button>
     </div>
+    <div id="high-scores" class="screen">
+      <h1>High Scores</h1>
+      <button id="scores-menu">Menu</button>
+    </div>
     <script src="scripts/matter.js"></script>
+    <script src="scripts/memory.js"></script>
     <script src="scripts/navigation.js"></script>
     <script src="scripts/input.js"></script>
     <script src="scripts/objectModels.js"></script>
