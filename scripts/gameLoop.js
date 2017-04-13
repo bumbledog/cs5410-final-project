@@ -26,7 +26,9 @@ var game = (function(){
     maze = that.Maze({
       height: 16,
       width: 16,
-      biomes: 4
+      biomes: 4,
+      cellHeight: 500,
+      cellWidth: 500
     });
 
     objects.initialize(maze.width, maze.height);
@@ -114,7 +116,7 @@ var game = (function(){
 
 
   function update(elapsedTime){
-    
+
     character.update(elapsedTime);
 
     // function could be changed so that only enemies
@@ -122,11 +124,11 @@ var game = (function(){
     for(i = 0; i < enemies.length; i++){
       enemies[i].update(elapsedTime);
     }
-    
+
     //set the offset to the body position
     //we dont use quite use offset anymore
     graphics.setOffset(character.returnCharacterBody().position.x, character.returnCharacterBody().position.y);
-    
+
     //PARTICLE SYSTEM UPDATES SHOULD BE ADDED HERE
     that.dustParticles.update(elapsedTime);
     for(let i = 0; i < particles.length; i++){

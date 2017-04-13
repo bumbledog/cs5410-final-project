@@ -10,6 +10,7 @@ function ParticleSystem(spec){
           x: x, y: y
       });
     }
+    if(nextId > 100) nextId = 0;
   };
 
   that.update = function(elapsedTime){
