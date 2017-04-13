@@ -13,6 +13,12 @@ var memory = (function(){
     gameState = JSON.parse(previousGame);
   }
 
+  let controls = "Arrows";
+  let previousControls = localStorage.getItem('controls');
+  if(previousControls !== null){
+    controls = JSON.parse(previousControls);
+  }
+
   that.addHighScore = function(value){
     for(let i = 0, added = false; i < numOfScores && !added; i++){
       if(highScores[i] === undefined){
@@ -31,25 +37,34 @@ var memory = (function(){
   that.resetHighScores = function(){
     highScores = {};
     localStorage['highScores'] = JSON.stringify(highScores);
-  }
+  };
 
   that.getHighScores = function(){
     return highScores;
-  }
+  };
 
   that.saveGame = function(spec){
     gameState = spec;
     localStorage['gameState'] = JSON.stringify(spec);
-  }
+  };
 
   that.resetGame = function(){
     gameState = {};
     localStorage['gameState'] = JSON.stringify(highScores);
-  }
+  };
 
   that.loadGame = function(){
     return gameState;
-  }
+  };
+
+  that.getControls = function(){
+    return controls;
+  };
+
+  that.setControls = function(value){
+    controls = value;
+    localStorage['controls'] = JSON.stringify(value);
+  };
 
   return that;
 }());
