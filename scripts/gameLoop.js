@@ -112,10 +112,6 @@ var game = (function(){
 
     handleInput(elapsedTime);
 
-    //physic input handling
-    physics.handleInput(character.returnCharacterBody(), character);
-    //end
-
     update(elapsedTime);
     render(elapsedTime);
 

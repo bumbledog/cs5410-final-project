@@ -37,7 +37,7 @@ var physics = (function(){
         });
 
         //sets the gravity to 0
-        //we do this because its top down, 
+        //we do this because its top down,
         //there should be no gravity in any direction
         engine.world.gravity.y = 0;
 
@@ -70,37 +70,6 @@ var physics = (function(){
     //static = false means it WILL move
     that.setStaticBody = function(myBody, bool){
         myBody.isStatic = bool;
-    };
-
-
-    //separate input for keyboard
-    that.handleInput = function(myBody, character){
-        if(myInput.keys.hasOwnProperty(KeyEvent.DOM_VK_A)){
-            //console.log(myBody.position);
-            //character.setRight(myBody);
-            Matter.Body.applyForce(myBody, myBody.position, {x: -0.002 * myBody.mass, y:0});
-            //console.log(myBody.position.x + ' ' + myBody.position.y);
-            //character.setBodyPosition(myBody);
-        }
-        if(myInput.keys.hasOwnProperty(KeyEvent.DOM_VK_D)){
-            //console.log('D');
-            //character.setRight(myBody);
-            Matter.Body.applyForce(myBody, myBody.position, {x: 0.002 * myBody.mass, y:0});
-            //console.log(myBody.position.x + ' ' + myBody.position.y);
-            //character.setBodyPosition(myBody);
-        }
-        if(myInput.keys.hasOwnProperty(KeyEvent.DOM_VK_W)){
-            //character.setRight(myBody);
-            Matter.Body.applyForce(myBody, myBody.position, {x: 0, y:-0.002 * myBody.mass});
-            //console.log(myBody.position.x + ' ' + myBody.position.y);
-            //character.setBodyPosition(myBody);
-        }
-        if(myInput.keys.hasOwnProperty(KeyEvent.DOM_VK_S)){
-            //character.setRight(myBody);
-            Matter.Body.applyForce(myBody, myBody.position, {x: 0, y:0.002 * myBody.mass});
-            //console.log(myBody.position.x + ' ' + myBody.position.y);
-            //character.setBodyPosition(myBody);
-        }
     };
 
     //apply custom fricitonAir
