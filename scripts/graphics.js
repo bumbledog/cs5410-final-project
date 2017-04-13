@@ -41,13 +41,21 @@ var graphics = (function(){
     context.clear();
     context.beginPath();
 
-  	context.lineWidth = 6;
+  	context.lineWidth = 20;
 
+    //draw north and west of each cell
   	for (let row = 0; row < maze.length; row++) {
   		for (let col = 0; col < maze[row].length; col++) {
-  			drawCell(maze[row][col], width/2, width/2);
+  			drawCell(maze[row][col], maze.cellWidth, maze.cellHeight);
   		}
   	}
+
+    //draw the south and east edges
+  	context.moveTo(0, maze.length * maze.cellHeight);
+  	context.lineTo(maze[0].length * maze.cellWidth, maze.length * maze.cellHeight);
+
+    context.moveTo(maze[0].length * maze.cellWidth, 0);
+  	context.lineTo(maze[0].length * maze.cellWidth, maze.length * maze.cellHeight);
 
     context.stroke();
     context.restore();
@@ -81,57 +89,13 @@ var graphics = (function(){
 
     //added physics bodies and updated the position of their bodies
     //NORTH
-  	if (cell.edges.n === null) {
-  		context.moveTo(cellLeft, cellTop);
-  		context.lineTo(cellLeft + cellW, cellTop);
-
-      cell.edges.n = physics.createRectangleBody((cellLeft + (cellW)/2), cellTop, cellW, 50);
-      physics.setStaticBody(cell.edges.n , true);
-      physics.addToWorld(cell.edges.n);
-  	}
-    else if(cell.edges.n.hasOwnProperty('position')){
+    if(cell.edges.n.hasOwnProperty('position')){
       context.moveTo(cellLeft, cellTop);
   		context.lineTo(cellLeft + cellW, cellTop);
     }
 
-    //SOUTH
-  	if (cell.edges.s === null) {
-  		context.moveTo(cellLeft, cellTop + cellH);
-  		context.lineTo(cellLeft + cellW, cellTop + cellH);
-
-      cell.edges.s = physics.createRectangleBody((cellLeft + (cellW)/2), cellTop + cellH, cellW, 50);
-      physics.setStaticBody(cell.edges.s , true);
-      physics.addToWorld(cell.edges.s);
-  	}
-    else if(cell.edges.s.hasOwnProperty('position')){
-      context.moveTo(cellLeft, cellTop + cellH);
-  		context.lineTo(cellLeft + cellW, cellTop + cellH);
-    }
-
-    //EAST
-  	if (cell.edges.e === null) {
-  		context.moveTo(cellLeft + cellW, cellTop);
-  		context.lineTo(cellLeft + cellW, cellTop + cellH);
-
-      cell.edges.e = physics.createRectangleBody(cellLeft+cellW, (cellTop + (cellH)/2), 50, cellW);
-      physics.setStaticBody(cell.edges.e , true);
-      physics.addToWorld(cell.edges.e);
-  	}
-    else if(cell.edges.e.hasOwnProperty('position')){
-      context.moveTo(cellLeft + cellW, cellTop);
-  		context.lineTo(cellLeft + cellW, cellTop + cellH);
-    }
-
     //WEST
-  	if (cell.edges.w === null) {
-  		context.moveTo(cellLeft, cellTop);
-  		context.lineTo(cellLeft, cellTop + cellH);
-
-      cell.edges.w = physics.createRectangleBody(cellLeft, (cellTop + (cellH)/2), 50, cellW);
-      physics.setStaticBody(cell.edges.w , true);
-      physics.addToWorld(cell.edges.w);
-  	}
-    else if(cell.edges.w.hasOwnProperty('position')){
+    if(cell.edges.w.hasOwnProperty('position')){
       context.moveTo(cellLeft, cellTop);
   		context.lineTo(cellLeft, cellTop + cellH);
     }

@@ -26,7 +26,9 @@ var game = (function(){
     maze = that.Maze({
       height: 16,
       width: 16,
-      biomes: 4
+      biomes: 4,
+      cellHeight: 500,
+      cellWidth: 500
     });
 
     objects.initialize(maze.width, maze.height);
