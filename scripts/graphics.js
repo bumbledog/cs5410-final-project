@@ -8,6 +8,7 @@ var graphics = (function(){
   let backgroundImage;
   let visible = [];
   let camera;
+  let tiles;
 
   that.initialize = function(){
     canvas = document.getElementById('canvas-main');
@@ -20,6 +21,11 @@ var graphics = (function(){
     backgroundImage = new Image();
     backgroundImage.src = "assets/background.jpg";
 
+    tiles = {
+      size: 500,
+      src: "assets/map/map [www.imagesplitter.net]-",
+      columns: 16
+    };
 
     CanvasRenderingContext2D.prototype.clear = function() {
       this.save();
@@ -45,58 +51,70 @@ var graphics = (function(){
     context.translate(offset.x, offset.y);
   };
 
-  that.renderTiles = function(character){
+  that.renderTiles = function(maze, character){
     tileContext.clear();
 
     /*TODO: object to define
     TILESIZE, leading string, tileColumns*/
-    viewport = that.defineCamera();
-    tileRenderXStart = Math.floor(viewport.ptA.x/tileSize);
-    tileRenderXEnd = Math.floor(viewport.ptC.x/tileSize);
-    tileRenderYStart = Math.floor(viewport.ptA.y/tileSize);
-    tileRenderYEnd = Math.floor(viewport.ptB.y/tileSize);
+    viewport = that.defineCamera(character.center.x, character.center.y);
+    tileRenderXStart = Math.floor(viewport.pt1.x/tiles.size);
+    tileRenderXEnd = Math.floor(viewport.pt3.x/tiles.size);
+    tileRenderYStart = Math.floor(viewport.pt1.y/tiles.size);
+    tileRenderYEnd = Math.floor(viewport.pt2.y/tiles.size);
 
-    for(let xPos = tileRenderXStart; xPos < tileRenderXEnd; xPos++){
-      for(let yPos = tileRenderYStart; yPos < tileRenderYStart; yPos++){
-        let tile = Image();
-        tile.src = tileString + (xPos + yPos * tileColumns);
+    for(let xPos = tileRenderXStart; xPos <= tileRenderXEnd; xPos++){
+      for(let yPos = tileRenderYStart; yPos <= tileRenderYEnd; yPos++){
+        let tile = new Image();
+        tile.src = tiles.src + yPos + "-" + xPos + ".png";
 
-        let tileXDepth = (xPos - tileRenderXStart) * tileSize;
-        let drawX = tileXDepth + viewport.ptA.x % tileSize;
+        let tileXDepth = (xPos - tileRenderXStart) * tiles.size;
+        let xOffset = (tileRenderXStart * tiles.size) - camera.pt1.x;
+        xDraw = Math.max(tileXDepth + xOffset, 0);
+        let cropX = Math.max(camera.pt1.x - xPos * tiles.size, 0);
 
-        let tileYDepth = (yPos - tileRenderYStart) * tileSize;
-        let drawY = tileYDepth + viewport.ptC.x % tileSize;
+        let tileYDepth = (yPos - tileRenderYStart) * tiles.size;
+        let yOffset = (tileRenderYStart * tiles.size) - camera.pt1.y;
+        yDraw = Math.max(tileYDepth + yOffset, 0);
+        let cropY = Math.max(camera.pt1.y - yPos * tiles.size, 0);
 
-        let xWidth = Math.min(tileSize, viewport.ptC - tileXDepth);
-        let yWidth = Math.min(tileSize, viewport.ptB - tileYDepth));
+        let xWidth = Math.min(tiles.size, viewport.pt3.x - xPos*tiles.size);
+        let yWidth = Math.min(tiles.size, viewport.pt2.y - yPos*tiles.size);
 
-        tile.onload = function(){
-          //tileContext.drawImage(tile, drawX, drawY, xWidth, yWidth , );
-        }
+        tileContext.drawImage(tile,
+            cropX, cropY, xWidth, yWidth,
+            xDraw, yDraw, xWidth, yWidth);
       }
     }
 
 
-    tileContext.setTransform(1,0,0,1,0,0);
+    /*tileContext.setTransform(1,0,0,1,0,0);
     tileContext.clearRect(0,0, canvas.width, canvas.height);
     tileContext.translate(offset.x, offset.y);
 
-    tileContext.drawImage(backgroundImage,0,0,8000,8000);
+    tileContext.drawImage(backgroundImage,0,0,8000,8000);*/
 
     tileContext.restore();
   };
 
   //just for testing
-  that.renderMaze = function(maze) {
+  that.renderMaze = function(maze, character) {
     context.clear();
     context.beginPath();
 
   	context.lineWidth = 20;
 
+    //draw only cells in the viewport
+    //this will still draw out of bounds but to a reasonable extent
+    viewport = that.defineCamera(character.center.x, character.center.y);
+    cellXStart = Math.floor(viewport.pt1.x/maze.cellWidth);
+    cellXEnd = Math.floor(viewport.pt3.x/maze.cellHeight);
+    cellYStart = Math.floor(viewport.pt1.y/maze.cellWidth);
+    cellYEnd = Math.floor(viewport.pt2.y/maze.cellHeight);
+
     //draw north and west of each cell
-  	for (let row = 0; row < maze.length; row++) {
-  		for (let col = 0; col < maze[row].length; col++) {
-  			drawCell(maze[row][col], maze.cellWidth, maze.cellHeight);
+  	for (let row = cellXStart; row <= cellXEnd; row++) {
+  		for (let col = cellYStart; col <= cellYEnd; col++) {
+        if(maze[row] !== undefined && maze[row][col] !== undefined) drawCell(maze[row][col], maze.cellWidth, maze.cellHeight);
   		}
   	}
 
