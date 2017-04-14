@@ -26,30 +26,39 @@ var graphics = (function(){
     offset.x = width/2 - x;
     offset.y = width/2 - y;
   };
-  
+
   that.returnCanvas = function(){
     return canvas;
+  };
+
+  //allows us to move the canvas to where the character is
+  that.drawCamera = function(character){
+    context.setTransform(1,0,0,1,0,0);
+    context.clearRect(0,0, canvas.width, canvas.height);
+    context.translate(-character.center.x + canvas.width/2, -character.center.y + canvas.height/2);
   };
 
   //just for testing
   that.renderMaze = function(maze) {
     context.clear();
     context.beginPath();
-  	/*context.moveTo(offset.x, offset.y);
-  	context.lineTo(999 + offset.x, offset.y);
-  	context.lineTo(999 + offset.x, 999 + offset.y);
-  	context.lineTo(offset.x, 999 + offset.y);
-  	context.closePath();
-  	context.strokeStyle = 'rgb(0, 0, 0)';
-  	context.stroke();*/
 
-  	context.lineWidth = 6;
+  	context.lineWidth = 20;
 
+    //draw north and west of each cell
   	for (let row = 0; row < maze.length; row++) {
   		for (let col = 0; col < maze[row].length; col++) {
-  			drawCell(maze[row][col], width/2, width/2);
+  			drawCell(maze[row][col], maze.cellWidth, maze.cellHeight);
   		}
   	}
+
+    //draw the south and east edges
+  	context.moveTo(0, maze.length * maze.cellHeight);
+  	context.lineTo(maze[0].length * maze.cellWidth, maze.length * maze.cellHeight);
+
+    context.moveTo(maze[0].length * maze.cellWidth, 0);
+  	context.lineTo(maze[0].length * maze.cellWidth, maze.length * maze.cellHeight);
+
     context.stroke();
     context.restore();
 
@@ -57,6 +66,7 @@ var graphics = (function(){
 
   //just for testing
   function drawCell(cell, cellW, cellH) {
+    var box = physics.createRectangleBody(0, 0, 0, 0);
     switch (cell.biome) {
       case 0:
         context.fillStyle = 'rgb(200,200,0)';
@@ -74,30 +84,23 @@ var graphics = (function(){
         context.fillStyle = 'rgb(0,0,0)';
     }
 
-    let cellLeft = cell.x * cellW + offset.x;
-    let cellTop = cell.y * cellH + offset.y;
+    let cellLeft = cell.x * cellW;
+    let cellTop = cell.y * cellH;
 
     context.fillRect(cellLeft, cellTop, cellW, cellH);
 
-  	if (cell.edges.n === null) {
-  		context.moveTo(cellLeft, cellTop);
+    //added physics bodies and updated the position of their bodies
+    //NORTH
+    if(cell.edges.n.hasOwnProperty('position')){
+      context.moveTo(cellLeft, cellTop);
   		context.lineTo(cellLeft + cellW, cellTop);
-  	}
+    }
 
-  	if (cell.edges.s === null) {
-  		context.moveTo(cellLeft, cellTop + cellH);
-  		context.lineTo(cellLeft + cellW, cellTop + cellH);
-  	}
-
-  	if (cell.edges.e === null) {
-  		context.moveTo(cellLeft + cellW, cellTop);
-  		context.lineTo(cellLeft + cellW, cellTop + cellH);
-  	}
-
-  	if (cell.edges.w === null) {
-  		context.moveTo(cellLeft, cellTop);
+    //WEST
+    if(cell.edges.w.hasOwnProperty('position')){
+      context.moveTo(cellLeft, cellTop);
   		context.lineTo(cellLeft, cellTop + cellH);
-  	}
+    }
   }
 
   that.defineCamera = function(offset){
@@ -120,9 +123,16 @@ var graphics = (function(){
      that.drawCharacter(visible[enemy]);
    }
   }
+  //draw the character
   that.drawCharacter = function(spec){
+
+    //draw the character and the body in the same aread
     context.drawImage(spec.image,
-    spec.x + offset.x, spec.y + offset.y, width/(spec.width), height/spec.height)
+    (spec.x - 50), (spec.y - 50), width/(spec.width), height/spec.height)
+  };
+
+  that.drawParticle = function(image, x, y, size){
+    context.drawImage(image,x - 25, y - 20, size, size);
   };
 
   return that;

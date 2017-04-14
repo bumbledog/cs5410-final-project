@@ -26,7 +26,7 @@ var objects = (function(){
     imgEnemy.src = "assets/skeletonSprite.png";
   }
 
- 
+
 
   function randomLocation(){
 let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
@@ -78,7 +78,8 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
               isDead: false,
               isHit: false,
               center: randomLocation(),
-              health: 2
+              health: 2,
+              tag: 'Enemy'
           }));
       }
       //if we want to have a minimum # of enemies per room, this may need to be changed
@@ -102,6 +103,8 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
       spec.width = spec.view.width * (characterSizePercent.x/100);
       spec.height = spec.view.height * (characterSizePercent.y/100);
 
+      
+
       that = {
           get left(){return spec.center.x - spec.width/2},
           get right(){return spec.center.x + spec.width/2},
@@ -113,47 +116,71 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
           get radiusSq(){return spec.radiusSq}
       };
 
-      that.moveRight = function(elapsedTime){
-          spec.center.x += spec.moveRate * elapsedTime;
+      that.addBodyToWorld = function(){
+        physics.setFrictionAir(0.075, spec.body);  //how much friction in the air when it moves
+        physics.setRestitution(2, spec.body);      //how bouncy/elastic
+        //physics.setSpeed(0.00004, spec.body);
+        physics.addToWorld(spec.body);
+      };
 
-         //need bounds to keep character from moving off the map
-         //could be done with collision detection
-      }
+      that.returnCharacterBody = function(){
+        return spec.body;
+      };
+
+
+      that.setBodyPosition = function(myBody){
+        spec.center.x = myBody.position.x;
+        spec.center.y = myBody.position.y;
+      };
+
+
+      that.moveRight = function(elapsedTime){
+          Matter.Body.applyForce(spec.body, spec.body.position, {x: 0.002 * spec.body.mass, y:0});
+          game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
+      };
 
       that.moveLeft = function(elapsedTime){
-          spec.center.x -= spec.moveRate*elapsedTime;
-
-          //need bounds to keep character from moving off the map
-          //could be done with collision detection
-      }
+          Matter.Body.applyForce(spec.body, spec.body.position, {x: -0.002 * spec.body.mass, y:0});
+          game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
+      };
 
       that.moveUp = function(elapsedTime){
-          spec.center.y -= spec.moveRate*elapsedTime;
-
-          //need bounds to keep character from moving off the map;
-          //could be done with collision detection
-      }
+          Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:-0.002 * spec.body.mass});
+          game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
+      };
 
       that.moveDown = function(elapsedTime){
-          spec.center.y += spec.moveRate*elapsedTime;
-           //need bounds to keep character from moving off the map;
-          //could be done with collision detection
-      }
+          Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:0.002 * spec.body.mass});
+          game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
+      };
 
       that.update = function(elapsedTime){
+
+        //need to add this so that the character doesnt skip to the body position
+        if(spec.tag === 'Character'){
+            spec.center.x = spec.body.position.x;
+            spec.center.y = spec.body.position.y;
+        }
+        
+
           //need to write checkIfHit functions
           if(that.checkIfHit === true){
               spec.isHit = true;
           }
           checkHealth(that);
-      }
+      };
 
       that.checkIfHit = function(){
           return false;
           //WILL NEED TO BE CHANGED. JUST WRITTEN LIKE THIS FOR CHARACTER MOVEMENT TESTING
-      }
+      };
 
       that.render = function(){
+          
+          if(spec.tag === 'Character'){
+            physics.setPosition(spec.body, spec.center.x, spec.center.y);
+          }
+
           graphics.drawCharacter({
               x:spec.center.x,
               y:spec.center.y,
@@ -161,7 +188,7 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
               height:spec.height,
               image:spec.image
           })
-      }
+      };
 
       that.intersects = function(other){
           var distance = Math.pow((spec.center.x - other.center.x), 2) + Math.pow((spec.center.y - other.center.y), 2)
@@ -198,8 +225,7 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
 var math = (function(){
     let that = {};
     let usePrevious = false;
-    let y2, x1, x2, z;   
-
+    let y2, x1, x2, z; 
 
  that.gaussian = function(mean, stdDev){   //performs a gaussian distribution.
       if(usePrevious){               //I use this function to initialize how many enemies are generated.
@@ -220,6 +246,15 @@ var math = (function(){
       y2 = x2*z;
       return mean + y1*stdDev;
   }
+
+  that.circleVector = function() {
+		var angle = Math.random() * 2 * Math.PI;
+		return {
+			x: Math.cos(angle),
+			y: Math.sin(angle)
+		};
+	}
+
 return that;
 }());
 

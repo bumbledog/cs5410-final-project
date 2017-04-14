@@ -45,6 +45,9 @@ navigation.screens['menu'] = function(){
     document.getElementById('toAbout').addEventListener('click', function() {
       navigation.showScreen('about');
     });
+    document.getElementById('toHigh-scores').addEventListener('click', function() {
+      navigation.showScreen('high-scores');
+    });
   };
   return that;
 }();
@@ -54,7 +57,13 @@ navigation.screens['options'] = function(){
   that.initialize = function(){
     document.getElementById('options-menu').addEventListener('click', function() {
       navigation.showScreen('menu');
+      let control = document.querySelector('input[name = "controls"]:checked').value;
+      memory.setControls(control);
     });
+
+    //id like to be able to find by value but whatever
+    let select = memory.getControls();
+     document.querySelector('input[value = ' + select + ']').checked = true;
   };
   return that;
 }();
@@ -63,6 +72,16 @@ navigation.screens['about'] = function(){
   let that = {};
   that.initialize = function(){
     document.getElementById('about-menu').addEventListener('click', function() {
+      navigation.showScreen('menu');
+    });
+  };
+  return that;
+}();
+
+navigation.screens['high-scores'] = function(){
+  let that = {};
+  that.initialize = function(){
+    document.getElementById('scores-menu').addEventListener('click', function() {
       navigation.showScreen('menu');
     });
   };
