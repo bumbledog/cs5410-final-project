@@ -29,7 +29,7 @@ var objects = (function(){
 
 
   function randomLocation(){
-let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
+    let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
 
       return randLoc;
   }
@@ -69,6 +69,7 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
       let avgEnemyCount = 100;
       let dev = 10;
       for(let i = 0; i < math.gaussian(avgEnemyCount, dev); i++){
+          let randLoc = randomLocation();
           enemies.push(that.Character({
               image:imgEnemy,
               view:{width:1000, height:1000},
@@ -77,11 +78,17 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
               radiusSq: (1000*(characterSizePercent.y/100))*(1000*(characterSizePercent.y/100)) ,
               isDead: false,
               isHit: false,
-              center: randomLocation(),
+              center: randLoc,
               health: 2,
-              tag: 'Enemy'
+              tag: 'Enemy',
+              body: physics.createRectangleBody(randLoc.x + 1, randLoc.y + 7, 60, 60)
           }));
       }
+
+      for(let i = 0; i < enemies.length; i++) {
+        enemies[i].addBodyToWorld();
+      }
+
       //if we want to have a minimum # of enemies per room, this may need to be changed
       return enemies;
   }
@@ -157,11 +164,10 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
       that.update = function(elapsedTime){
 
         //need to add this so that the character doesnt skip to the body position
-        if(spec.tag === 'Character'){
+        if(spec.tag === 'Character' || spec.tag === 'Enemy'){
             spec.center.x = spec.body.position.x;
             spec.center.y = spec.body.position.y;
         }
-
 
           //need to write checkIfHit functions
           if(that.checkIfHit === true){

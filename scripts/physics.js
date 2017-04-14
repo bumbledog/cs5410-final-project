@@ -12,7 +12,7 @@ var physics = (function(){
         World = null,
         Bodies = null,
         engine = null;
-
+        
 
     //call first
     that.initialize = function(){
@@ -58,6 +58,12 @@ var physics = (function(){
     that.createRectangleBody = function(x, y, w, h){
         var box = Bodies.rectangle(x, y, w, h);
         return box;
+    };
+
+    //allow the creation of a circle Body
+    that.createCircleBody = function(x, y, r){
+        var circle = Bodies.circle(x, y, r);
+        return circle;
     };
 
     //directly set the position of a body
