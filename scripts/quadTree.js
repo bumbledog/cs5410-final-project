@@ -167,6 +167,7 @@ function insert(node, objectToAdd){
                     pt2: camera.pt2,
                     pt3: camera.pt3,
                     pt4: camera.pt4,
+                    size: (camera.pt3.x - camera.pt1.x),
                     center:{x:(camera.pt1.x + camera.pt3.x)/2 , y:(camera.pt1.y + camera.pt2.y)/2}
             };
 

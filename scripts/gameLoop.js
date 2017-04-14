@@ -57,7 +57,7 @@ var game = (function(){
 
     enemies = objects.initializeEnemies();
 
-    objects.buildQuadTree(100, enemies, maze.width*maze.height);
+    objects.buildQuadTree(8, enemies, maze.length*maze.cellWidth);
 
     keyboard = input.Keyboard();
     setupControlScheme();
@@ -135,6 +135,7 @@ var game = (function(){
   function update(elapsedTime){
 
     character.update(elapsedTime);
+    graphics.setOffset(character.center.x, character.center.y);
 
     // function could be changed so that only enemies
     //close to Link are updated. This would improve efficiency
@@ -142,7 +143,7 @@ var game = (function(){
       enemies[i].update(elapsedTime);
     }
 
-    objects.buildQuadTree(100, enemies, maze.width*maze.height);
+    objects.buildQuadTree(8, enemies, maze.width*maze.cellWidth);
     //set the offset to the body position
     //we dont use quite use offset anymore
     graphics.setOffset(character.returnCharacterBody().position.x, character.returnCharacterBody().position.y);
@@ -185,7 +186,7 @@ var game = (function(){
     //  enemies[i].render(elapsedTime);
     //}
 
-    graphics.renderEnemies(elapsedTime, enemies);
+    graphics.renderEnemies(elapsedTime, enemies,character);
     character.render(elapsedTime);
   };
 

@@ -73,7 +73,7 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
               image:imgEnemy,
               view:{width:1000, height:1000},
               moveRate: 1/100000, //pixels per millisecond
-              radius: 1000*(characterSizePercent.y/100),
+              radius: 1500*(characterSizePercent.y/100),
               radiusSq: (1000*(characterSizePercent.y/100))*(1000*(characterSizePercent.y/100)) ,
               isDead: false,
               isHit: false,
