@@ -47,7 +47,7 @@ var game = (function(){
         isHit:false,
         center: {x:1000/2, y:1000/2},
         health: 10,
-        body: physics.createRectangleBody((1000/2) + 60, (1000/2) + 70, 75, 75),
+        body: physics.createCircleBody((1000/2) + 60, (1000/2) + 70, 40),
         tag: 'Character'
     });
 
