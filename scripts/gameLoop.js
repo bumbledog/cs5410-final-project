@@ -168,10 +168,7 @@ var game = (function(){
 
     //only render background when character moves
     //TODO: move this to update only when the OFFSET changes!!!
-    if(character.moved){
-      graphics.renderTiles(character);
-      character.moved = false;
-    }
+    graphics.renderTiles(character);
     //TODO: use quad tree to only render on-screen enemies
     //TODO: only render this (and tiles) if character moves
     //Added a key listener to the 'G' and 'H' Key

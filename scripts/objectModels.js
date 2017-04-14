@@ -54,7 +54,7 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
               isBroken:false,
               hasItem:false,
               radius:1000*(potSizePercent.y/100),
-              radiusSq: (1000*(potSizePercent.y/100))*(1000*(potSizePercent.y/100)) 
+              radiusSq: (1000*(potSizePercent.y/100))*(1000*(potSizePercent.y/100))
             });
       }
 
@@ -137,25 +137,21 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
       that.moveRight = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: 0.002 * spec.body.mass, y:0});
           game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
-          that.moved = true;
       };
 
       that.moveLeft = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: -0.002 * spec.body.mass, y:0});
           game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
-          that.moved = true;
       };
 
       that.moveUp = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:-0.002 * spec.body.mass});
           game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
-          that.moved = true;
       };
 
       that.moveDown = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:0.002 * spec.body.mass});
           game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
-          that.moved = true;
       };
 
       that.update = function(elapsedTime){
@@ -229,7 +225,7 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
 var math = (function(){
     let that = {};
     let usePrevious = false;
-    let y2, x1, x2, z; 
+    let y2, x1, x2, z;
 
  that.gaussian = function(mean, stdDev){   //performs a gaussian distribution.
       if(usePrevious){               //I use this function to initialize how many enemies are generated.

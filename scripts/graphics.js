@@ -48,9 +48,38 @@ var graphics = (function(){
   that.renderTiles = function(character){
     tileContext.clear();
 
-    context.setTransform(1,0,0,1,0,0);
-    context.clearRect(0,0, canvas.width, canvas.height);
-    context.translate(-character.center.x + canvas.width/2, -character.center.y + canvas.height/2);
+    /*TODO: object to define
+    TILESIZE, leading string, tileColumns*/
+    viewport = that.defineCamera();
+    tileRenderXStart = Math.floor(viewport.ptA.x/tileSize);
+    tileRenderXEnd = Math.floor(viewport.ptC.x/tileSize);
+    tileRenderYStart = Math.floor(viewport.ptA.y/tileSize);
+    tileRenderYEnd = Math.floor(viewport.ptB.y/tileSize);
+
+    for(let xPos = tileRenderXStart; xPos < tileRenderXEnd; xPos++){
+      for(let yPos = tileRenderYStart; yPos < tileRenderYStart; yPos++){
+        let tile = Image();
+        tile.src = tileString + (xPos + yPos * tileColumns);
+
+        let tileXDepth = (xPos - tileRenderXStart) * tileSize;
+        let drawX = tileXDepth + viewport.ptA.x % tileSize;
+
+        let tileYDepth = (yPos - tileRenderYStart) * tileSize;
+        let drawY = tileYDepth + viewport.ptC.x % tileSize;
+
+        let xWidth = Math.min(tileSize, viewport.ptC - tileXDepth);
+        let yWidth = Math.min(tileSize, viewport.ptB - tileYDepth));
+
+        tile.onload = function(){
+          //tileContext.drawImage(tile, drawX, drawY, xWidth, yWidth , );
+        }
+      }
+    }
+
+
+    tileContext.setTransform(1,0,0,1,0,0);
+    tileContext.clearRect(0,0, canvas.width, canvas.height);
+    tileContext.translate(offset.x, offset.y);
 
     tileContext.drawImage(backgroundImage,0,0,8000,8000);
 
