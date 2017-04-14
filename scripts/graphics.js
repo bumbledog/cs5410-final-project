@@ -84,13 +84,6 @@ var graphics = (function(){
       }
     }
 
-
-    /*tileContext.setTransform(1,0,0,1,0,0);
-    tileContext.clearRect(0,0, canvas.width, canvas.height);
-    tileContext.translate(offset.x, offset.y);
-
-    tileContext.drawImage(backgroundImage,0,0,8000,8000);*/
-
     tileContext.restore();
   };
 
