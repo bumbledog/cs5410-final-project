@@ -54,7 +54,7 @@ var objects = (function(){
               isBroken:false,
               hasItem:false,
               radius:1000*(potSizePercent.y/100),
-              radiusSq: (1000*(potSizePercent.y/100))*(1000*(potSizePercent.y/100)) 
+              radiusSq: (1000*(potSizePercent.y/100))*(1000*(potSizePercent.y/100))
             });
       }
 
@@ -110,7 +110,7 @@ var objects = (function(){
       spec.width = spec.view.width * (characterSizePercent.x/100);
       spec.height = spec.view.height * (characterSizePercent.y/100);
 
-      
+
 
       that = {
           get left(){return spec.center.x - spec.width/2},
@@ -183,6 +183,10 @@ var objects = (function(){
 
       that.render = function(){
 
+          if(spec.tag === 'Character'){
+            physics.setPosition(spec.body, spec.center.x, spec.center.y);
+          }
+
           graphics.drawCharacter({
               x:spec.center.x,
               y:spec.center.y,
@@ -227,7 +231,7 @@ var objects = (function(){
 var math = (function(){
     let that = {};
     let usePrevious = false;
-    let y2, x1, x2, z; 
+    let y2, x1, x2, z;
 
  that.gaussian = function(mean, stdDev){   //performs a gaussian distribution.
       if(usePrevious){               //I use this function to initialize how many enemies are generated.

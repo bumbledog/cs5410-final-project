@@ -162,6 +162,10 @@ var game = (function(){
 
 
   function render(elapsedTime){
+
+    //only render background when character moves
+    //TODO: move this to update only when the OFFSET changes!!!
+    graphics.renderTiles(maze, character);
     //TODO: use quad tree to only render on-screen enemies
     //TODO: only render this (and tiles) if character moves
     //Added a key listener to the 'G' and 'H' Key
@@ -172,7 +176,7 @@ var game = (function(){
       //translates the context to where the characters center is
       graphics.drawCamera(character);
 
-      graphics.renderMaze(maze);
+      graphics.renderMaze(maze, character);
     }
 
     that.dustParticles.render();
