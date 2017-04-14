@@ -22,8 +22,21 @@ var graphics = (function(){
     tiles = {
       size: 500,
       src: "assets/map/map [www.imagesplitter.net]-",
-      columns: 16
+      columns: 16,
+      loaded: 0
     };
+
+    //load all files before rendering
+    for(let i = 0; i < tiles.columns; i++){
+      tiles[i] = [];
+      for(let j = 0; j < tiles.columns; j++){
+        tiles[i][j] = new Image();
+        tiles[i][j].src = tiles.src + j + "-" + i + ".png";
+        tiles[i][j].onload = function(){
+          tiles.loaded++;
+        };
+      }
+    }
 
     CanvasRenderingContext2D.prototype.clear = function() {
       this.save();
@@ -50,41 +63,45 @@ var graphics = (function(){
   };
 
   that.renderTiles = function(maze, character){
-    tileContext.clear();
+    
+    if(tiles.loaded === tiles.columns * tiles.columns){
 
-    /*TODO: object to define
-    TILESIZE, leading string, tileColumns*/
-    viewport = that.defineCamera(character.center.x, character.center.y);
-    tileRenderXStart = Math.floor(viewport.pt1.x/tiles.size);
-    tileRenderXEnd = Math.floor(viewport.pt3.x/tiles.size);
-    tileRenderYStart = Math.floor(viewport.pt1.y/tiles.size);
-    tileRenderYEnd = Math.floor(viewport.pt2.y/tiles.size);
+        tileContext.clear();
 
-    for(let xPos = tileRenderXStart; xPos <= tileRenderXEnd; xPos++){
-      for(let yPos = tileRenderYStart; yPos <= tileRenderYEnd; yPos++){
-        let tile = new Image();
-        tile.src = tiles.src + yPos + "-" + xPos + ".png";
+        /*TODO: object to define
+        TILESIZE, leading string, tileColumns*/
+        viewport = that.defineCamera(character.center.x, character.center.y);
+        tileRenderXStart = Math.max(Math.floor(viewport.pt1.x/tiles.size), 0);
+          tileRenderXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), tiles.columns - 1);
+          tileRenderYStart =  Math.max(Math.floor(viewport.pt1.y/tiles.size), 0);
+          tileRenderYEnd = Math.min(Math.floor(viewport.pt2.y/tiles.size), tiles.columns - 1);
+          
+        for(let xPos = tileRenderXStart; xPos <= tileRenderXEnd; xPos++){
+          for(let yPos = tileRenderYStart; yPos <= tileRenderYEnd; yPos++){
+            let tile = new Image();
+            tile.src = tiles.src + yPos + "-" + xPos + ".png";
 
-        let tileXDepth = (xPos - tileRenderXStart) * tiles.size;
-        let xOffset = (tileRenderXStart * tiles.size) - camera.pt1.x;
-        xDraw = Math.max(tileXDepth + xOffset, 0);
-        let cropX = Math.max(camera.pt1.x - xPos * tiles.size, 0);
+            let tileXDepth = (xPos - tileRenderXStart) * tiles.size;
+            let xOffset = (tileRenderXStart * tiles.size) - camera.pt1.x;
+            xDraw = Math.max(tileXDepth + xOffset, 0);
+            let cropX = Math.max(camera.pt1.x - xPos * tiles.size, 0);
 
-        let tileYDepth = (yPos - tileRenderYStart) * tiles.size;
-        let yOffset = (tileRenderYStart * tiles.size) - camera.pt1.y;
-        yDraw = Math.max(tileYDepth + yOffset, 0);
-        let cropY = Math.max(camera.pt1.y - yPos * tiles.size, 0);
+            let tileYDepth = (yPos - tileRenderYStart) * tiles.size;
+            let yOffset = (tileRenderYStart * tiles.size) - camera.pt1.y;
+            yDraw = Math.max(tileYDepth + yOffset, 0);
+            let cropY = Math.max(camera.pt1.y - yPos * tiles.size, 0);
 
-        let xWidth = Math.min(tiles.size, viewport.pt3.x - xPos*tiles.size);
-        let yWidth = Math.min(tiles.size, viewport.pt2.y - yPos*tiles.size);
+            let xWidth = Math.min(tiles.size, viewport.pt3.x - xPos*tiles.size);
+            let yWidth = Math.min(tiles.size, viewport.pt2.y - yPos*tiles.size);
 
-        tileContext.drawImage(tile,
-            cropX, cropY, xWidth, yWidth,
-            xDraw, yDraw, xWidth, yWidth);
-      }
+            tileContext.drawImage(tile,
+                cropX, cropY, xWidth, yWidth,
+                xDraw, yDraw, xWidth, yWidth);
+          }
+        }
+
+        tileContext.restore();
     }
-
-    tileContext.restore();
   };
 
   //just for testing
