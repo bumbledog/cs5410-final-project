@@ -5,12 +5,19 @@ var graphics = (function(){
   let width = 0;
   let height = 0;
   let offset = {x:0, y:0};
+  let backgroundImage;
 
   that.initialize = function(){
     canvas = document.getElementById('canvas-main');
     context = canvas.getContext('2d');
     width = canvas.width;
     height = canvas.height;
+
+    tileCanvas = document.getElementById('tiles');
+    tileContext = tileCanvas.getContext('2d');
+    backgroundImage = new Image();
+    backgroundImage.src = "assets/background.jpg";
+
 
     CanvasRenderingContext2D.prototype.clear = function() {
       this.save();
@@ -34,6 +41,18 @@ var graphics = (function(){
     context.setTransform(1,0,0,1,0,0);
     context.clearRect(0,0, canvas.width, canvas.height);
     context.translate(-character.center.x + canvas.width/2, -character.center.y + canvas.height/2);
+  };
+
+  that.renderTiles = function(character){
+    tileContext.clear();
+
+    context.setTransform(1,0,0,1,0,0);
+    context.clearRect(0,0, canvas.width, canvas.height);
+    context.translate(-character.center.x + canvas.width/2, -character.center.y + canvas.height/2);
+
+    tileContext.drawImage(backgroundImage,0,0,8000,8000);
+
+    tileContext.restore();
   };
 
   //just for testing
@@ -85,7 +104,7 @@ var graphics = (function(){
     let cellLeft = cell.x * cellW;
     let cellTop = cell.y * cellH;
 
-    context.fillRect(cellLeft, cellTop, cellW, cellH);
+    //context.fillRect(cellLeft, cellTop, cellW, cellH);
 
     //added physics bodies and updated the position of their bodies
     //NORTH

@@ -24,7 +24,7 @@ var physics = (function(){
         Bodies = Matter.Bodies;
 
         //creating the main engine to run all of our physics
-        engine = Engine.create({
+        /*engine = Engine.create({
             render: {
                 element : document.body,
                 canvas: graphics.returnCanvas(),   //where to render to
@@ -34,7 +34,12 @@ var physics = (function(){
                     wireframes: false,
                 }
             }
+        });*/
+        //no physics render
+        engine = Engine.create({
+            render: false
         });
+
 
         //sets the gravity to 0
         //we do this because its top down,
@@ -45,7 +50,7 @@ var physics = (function(){
         Engine.run(engine);
 
         // run the renderer
-        Render.run(engine.render);
+        //Render.run(engine.render);
 
     };
 

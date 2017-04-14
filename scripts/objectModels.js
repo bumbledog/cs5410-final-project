@@ -91,7 +91,7 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
       spec.width = spec.view.width * (characterSizePercent.x/100);
       spec.height = spec.view.height * (characterSizePercent.y/100);
 
-      
+
 
       that = {
           get left(){return spec.center.x - spec.width/2},
@@ -123,21 +123,25 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
       that.moveRight = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: 0.002 * spec.body.mass, y:0});
           game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
+          that.moved = true;
       };
 
       that.moveLeft = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: -0.002 * spec.body.mass, y:0});
           game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
+          that.moved = true;
       };
 
       that.moveUp = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:-0.002 * spec.body.mass});
           game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
+          that.moved = true;
       };
 
       that.moveDown = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:0.002 * spec.body.mass});
           game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
+          that.moved = true;
       };
 
       that.update = function(elapsedTime){
@@ -147,7 +151,7 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
             spec.center.x = spec.body.position.x;
             spec.center.y = spec.body.position.y;
         }
-        
+
 
           //need to write checkIfHit functions
           if(that.checkIfHit === true){
@@ -162,7 +166,7 @@ let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
       };
 
       that.render = function(){
-          
+
           if(spec.tag === 'Character'){
             physics.setPosition(spec.body, spec.center.x, spec.center.y);
           }

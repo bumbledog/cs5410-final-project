@@ -62,6 +62,9 @@ var game = (function(){
       image: "assets/dust.png"
     });
 
+    //an initial render
+    graphics.renderTiles(character);
+
     gameLoop();
   };
 
@@ -154,6 +157,13 @@ var game = (function(){
 
 
   function render(elapsedTime){
+
+    //only render background when character moves
+    //TODO: move this to update only when the OFFSET changes!!!
+    if(character.moved){
+      graphics.renderTiles(character);
+      character.moved = false;
+    }
     //TODO: use quad tree to only render on-screen enemies
     //TODO: only render this (and tiles) if character moves
     //Added a key listener to the 'G' and 'H' Key
