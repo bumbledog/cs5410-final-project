@@ -5,6 +5,8 @@ var graphics = (function(){
   let width = 0;
   let height = 0;
   let offset = {x:0, y:0};
+  let visible = [];
+  let camera;
 
   that.initialize = function(){
     canvas = document.getElementById('canvas-main');
@@ -98,10 +100,32 @@ var graphics = (function(){
   	}
   }
 
+  that.defineCamera = function(offset){
+  var ptA = {x:offset.x , y:offset.y},
+      ptB = {x:offset.x , y:offset.y + canvas.height},
+      ptC = {x:offset.x + canvas.width, y:offset.y},
+      ptD = {x:offset.x + canvas.width, y:offset.y + canvas.height}
+
+      boundingCircle = objects.quadTree.circleFromSquare(ptA, ptB, ptC);
+
+    camera = {pt1:ptA, pt2:ptB, pt3:ptC, pt4:ptD, boundingCircle:boundingCircle};
+
+    return camera;
+
+}
+  that.renderEnemies = function(elapsedTime, enemies){
+    
+   visible = objects.quadTree.visibleObjects(that.defineCamera(offset));
+   for(let enemy = 0; enemy < enemies.length; enemy++){
+     that.drawCharacter(visible[enemy]);
+   }
+  }
   that.drawCharacter = function(spec){
     context.drawImage(spec.image,
-    spec.x + 10 + offset.x, spec.y + 15 + offset.y, width/(spec.width), height/spec.height)
+    spec.x + offset.x, spec.y + offset.y, width/(spec.width), height/spec.height)
   };
 
   return that;
 }());
+
+

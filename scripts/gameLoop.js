@@ -1,8 +1,10 @@
 var game = (function(){
   let that = {};
   let time, canceled, maze, keyboard;
-  let character, enemies;
-  let boxA
+  let character;
+  let boxA;
+
+  that.y = {};
 
   that.initialize = function(){
 
@@ -29,13 +31,17 @@ var game = (function(){
         image: imgChar,
         view:{width:1000, height:1000},
         moveRate: 450/1000, //pixels per millisecond
-        isDead:false,
+        radius: 1000*(1/100),
+        radiusSq: (1000*(1/100)*(1000*(1/100))),
+        isDead: false,
         isHit:false,
         center: {x:1000/2, y:1000/2},
         health: 10
     });
 
     enemies = objects.initializeEnemies();
+
+    objects.buildQuadTree(100, enemies, maze.width*maze.height);
 
     keyboard = input.Keyboard();
     setupControlScheme();
@@ -82,6 +88,8 @@ var game = (function(){
     for(i = 0; i < enemies.length; i++){
             enemies[i].update(elapsedTime);
     }
+
+    objects.buildQuadTree(100, enemies, maze.width*maze.height);
     graphics.setOffset(character.center.x, character.center.y);
     //PARTICLE SYSTEM UPDATES SHOULD BE ADDED HERE
   };
@@ -93,9 +101,11 @@ var game = (function(){
     graphics.renderMaze(maze);
     // TODO: function could be changed so that only enemies
     //close to Link are updated. This would improve efficiency
-    for(i = 0; i < enemies.length; i++){
-      enemies[i].render(elapsedTime);
-    }
+    //for(i = 0; i < enemies.length; i++){
+    //  enemies[i].render(elapsedTime);
+    //}
+
+    graphics.renderEnemies(elapsedTime, enemies);
     character.render(elapsedTime);
   };
 
