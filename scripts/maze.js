@@ -1,5 +1,7 @@
 game.Maze = function(spec){
   let grid = [];
+  grid.width = spec.width;
+  grid.height = spec.height;
   grid.cellHeight = spec.cellHeight;
   grid.cellWidth = spec.cellWidth;
   let braidPercent = .6;
