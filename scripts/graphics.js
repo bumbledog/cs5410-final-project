@@ -18,8 +18,6 @@ var graphics = (function(){
 
     tileCanvas = document.getElementById('tiles');
     tileContext = tileCanvas.getContext('2d');
-    backgroundImage = new Image();
-    backgroundImage.src = "assets/background.jpg";
 
     tiles = {
       size: 500,
