@@ -1,10 +1,12 @@
 var game = (function(){
   let that = {};
   let time, canceled, maze, keyboard;
+  let boxA;
+
+  that.y = {};
   let renderGraphics;
   let character, enemies, particles;
   that.dustParticles;
-  let boxA
 
   that.initialize = function(){
 
@@ -39,7 +41,9 @@ var game = (function(){
         image: imgChar,
         view:{width:1000, height:1000},
         moveRate: 450/1000, //pixels per millisecond
-        isDead:false,
+        radius: 1000*(1/100),
+        radiusSq: (1000*(1/100)*(1000*(1/100))),
+        isDead: false,
         isHit:false,
         center: {x:1000/2, y:1000/2},
         health: 10,
@@ -52,6 +56,8 @@ var game = (function(){
     //end
 
     enemies = objects.initializeEnemies();
+
+    objects.buildQuadTree(8, enemies, maze.length*maze.cellWidth);
 
     keyboard = input.Keyboard();
     setupControlScheme();
@@ -129,6 +135,7 @@ var game = (function(){
   function update(elapsedTime){
 
     character.update(elapsedTime);
+    graphics.setOffset(character.center.x, character.center.y);
 
     // function could be changed so that only enemies
     //close to Link are updated. This would improve efficiency
@@ -136,6 +143,7 @@ var game = (function(){
       enemies[i].update(elapsedTime);
     }
 
+    objects.buildQuadTree(8, enemies, maze.width*maze.cellWidth);
     //set the offset to the body position
     //we dont use quite use offset anymore
     graphics.setOffset(character.returnCharacterBody().position.x, character.returnCharacterBody().position.y);
@@ -174,9 +182,11 @@ var game = (function(){
 
     // TODO: function could be changed so that only enemies
     //close to Link are updated. This would improve efficiency
-    for(i = 0; i < enemies.length; i++){
-      enemies[i].render(elapsedTime);
-    }
+    //for(i = 0; i < enemies.length; i++){
+    //  enemies[i].render(elapsedTime);
+    //}
+
+    graphics.renderEnemies(elapsedTime, enemies,character);
     character.render(elapsedTime);
   };
 

@@ -5,6 +5,8 @@ var graphics = (function(){
   let width = 0;
   let height = 0;
   let offset = {x:0, y:0};
+  let visible = [];
+  let camera;
 
   that.initialize = function(){
     canvas = document.getElementById('canvas-main');
@@ -33,7 +35,7 @@ var graphics = (function(){
   that.drawCamera = function(character){
     context.setTransform(1,0,0,1,0,0);
     context.clearRect(0,0, canvas.width, canvas.height);
-    context.translate(-character.center.x + canvas.width/2, -character.center.y + canvas.height/2);
+    context.translate(offset.x, offset.y);
   };
 
   //just for testing
@@ -101,6 +103,26 @@ var graphics = (function(){
     }
   }
 
+  that.defineCamera = function(x,y){
+  var ptA = {x: x - canvas.width/2, y:  y - canvas.height/2},
+      ptB = {x: x - canvas.width/2 , y:  y + canvas.height/2},
+      ptC = {x: x + canvas.width/2, y:  y - canvas.height/2},
+      ptD = {x: x + canvas.width/2, y:  y + canvas.height/2}
+
+      boundingCircle = objects.quadTree.circleFromSquare(ptA, ptB, ptC);
+
+    camera = {pt1:ptA, pt2:ptB, pt3:ptC, pt4:ptD, boundingCircle:boundingCircle};
+
+    return camera;
+
+}
+  that.renderEnemies = function(elapsedTime, enemies, character){
+    
+   visible = objects.quadTree.visibleObjects(that.defineCamera(character.center.x, character.center.y));
+   for(let enemy = 0; enemy < visible.length; enemy++){
+     visible[enemy].render(elapsedTime);
+   }
+  }
   //draw the character
   that.drawCharacter = function(spec){
 
@@ -115,3 +137,5 @@ var graphics = (function(){
 
   return that;
 }());
+
+
