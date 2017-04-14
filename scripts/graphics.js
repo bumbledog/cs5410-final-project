@@ -63,7 +63,7 @@ var graphics = (function(){
   };
 
   that.renderTiles = function(maze, character){
-    
+
     if(tiles.loaded === tiles.columns * tiles.columns){
 
         tileContext.clear();
@@ -72,10 +72,10 @@ var graphics = (function(){
         TILESIZE, leading string, tileColumns*/
         viewport = that.defineCamera(character.center.x, character.center.y);
         tileRenderXStart = Math.max(Math.floor(viewport.pt1.x/tiles.size), 0);
-          tileRenderXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), tiles.columns - 1);
-          tileRenderYStart =  Math.max(Math.floor(viewport.pt1.y/tiles.size), 0);
-          tileRenderYEnd = Math.min(Math.floor(viewport.pt2.y/tiles.size), tiles.columns - 1);
-          
+        tileRenderXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), tiles.columns - 1);
+        tileRenderYStart =  Math.max(Math.floor(viewport.pt1.y/tiles.size), 0);
+        tileRenderYEnd = Math.min(Math.floor(viewport.pt2.y/tiles.size), tiles.columns - 1);
+
         for(let xPos = tileRenderXStart; xPos <= tileRenderXEnd; xPos++){
           for(let yPos = tileRenderYStart; yPos <= tileRenderYEnd; yPos++){
             let tile = new Image();
@@ -114,15 +114,15 @@ var graphics = (function(){
     //draw only cells in the viewport
     //this will still draw out of bounds but to a reasonable extent
     viewport = that.defineCamera(character.center.x, character.center.y);
-    cellXStart = Math.floor(viewport.pt1.x/maze.cellWidth);
-    cellXEnd = Math.floor(viewport.pt3.x/maze.cellHeight);
-    cellYStart = Math.floor(viewport.pt1.y/maze.cellWidth);
-    cellYEnd = Math.floor(viewport.pt2.y/maze.cellHeight);
+    cellXStart = Math.max(Math.floor(viewport.pt1.x/tiles.size), 0);
+    cellXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), tiles.columns - 1);
+    cellYStart =  Math.max(Math.floor(viewport.pt1.y/tiles.size), 0);
+    cellYEnd = Math.min(Math.floor(viewport.pt2.y/tiles.size), tiles.columns - 1);
 
     //draw north and west of each cell
   	for (let row = cellXStart; row <= cellXEnd; row++) {
   		for (let col = cellYStart; col <= cellYEnd; col++) {
-        if(maze[row] !== undefined && maze[row][col] !== undefined) drawCell(maze[row][col], maze.cellWidth, maze.cellHeight);
+        drawCell(maze[row][col], maze.cellWidth, maze.cellHeight);
   		}
   	}
 
