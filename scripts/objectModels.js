@@ -76,8 +76,8 @@ var objects = (function(){
                 spriteCount: 4,
                 spriteTime: [100, 250, 220, 300, 175],
                 spriteSize: 50,
-                width = 100,
-                height = 100
+                width: 100,
+                height: 100
               }),
               view:{width:1000, height:1000},
               moveRate: 1/100000, //pixels per millisecond
