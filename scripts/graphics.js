@@ -63,7 +63,7 @@ var graphics = (function(){
   };
 
   that.renderTiles = function(maze, character){
-    
+
     if(tiles.loaded === tiles.columns * tiles.columns){
 
         tileContext.clear();
@@ -75,7 +75,7 @@ var graphics = (function(){
           tileRenderXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), tiles.columns - 1);
           tileRenderYStart =  Math.max(Math.floor(viewport.pt1.y/tiles.size), 0);
           tileRenderYEnd = Math.min(Math.floor(viewport.pt2.y/tiles.size), tiles.columns - 1);
-          
+
         for(let xPos = tileRenderXStart; xPos <= tileRenderXEnd; xPos++){
           for(let yPos = tileRenderYStart; yPos <= tileRenderYEnd; yPos++){
             let tile = new Image();
@@ -208,6 +208,16 @@ var graphics = (function(){
   that.drawParticle = function(image, x, y, size){
     context.drawImage(image,x - 25, y - 20, size, size);
   };
+
+  that.drawSprite = function(sprite, x, y){
+    context.drawImage(
+			sprite.spriteSheet,
+			sprite.pixelWidth * sprite.sprite, 0,	// Which sprite to pick out
+			sprite.pixelWidth, sprite.pixelHeight,	// The size of the sprite in the sprite sheet
+			x - sprite.width / 2,		// Where to draw the sprite
+			y - sprite.height / 2,
+			sprite.width, sprite.height);
+	};
 
   return that;
 }());

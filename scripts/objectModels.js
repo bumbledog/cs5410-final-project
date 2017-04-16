@@ -71,7 +71,12 @@ var objects = (function(){
       for(let i = 0; i < math.gaussian(avgEnemyCount, dev); i++){
           let randLoc = randomLocation();
           enemies.push(that.Character({
-              image:imgEnemy,
+              sprite: AnimatedSprite({
+                image: 'assets/slime.png',
+                spriteCount: 4,
+                spriteTime: [100, 250, 220, 300, 175],
+                spriteSize: 50
+              }),
               view:{width:1000, height:1000},
               moveRate: 1/100000, //pixels per millisecond
               radius: 1500*(characterSizePercent.y/100),
@@ -169,6 +174,11 @@ var objects = (function(){
             spec.center.y = spec.body.position.y;
         }
 
+        //sprite
+        if(spec.tag === 'Enemy'){
+          spec.sprite.update(elapsedTime);
+        }
+
           //need to write checkIfHit functions
           if(that.checkIfHit === true){
               spec.isHit = true;
@@ -185,7 +195,7 @@ var objects = (function(){
 
           if(spec.tag === 'Character'){
             physics.setPosition(spec.body, spec.center.x, spec.center.y);
-          }
+
 
           graphics.drawCharacter({
               x:spec.center.x,
@@ -194,6 +204,11 @@ var objects = (function(){
               height:spec.height,
               image:spec.image
           })
+          }
+          else{
+            //characters with a sprite
+            spec.sprite.render(spec.center.x, spec.center.y);
+          }
       };
 
       that.intersects = function(other){
