@@ -6,7 +6,7 @@ var objects = (function(){
   let characterSizePercent, characterInventory, /*enemies,*/ pots, potSizePercent;                  //array of breakable pots
   let movingLeft, movingRight,
       movingDown, movingUp;
-  let imgEnemy;
+  let imgBat, imgSlime;
   that.quadTree = {};
 
   that.initialize = function(gridWidth, gridHeight){
@@ -22,8 +22,11 @@ var objects = (function(){
     characterSizePercent = {x:1,y:1};
     potSizePercent = {x:5, y:5}
 
-    imgEnemy = new Image();
-    imgEnemy.src = "assets/skeletonSprite.png";
+    imgSlime = new Image();
+    imgSlime.src = "assets/slime.png";
+
+    imgBat = new Image();
+    imgBat.src = "assets/bat.png";
   }
 
 
@@ -73,7 +76,7 @@ var objects = (function(){
         let enemySprite;
         if(chooseSprite === 1){
           enemySprite = AnimatedSprite({
-            image: 'assets/slime.png',
+            spriteSheet: imgSlime,
             spriteCount: 4,
             spriteTime: [100, 250, 220, 300, 175],
             spriteSize: 50,
@@ -84,7 +87,7 @@ var objects = (function(){
           });
         }else{
           enemySprite = AnimatedSprite({
-            image: 'assets/bat.png',
+            spriteSheet: imgBat,
             spriteCount: 6,
             spriteTime: [100, 80, 75, 125, 75, 60],
             spriteSize: 50,
