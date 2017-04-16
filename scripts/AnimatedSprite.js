@@ -12,7 +12,7 @@ var AnimatedSprite = function(spec){
   //placeholder
   that.render = function(x, y){graphics.drawSprite(spec, x, y);};
 
-  spec.sprite = 0;
+  spec.sprite = Math.floor(Math.random() * (spec.spriteCount - 1));
   spec.elapsedTime = 0;
   spec.width = 100;
   spec.height = 100;
