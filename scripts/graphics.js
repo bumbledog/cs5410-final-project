@@ -72,6 +72,7 @@ var graphics = (function(){
         TILESIZE, leading string, tileColumns*/
         viewport = that.defineCamera(character.center.x, character.center.y);
         tileRenderXStart = Math.max(Math.floor(viewport.pt1.x/tiles.size), 0);
+
         tileRenderXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), tiles.columns - 1);
         tileRenderYStart =  Math.max(Math.floor(viewport.pt1.y/tiles.size), 0);
         tileRenderYEnd = Math.min(Math.floor(viewport.pt2.y/tiles.size), tiles.columns - 1);
@@ -208,6 +209,16 @@ var graphics = (function(){
   that.drawParticle = function(image, x, y, size){
     context.drawImage(image,x - 25, y - 20, size, size);
   };
+
+  that.drawSprite = function(sprite, x, y){
+    context.drawImage(
+			sprite.spriteSheet,
+			sprite.pixelWidth * sprite.sprite, 0,	// Which sprite to pick out
+			sprite.pixelWidth, sprite.pixelHeight,	// The size of the sprite in the sprite sheet
+			x - sprite.width / 2,		// Where to draw the sprite
+			y - sprite.height / 2,
+			sprite.width, sprite.height);
+	};
 
   return that;
 }());

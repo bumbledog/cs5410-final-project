@@ -37,7 +37,7 @@ function ParticleSystem(spec){
         }
       }
     };
-  }
+  };
   image.src = spec.image;
 
   function Particle(spec){
