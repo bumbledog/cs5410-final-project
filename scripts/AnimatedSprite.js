@@ -3,9 +3,6 @@ var AnimatedSprite = function(spec){
     get spriteSheet() { return spec.spriteSheet; },
     get pixelWidth() { return spec.pixelWidth; },
     get pixelHeight() { return spec.spriteSheet.height; },
-    //get width() { return spec.spriteSize.width; },
-    //get height() { return spec.spriteSize.height; },
-    //get center() { return spec.spriteCenter; },
     get sprite() { return spec.sprite; }
   }
 
@@ -14,8 +11,6 @@ var AnimatedSprite = function(spec){
 
   spec.sprite = Math.floor(Math.random() * (spec.spriteCount - 1));
   spec.elapsedTime = 0;
-  spec.width = 100;
-  spec.height = 100;
 
   spec.spriteSheet = new Image();
 
