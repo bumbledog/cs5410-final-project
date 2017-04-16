@@ -19,9 +19,6 @@ var AnimatedSprite = function(spec){
     that.render = function(x, y){
       graphics.drawSprite(spec, x, y);
     };
-
-    spec.pixelWidth = 32;
-    spec.pixelHeight = 32;
   }
   spec.spriteSheet.src = spec.image;
 

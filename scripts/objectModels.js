@@ -69,16 +69,34 @@ var objects = (function(){
       let avgEnemyCount = 100;
       let dev = 10;
       for(let i = 0; i < math.gaussian(avgEnemyCount, dev); i++){
+        let chooseSprite = Math.floor(Math.random()*2);
+        let enemySprite;
+        if(chooseSprite === 1){
+          enemySprite = AnimatedSprite({
+            image: 'assets/slime.png',
+            spriteCount: 4,
+            spriteTime: [100, 250, 220, 300, 175],
+            spriteSize: 50,
+            width: 100,
+            height: 100,
+            pixelWidth: 32,
+            pixelHeight: 32
+          });
+        }else{
+          enemySprite = AnimatedSprite({
+            image: 'assets/bat.png',
+            spriteCount: 6,
+            spriteTime: [100, 80, 75, 125, 75, 60],
+            spriteSize: 50,
+            width: 150,
+            height: 100,
+            pixelWidth: 48,
+            pixelHeight: 32
+          });
+        }
           let randLoc = randomLocation();
           enemies.push(that.Character({
-              sprite: AnimatedSprite({
-                image: 'assets/slime.png',
-                spriteCount: 4,
-                spriteTime: [100, 250, 220, 300, 175],
-                spriteSize: 50,
-                width: 100,
-                height: 100
-              }),
+              sprite: enemySprite,
               view:{width:1000, height:1000},
               moveRate: 1/100000, //pixels per millisecond
               radius: 1500*(characterSizePercent.y/100),
