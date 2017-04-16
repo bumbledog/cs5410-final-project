@@ -12,18 +12,10 @@ var AnimatedSprite = function(spec){
   spec.sprite = Math.floor(Math.random() * (spec.spriteCount - 1));
   spec.elapsedTime = 0;
 
-  spec.spriteSheet = new Image();
-
   //draw sprites
-  spec.spriteSheet.onload = function(){
-    that.render = function(x, y){
-      graphics.drawSprite(spec, x, y);
-    };
-
-    spec.pixelWidth = 32;
-    spec.pixelHeight = 32;
-  }
-  spec.spriteSheet.src = spec.image;
+  that.render = function(x, y){
+    graphics.drawSprite(spec, x, y);
+  };
 
   that.update = function(elapsedTime){
     spec.elapsedTime += elapsedTime;
