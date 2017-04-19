@@ -8,6 +8,11 @@ var game = (function(){
   let character, enemies, particles;
   that.dustParticles;
 
+    //categories:
+    var defaultCategory = 0x0001;
+    var characterCategory = 0x0002;
+    var enemyCategory = 0x0003;
+
   that.initialize = function(){
 
     renderGraphics = true;
@@ -48,10 +53,15 @@ var game = (function(){
         center: {x:1000/2, y:1000/2},
         health: 10,
         body: physics.createCircleBody((1000/2) + 60, (1000/2) + 70, 40),
+        sensor: physics.createSensorBody((1000/2) + 60, (1000/2) + 70, 75, 75),
+        direction: 'down',
+        attacking: false,
+        coolDown: 0,
         tag: 'Character'
     });
 
     //physics character body:
+    physics.addCollisionFilter(character.returnSensor(), enemyCategory);
     character.addBodyToWorld();
     //end
 
@@ -67,6 +77,18 @@ var game = (function(){
     that.dustParticles = ParticleSystem({
       image: "assets/dust.png"
     });
+
+    //gives more information on what collides with the player
+    physics.eventSensorStart(character, enemies);
+    physics.eventSensorActive(character, enemies);
+    physics.eventSensorEnd(character, enemies);
+
+
+    //stats initialize
+    graphics.initializeStats({
+      healthBar: character.returnHealth(),
+    });
+
 
     gameLoop();
   };
@@ -98,6 +120,9 @@ var game = (function(){
     //allows us to turn on and off the rendering of the maze
     keyboard.registerCommand(KeyEvent.DOM_VK_G, turnOffGraphics);
     keyboard.registerCommand(KeyEvent.DOM_VK_H, turnOnGraphics);
+
+    //key for attacking
+    keyboard.registerCommand(KeyEvent.DOM_VK_SPACE, coolDownCheck);
   }
 
   function turnOffGraphics(){
@@ -112,10 +137,23 @@ var game = (function(){
     }
   }
 
+  //checking cooldown of attack
+  function coolDownCheck(){
+    if(character.returnCoolDown() < time){
+      character.attack(true);
+      character.setCoolDown(time + 500);
+    }
+    else{
+      character.attack(false);
+    }
+  }
+
+
   function gameLoop(){
     let newTime = performance.now();
     let elapsedTime = newTime - time;
-
+    //console.log(character.returnAttackState());
+    //console.log(time);
     handleInput(elapsedTime);
 
     update(elapsedTime);
@@ -157,6 +195,9 @@ var game = (function(){
         particles.splice(i--, 0);
       }
     }
+
+    //console.log(character.returnDirection());
+
   };
 
 
