@@ -71,37 +71,37 @@ var graphics = (function(){
     //measures the height of the text
     function measureTextHeight(spec) {
 			statContext.save();
-			
+
 			statContext.font = spec.font;
 			statContext.fillStyle = spec.fill;
 			statContext.strokeStyle = spec.stroke;
-			
+
 			var height = statContext.measureText('m').width;
-			
+
 			statContext.restore();
-			
+
 			return height;
 		}
 
     //measures the width of the text
     function measureTextWidth(spec) {
 			statContext.save();
-			
+
 			statContext.font = spec.font;
 			statContext.fillStyle = spec.fill;
 			statContext.strokeStyle = spec.stroke;
-			
+
 			var width = statContext.measureText(spec.text).width;
-			
+
 			statContext.restore();
-			
+
 			return width;
 		}
 
     //main draw function
     textThat.draw = function() {
 			statContext.save();
-			
+
 			statContext.font = spec.font;
 			statContext.fillStyle = spec.fill;
 			statContext.strokeStyle = spec.stroke;
@@ -112,7 +112,7 @@ var graphics = (function(){
 
 			statContext.fillText(spec.text, spec.positionition.x, spec.position.y);
 			statContext.strokeText(spec.text, spec.position.x, spec.position.y);
-			
+
 			statContext.restore();
 		};
 
@@ -128,7 +128,7 @@ var graphics = (function(){
 
 
   that.initializeStats = function(spec){
-    
+
   };
 
 
@@ -195,9 +195,9 @@ var graphics = (function(){
     //this will still draw out of bounds but to a reasonable extent
     viewport = that.defineCamera(character.center.x, character.center.y);
     cellXStart = Math.max(Math.floor(viewport.pt1.x/tiles.size), 0);
-    cellXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), tiles.columns - 1);
+    cellXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), maze.width - 1);
     cellYStart =  Math.max(Math.floor(viewport.pt1.y/tiles.size), 0);
-    cellYEnd = Math.min(Math.floor(viewport.pt2.y/tiles.size), tiles.columns - 1);
+    cellYEnd = Math.min(Math.floor(viewport.pt2.y/tiles.size), maze.height - 1);
 
     //draw north and west of each cell
   	for (let row = cellXStart; row <= cellXEnd; row++) {
