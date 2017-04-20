@@ -31,8 +31,8 @@ var game = (function(){
     time = performance.now();
 
     maze = that.Maze({
-      height: 16,
-      width: 16,
+      height: 2,
+      width: 2,
       biomes: 4,
       cellHeight: 500,
       cellWidth: 500
@@ -65,7 +65,7 @@ var game = (function(){
     character.addBodyToWorld();
     //end
 
-    enemies = objects.initializeEnemies();
+    enemies = objects.initializeEnemies(25 ,maze.width, maze.height, maze.cellWidth);
 
     objects.buildQuadTree(8, enemies, maze.length*maze.cellWidth);
 

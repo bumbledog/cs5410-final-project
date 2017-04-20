@@ -38,8 +38,8 @@ var objects = (function(){
 
 
 
-  function randomLocation(){
-    let randLoc = {x:Math.random()*500*16, y:Math.random()*500*16};
+  function randomLocation(width,height, size){
+    let randLoc = {x:Math.random()*size*(width - 1), y:Math.random()*size*(height - 1)};
 
       return randLoc;
   }
@@ -74,9 +74,8 @@ var objects = (function(){
 
   }
 
-  that.initializeEnemies = function(){
+  that.initializeEnemies = function(avgEnemyCount, width, height, size){
       enemies = [];
-      let avgEnemyCount = 100;
       let dev = 10;
       for(let i = 0; i < math.gaussian(avgEnemyCount, dev); i++){
         let chooseSprite = Math.floor(Math.random()*2);
@@ -104,7 +103,7 @@ var objects = (function(){
             pixelHeight: 32
           });
         }
-          let randLoc = randomLocation();
+          let randLoc = randomLocation(width, height, size);
           enemies.push(that.Character({
               sprite: enemySprite,
               view:{width:1000, height:1000},
