@@ -2,6 +2,8 @@ var graphics = (function(){
   let that = {};
   let context = null;
   let canvas = null;
+  let statCanvas = null;
+  let statContext = null;
   let width = 0;
   let height = 0;
   let offset = {x:0, y:0};
@@ -18,6 +20,11 @@ var graphics = (function(){
 
     tileCanvas = document.getElementById('tiles');
     tileContext = tileCanvas.getContext('2d');
+
+    //stats overlay:
+    statCanvas = document.getElementById('stats');
+    statContext = statCanvas.getContext('2d');
+    //end
 
     tiles = {
       size: 500,
@@ -54,6 +61,78 @@ var graphics = (function(){
   that.returnCanvas = function(){
     return canvas;
   };
+
+  //rendering the overlay stats page
+
+  //rendering text
+  that.Text = function(spec){
+    let textThat = {};
+
+    //measures the height of the text
+    function measureTextHeight(spec) {
+			statContext.save();
+			
+			statContext.font = spec.font;
+			statContext.fillStyle = spec.fill;
+			statContext.strokeStyle = spec.stroke;
+			
+			var height = statContext.measureText('m').width;
+			
+			statContext.restore();
+			
+			return height;
+		}
+
+    //measures the width of the text
+    function measureTextWidth(spec) {
+			statContext.save();
+			
+			statContext.font = spec.font;
+			statContext.fillStyle = spec.fill;
+			statContext.strokeStyle = spec.stroke;
+			
+			var width = statContext.measureText(spec.text).width;
+			
+			statContext.restore();
+			
+			return width;
+		}
+
+    //main draw function
+    textThat.draw = function() {
+			statContext.save();
+			
+			statContext.font = spec.font;
+			statContext.fillStyle = spec.fill;
+			statContext.strokeStyle = spec.stroke;
+			statContext.textBaseline = 'top';
+
+			statContext.translate(spec.position.x + textThat.width / 2, spec.position.y + textThat.height / 2);
+			statContext.translate(-(spec.position.x + textThat.width / 2), -(spec.position.y + textThat.height / 2));
+
+			statContext.fillText(spec.text, spec.positionition.x, spec.position.y);
+			statContext.strokeText(spec.text, spec.position.x, spec.position.y);
+			
+			statContext.restore();
+		};
+
+		//
+		// Compute and expose some public properties for this text.
+		textThat.height = measureTextHeight(spec);
+		textThat.width = measureTextWidth(spec);
+		textThat.position = spec.position;
+
+
+    return textThat;
+  };
+
+
+  that.initializeStats = function(spec){
+    
+  };
+
+
+  //end
 
   //allows us to move the canvas to where the character is
   that.drawCamera = function(character){
@@ -190,7 +269,8 @@ var graphics = (function(){
 
     return camera;
 
-}
+  }
+
   that.renderEnemies = function(elapsedTime, enemies, character){
 
    visible = objects.quadTree.visibleObjects(that.defineCamera(character.center.x, character.center.y));
@@ -198,6 +278,7 @@ var graphics = (function(){
      visible[enemy].render(elapsedTime);
    }
   }
+
   //draw the character
   that.drawCharacter = function(spec){
 

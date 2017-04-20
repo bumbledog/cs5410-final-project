@@ -9,6 +9,13 @@ var objects = (function(){
   let imgBat, imgSlime;
   that.quadTree = {};
 
+  let enemies;
+
+    //categories for collision detection
+    var defaultCategory = 0x0001;
+    var characterCategory = 0x0002;
+    var enemyCategory = 0x0003;
+
   that.initialize = function(gridWidth, gridHeight){
     width = gridWidth,
     height = gridHeight;
@@ -27,7 +34,7 @@ var objects = (function(){
 
     imgBat = new Image();
     imgBat.src = "assets/bat.png";
-  }
+  };
 
 
 
@@ -68,7 +75,7 @@ var objects = (function(){
   }
 
   that.initializeEnemies = function(){
-      let enemies = [];
+      enemies = [];
       let avgEnemyCount = 100;
       let dev = 10;
       for(let i = 0; i < math.gaussian(avgEnemyCount, dev); i++){
@@ -114,12 +121,14 @@ var objects = (function(){
       }
 
       for(let i = 0; i < enemies.length; i++) {
+        physics.setID(enemies[i].returnCharacterBody(), i);
         enemies[i].addBodyToWorld();
       }
 
+
       //if we want to have a minimum # of enemies per room, this may need to be changed
       return enemies;
-  }
+  };
 
   //---------------------------------
   //Character model. spec must include:
@@ -148,65 +157,158 @@ var objects = (function(){
           get center(){return spec.center},
           get width(){return spec.width},
           get radius(){return spec.radius},
-          get radiusSq(){return spec.radiusSq}
+          get radiusSq(){return spec.radiusSq},
+          get isDead(){return spec.isDead},
+          get body(){return spec.body}
       };
 
+      //adds the body to the physics world
       that.addBodyToWorld = function(){
         physics.setFrictionAir(0.075, spec.body);  //how much friction in the air when it moves
         physics.setRestitution(2, spec.body);      //how bouncy/elastic
-        //physics.setSpeed(0.00004, spec.body);
+
+        if(spec.tag === 'Character'){
+            physics.addCollisionFilter(spec.body, characterCategory);
+        }
+        if(spec.tag === 'Enemy'){
+            physics.addCollisionFilter(spec.body, enemyCategory);
+        }
         physics.addToWorld(spec.body);
       };
 
+      //returns the body of either the enemy or character
       that.returnCharacterBody = function(){
         return spec.body;
       };
 
+      //returns the sensor body tied to the character
+      that.returnSensor = function(){
+          return spec.sensor;
+      };
 
+      //returns the category in which it can collide with
+      that.returnCategory = function(){
+        return spec.body.collisionFilter.category;
+      };
+
+      //returns the direciton in which the character is facing
+      that.returnDirection = function(){
+        return spec.direction;
+      };
+
+      //returns the amount of cooldown a character has before he can attack
+      that.returnCoolDown = function(){
+        return spec.coolDown;
+      };
+
+      //set the cooldown manually
+      that.setCoolDown = function(CD){
+        spec.coolDown = CD;
+      };
+
+      //manually sets the body position of the character
       that.setBodyPosition = function(myBody){
         spec.center.x = myBody.position.x;
         spec.center.y = myBody.position.y;
       };
 
+      //sets if the character is in a state of attacking
+      that.attack = function(state){
+        spec.attacking = state;
+      };
+
+      //returns if the character is in a state of attacking
+      that.returnAttackState = function(){
+        return spec.attacking;
+      };
+
+      //allows the character or enemy to receive damage
+      that.damaged = function(){
+        spec.health--;
+      };
+
+      that.returnHealth = function(){
+        return spec.health;
+      };
 
       that.moveRight = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: 0.002 * spec.body.mass, y:0});
           game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
+        //   if(spec.direction === 'down' || spec.direction === 'up'){
+        //     Matter.Body.setAngle(spec.sensor, 90);
+        //   }
+          spec.direction = 'right';
       };
 
       that.moveLeft = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: -0.002 * spec.body.mass, y:0});
           game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
+          spec.direction = 'left';
       };
 
       that.moveUp = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:-0.002 * spec.body.mass});
           game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
+          spec.direction = 'up';
       };
 
       that.moveDown = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:0.002 * spec.body.mass});
           game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
+          spec.direction = 'down';
       };
 
+
+      //character/enemy update function
       that.update = function(elapsedTime){
 
+        // //determine if dead or not
+        // if(spec.tag === 'Enemy' && spec.health <= 0){
+        //     physics.removeFromWorld(spec.body);
+        //     enemies.splice(spec.body.id, 1);
+        // }
+        // else{
+
         //need to add this so that the character doesnt skip to the body position
-        if(spec.tag === 'Character' || spec.tag === 'Enemy'){
+        if(spec.tag === 'Character'){
             spec.center.x = spec.body.position.x;
             spec.center.y = spec.body.position.y;
+
+            //change sensor position
+            if(spec.direction === 'down'){
+                physics.setPosition(spec.sensor, spec.center.x, spec.center.y + 85);
+            }
+            if(spec.direction === 'up'){
+                physics.setPosition(spec.sensor, spec.center.x, spec.center.y - 85);
+            }
+            if(spec.direction === 'right'){
+                physics.setPosition(spec.sensor, spec.center.x + 85, spec.center.y);
+            }
+            if(spec.direction === 'left'){
+                physics.setPosition(spec.sensor, spec.center.x - 85, spec.center.y);
+            }
         }
 
-        //sprite
+        //sprite & enemy position
         if(spec.tag === 'Enemy'){
-          spec.sprite.update(elapsedTime);
+            if(spec.health < 1){
+                spec.isDead = true;
+            }
+            else{
+                spec.center.x = spec.body.position.x;
+                spec.center.y = spec.body.position.y;
+                spec.sprite.update(elapsedTime);
+            }
         }
 
-          //need to write checkIfHit functions
-          if(that.checkIfHit === true){
-              spec.isHit = true;
-          }
-          checkHealth(that);
+            // //need to write checkIfHit functions
+            // if(that.checkIfHit === true){
+            //     spec.isHit = true;
+            // }
+            // checkHealth(that);
+            //}
+
+
       };
 
       that.checkIfHit = function(){
@@ -252,7 +354,7 @@ var objects = (function(){
       }
 
       return that;
-  }
+  };
 
   that.buildQuadTree = function(maxObjectsPerNode, objects, rootSize){
       var objectToQuad = 0;
