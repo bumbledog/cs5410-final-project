@@ -13,7 +13,7 @@ var physics = (function(){
         Bodies = null,
         Events = null,
         engine = null;
-        
+
     var defaultCategory = 0x0001;
     var characterCategory = 0x0002;
     var enemyCategory = 0x0003;
@@ -29,7 +29,7 @@ var physics = (function(){
         Events = Matter.Events;
 
         //creating the main engine to run all of our physics
-//CHANGE BACK 
+//CHANGE BACK
         engine = Engine.create({
             render: {
                 element : document.body,
@@ -96,14 +96,14 @@ var physics = (function(){
 
                 if(pair.bodyA === character.returnSensor()) {
                     //pair.bodyA.isStatic = false;
-                    console.log(enemies[pair.bodyB.id].returnHealth());
-                    console.log(pair.bodyB.id);
+                    //console.log(enemies[pair.bodyB.id].returnHealth());
+                    //console.log(pair.bodyB.id);
                     // console.log('hit start');
                 }
                 else if(pair.bodyB === character.returnSensor()) {
                     //pair.bodyB.isStatic = false;
-                    console.log(enemies[pair.bodyA.id].returnHealth());
-                    console.log(pair.bodyA.id);
+                    //console.log(enemies[pair.bodyA.id].returnHealth());
+                    //console.log(pair.bodyA.id);
                     // console.log('hit start');
                 }
             }
@@ -124,9 +124,9 @@ var physics = (function(){
                     if(character.returnDirection() === 'down' && character.returnAttackState()){
                         Matter.Body.setPosition(pair.bodyB, {x: pair.bodyB.position.x, y: pair.bodyB.position.y + 50});
                         Matter.Body.setVelocity(pair.bodyB, { x: 0, y: 10 });
-                        enemies[pair.bodyB.id].damaged();
-                        console.log(enemies[pair.bodyB.id].returnHealth());
-                        console.log('hit active');
+                        enemyMatchingId(enemies, pair.bodyB.id).damaged();
+                        //console.log(enemies[pair.bodyB.id].returnHealth());
+                        //console.log('hit active');
                         // if(enemies[pair.bodyB.id].returnHealth() <= 1){
                         //     physics.removeFromWorld(enemies[pair.bodyB.id].returnCharacterBody());
                         //     enemies.splice(pair.bodyB.id, 1);
@@ -136,9 +136,9 @@ var physics = (function(){
                     if(character.returnDirection() === 'up' && character.returnAttackState()){
                         Matter.Body.setPosition(pair.bodyB, {x: pair.bodyB.position.x, y: pair.bodyB.position.y - 50});
                         Matter.Body.setVelocity(pair.bodyB, { x: 0, y: -10 });
-                        enemies[pair.bodyB.id].damaged();
-                        console.log(enemies[pair.bodyB.id].returnHealth());
-                        console.log('hit active');
+                        enemyMatchingId(enemies, pair.bodyB.id).damaged();
+                        //console.log(enemies[pair.bodyB.id].returnHealth());
+                        //console.log('hit active');
                         // if(enemies[pair.bodyB.id].returnHealth() <= 1){
                         //     physics.removeFromWorld(enemies[pair.bodyB.id].returnCharacterBody());
                         //     enemies.splice(pair.bodyB.id, 1);
@@ -148,9 +148,9 @@ var physics = (function(){
                     if(character.returnDirection() === 'right' && character.returnAttackState()){
                         Matter.Body.setPosition(pair.bodyB, {x: pair.bodyB.position.x + 50, y: pair.bodyB.position.y});
                         Matter.Body.setVelocity(pair.bodyB, { x: 10, y: 0 });
-                        enemies[pair.bodyB.id].damaged();
-                        console.log(enemies[pair.bodyB.id].returnHealth());
-                        console.log('hit active');
+                        enemyMatchingId(enemies, pair.bodyB.id).damaged();
+                        //console.log(enemies[pair.bodyB.id].returnHealth());
+                        //console.log('hit active');
                         // if(enemies[pair.bodyB.id].returnHealth() <= 1){
                         //     physics.removeFromWorld(enemies[pair.bodyB.id].returnCharacterBody());
                         //     enemies.splice(pair.bodyB.id, 1);
@@ -160,16 +160,16 @@ var physics = (function(){
                     if(character.returnDirection() === 'left' && character.returnAttackState()){
                         Matter.Body.setPosition(pair.bodyB, {x: pair.bodyB.position.x - 50, y: pair.bodyB.position.y});
                         Matter.Body.setVelocity(pair.bodyB, { x: -10, y: 0 });
-                        enemies[pair.bodyB.id].damaged();
-                        console.log(enemies[pair.bodyB.id].returnHealth());
-                        console.log('hit active');
+                        enemyMatchingId(enemies, pair.bodyB.id).damaged();
+                        //console.log(enemies[pair.bodyB.id].returnHealth());
+                        //console.log('hit active');
                         // if(enemies[pair.bodyB.id].returnHealth() <= 1){
                         //     physics.removeFromWorld(enemies[pair.bodyB.id].returnCharacterBody());
                         //     enemies.splice(pair.bodyB.id, 1);
                         //     pairs.splice(i, 1);
                         // }
                     }
-                    
+
                 }
                 else if(pair.bodyB === character.returnSensor()) {
                     //pair.bodyB.isStatic = false;
@@ -177,9 +177,9 @@ var physics = (function(){
                     if(character.returnDirection() === 'down' && character.returnAttackState()){
                         Matter.Body.setVelocity(pair.bodyA, { x: 0, y: 10});
                         Matter.Body.setPosition(pair.bodyA, {x: pair.bodyB.position.x, y: pair.bodyA.position.y + 50});
-                        enemies[pair.bodyA.id].damaged();
-                        console.log(enemies[pair.bodyA.id].returnHealth());
-                        console.log('hit active');
+                        enemyMatchingId(enemies, pair.bodyA.id).damaged();
+                        //console.log(enemies[pair.bodyA.id].returnHealth());
+                        //console.log('hit active');
                         // if(enemies[pair.bodyA.id].returnHealth() <= 1){
                         //     physics.removeFromWorld(enemies[pair.bodyA.id].returnCharacterBody());
                         //     enemies.splice(pair.bodyA.id, 1);
@@ -189,9 +189,9 @@ var physics = (function(){
                     if(character.returnDirection() === 'up' && character.returnAttackState()){
                         Matter.Body.setVelocity(pair.bodyA, { x: 0, y: -10});
                         Matter.Body.setPosition(pair.bodyA, {x: pair.bodyB.position.x, y: pair.bodyA.position.y - 50});
-                        enemies[pair.bodyA.id].damaged();
-                        console.log(enemies[pair.bodyA.id].returnHealth());
-                        console.log('hit active');
+                        enemyMatchingId(enemies, pair.bodyA.id).damaged();
+                        //console.log(enemies[pair.bodyA.id].returnHealth());
+                        //console.log('hit active');
                         // if(enemies[pair.bodyA.id].returnHealth() <= 1){
                         //     physics.removeFromWorld(enemies[pair.bodyA.id].returnCharacterBody());
                         //     enemies.splice(pair.bodyA.id, 1);
@@ -201,9 +201,9 @@ var physics = (function(){
                     if(character.returnDirection() === 'right' && character.returnAttackState()){
                         Matter.Body.setVelocity(pair.bodyA, { x: 10, y: 0});
                         Matter.Body.setPosition(pair.bodyA, {x: pair.bodyB.position.x + 50, y: pair.bodyA.position.y});
-                        enemies[pair.bodyA.id].damaged();
-                        console.log(enemies[pair.bodyA.id].returnHealth());
-                        console.log('hit active');
+                        enemyMatchingId(enemies, pair.bodyA.id).damaged();
+                        //console.log(enemies[pair.bodyA.id].returnHealth());
+                        //console.log('hit active');
                         // if(enemies[pair.bodyA.id].returnHealth() <= 1){
                         //     physics.removeFromWorld(enemies[pair.bodyA.id].returnCharacterBody());
                         //     enemies.splice(pair.bodyA.id, 1);
@@ -213,9 +213,9 @@ var physics = (function(){
                     if(character.returnDirection() === 'left' && character.returnAttackState()){
                         Matter.Body.setVelocity(pair.bodyA, { x: -10, y: 0});
                         Matter.Body.setPosition(pair.bodyA, {x: pair.bodyB.position.x - 50, y: pair.bodyA.position.y});
-                        enemies[pair.bodyA.id].damaged();
-                        console.log(enemies[pair.bodyA.id].returnHealth());
-                        console.log('hit active');
+                        enemyMatchingId(enemies, pair.bodyA.id).damaged();
+                        //console.log(enemies[pair.bodyA.id].returnHealth());
+                        //console.log('hit active');
                         // if(enemies[pair.bodyA.id].returnHealth() <= 1){
                         //     physics.removeFromWorld(enemies[pair.bodyA.id].returnCharacterBody());
                         //     enemies.splice(pair.bodyA.id, 1);
@@ -269,6 +269,16 @@ var physics = (function(){
         });
 
     };
+
+    //find matching enemy
+    function enemyMatchingId(enemies, id) {
+      for(let i = 0; i < enemies.length; i++){
+        if(enemies[i].body.id === id){
+          return enemies[i];
+        }
+      }
+      return undefined;
+    }
 
     //directly set the position of a body
     that.setPosition = function(myBody, x, y){

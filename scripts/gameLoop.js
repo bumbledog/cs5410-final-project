@@ -179,6 +179,10 @@ var game = (function(){
     //close to Link are updated. This would improve efficiency
     for(i = 0; i < enemies.length; i++){
       enemies[i].update(elapsedTime);
+      if(enemies[i].isDead === true){
+        physics.removeFromWorld(enemies[i].body);
+        enemies.splice(i--, 1);
+      }
     }
 
     objects.buildQuadTree(8, enemies, maze.width*maze.cellWidth);

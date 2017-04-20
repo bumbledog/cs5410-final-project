@@ -124,7 +124,7 @@ var objects = (function(){
         physics.setID(enemies[i].returnCharacterBody(), i);
         enemies[i].addBodyToWorld();
       }
-      
+
 
       //if we want to have a minimum # of enemies per room, this may need to be changed
       return enemies;
@@ -157,14 +157,16 @@ var objects = (function(){
           get center(){return spec.center},
           get width(){return spec.width},
           get radius(){return spec.radius},
-          get radiusSq(){return spec.radiusSq}
+          get radiusSq(){return spec.radiusSq},
+          get isDead(){return spec.isDead},
+          get body(){return spec.body}
       };
 
       //adds the body to the physics world
       that.addBodyToWorld = function(){
         physics.setFrictionAir(0.075, spec.body);  //how much friction in the air when it moves
         physics.setRestitution(2, spec.body);      //how bouncy/elastic
-        
+
         if(spec.tag === 'Character'){
             physics.addCollisionFilter(spec.body, characterCategory);
         }
@@ -259,7 +261,7 @@ var objects = (function(){
 
       //character/enemy update function
       that.update = function(elapsedTime){
-        
+
         // //determine if dead or not
         // if(spec.tag === 'Enemy' && spec.health <= 0){
         //     physics.removeFromWorld(spec.body);
@@ -291,8 +293,6 @@ var objects = (function(){
         if(spec.tag === 'Enemy'){
             if(spec.health < 1){
                 spec.isDead = true;
-                physics.removeFromWorld(spec.body);
-                enemies.splice(spec.body.id, 1);
             }
             else{
                 spec.center.x = spec.body.position.x;
@@ -308,7 +308,7 @@ var objects = (function(){
             // checkHealth(that);
             //}
 
-        
+
       };
 
       that.checkIfHit = function(){
