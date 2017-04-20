@@ -13,6 +13,9 @@ var game = (function(){
     var characterCategory = 0x0002;
     var enemyCategory = 0x0003;
 
+    var healthBar;
+    var keys = [];
+
   that.initialize = function(){
 
     renderGraphics = true;
@@ -40,6 +43,17 @@ var game = (function(){
 
     objects.initialize(maze.width, maze.height);
 
+    //key slot for the character
+    for(let amount = 0; amount < 3; amount++){
+      keys.push(Stats.StatItem({
+        tag: 'key',
+        image: 'assets/missing-key.png',
+        position: {x: 400 + 75 * amount, y:10},
+        width: 100,
+        height: 100
+      }));
+    }
+
     let imgChar = new Image();
     imgChar.src = "assets/linkToThePast.png";
     character = objects.Character({
@@ -51,7 +65,9 @@ var game = (function(){
         isDead: false,
         isHit:false,
         center: {x:1000/2, y:1000/2},
-        health: 10,
+        health: 5,
+        keys: 0,
+        keyInventory: keys, //relates to the key images
         body: physics.createCircleBody((1000/2) + 60, (1000/2) + 70, 40),
         sensor: physics.createSensorBody((1000/2) + 60, (1000/2) + 70, 75, 75),
         direction: 'down',
@@ -85,8 +101,16 @@ var game = (function(){
 
 
     //stats initialize
-    graphics.initializeStats({
-      healthBar: character.returnHealth(),
+    Stats.initialize();
+
+    //creates and initializes a healthbar for the character
+    healthBar = Stats.StatItem({
+        tag: 'healthBar',
+        health: character.returnHealth(),
+        image: 'assets/healthBar5-5.png',
+        position: {x: 10, y: 10},
+        width: 400,
+        height: 100
     });
 
 
@@ -201,7 +225,7 @@ var game = (function(){
     }
 
     //console.log(character.returnDirection());
-
+     healthBar.update(character);
   };
 
 
@@ -237,6 +261,13 @@ var game = (function(){
 
     graphics.renderEnemies(elapsedTime, enemies,character);
     character.render(elapsedTime);
+
+    healthBar.render();
+
+    for(let key = 0; key < keys.length; key++){
+      keys[key].render();
+    }
+
   };
 
   return that;

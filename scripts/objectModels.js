@@ -230,6 +230,20 @@ var objects = (function(){
         return spec.health;
       };
 
+      //returns the amount of keys on the character
+      that.returnKeyTotal = function(){
+        return spec.keys;
+      };
+
+      //programmically updates the key stat image on the overly 
+      //whenever the character gets a new key
+      function updateKeys(){
+        for(let key = 0; key < spec.keys; key++){
+            spec.keyInventory[key].setImage('assets/key.png');
+        }
+      }
+
+//MOVEMENT:
       that.moveRight = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: 0.002 * spec.body.mass, y:0});
           game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
