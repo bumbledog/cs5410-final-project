@@ -20,7 +20,7 @@ var game = (function(){
     // physics.setFrictionAir(0.075, characterBody);  //how much friction in the air when it moves
     // physics.setRestitution(2,characterBody);      //how bouncy/elastic
     //end
-
+    audio.initialize();
 
     canceled = false;
     time = performance.now();
@@ -135,12 +135,15 @@ var game = (function(){
   function update(elapsedTime){
 
     character.update(elapsedTime);
+    if(character.isHit){
+      audio.playSound('assets/grunt.wav')
+    }
     graphics.setOffset(character.center.x, character.center.y);
 
     // function could be changed so that only enemies
     //close to Link are updated. This would improve efficiency
     for(i = 0; i < enemies.length; i++){
-      enemies[i].update(elapsedTime);
+      enemies[i].update(elapsedTime, character.center);
     }
 
     objects.buildQuadTree(8, enemies, maze.width*maze.cellWidth);

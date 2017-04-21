@@ -168,6 +168,28 @@ var objects = (function(){
         spec.center.y = myBody.position.y;
       };
 
+      that.updatePosition = function(character){
+          var charDistanceX = character.x - spec.center.x;
+          var charDistanceY = character.y - spec.center.y;
+
+          if(charDistanceX > 0){
+            Matter.Body.applyForce(spec.body, spec.body.position, {x: 0.001 * spec.body.mass, y:0});
+          }
+
+          else{ 
+              Matter.Body.applyForce(spec.body, spec.body.position, {x: -0.001 * spec.body.mass, y:0});
+          }
+
+          if(charDistanceY > 0){
+              Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:0.001 * spec.body.mass});
+          }
+
+          else{
+              Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:-0.001 * spec.body.mass});
+          }
+
+      };
+
 
       that.moveRight = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: 0.002 * spec.body.mass, y:0});
@@ -189,7 +211,7 @@ var objects = (function(){
           game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
       };
 
-      that.update = function(elapsedTime){
+      that.update = function(elapsedTime, characterPos){
 
         //need to add this so that the character doesnt skip to the body position
         if(spec.tag === 'Character' || spec.tag === 'Enemy'){
@@ -200,6 +222,7 @@ var objects = (function(){
         //sprite
         if(spec.tag === 'Enemy'){
           spec.sprite.update(elapsedTime);
+          that.updatePosition(characterPos);
         }
 
           //need to write checkIfHit functions
@@ -246,7 +269,8 @@ var objects = (function(){
             that.isHit = 0;
         }
 
-        if(that.health === 0){
+        if(that.health <= 0){
+
             that.isDead = true;
         }
       }
@@ -325,3 +349,4 @@ math.Circle = function(spec) {
 
 	return that;
 };
+
