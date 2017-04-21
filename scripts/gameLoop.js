@@ -8,6 +8,14 @@ var game = (function(){
   let character, enemies, particles;
   that.dustParticles;
 
+    //categories:
+    var defaultCategory = 0x0001;
+    var characterCategory = 0x0002;
+    var enemyCategory = 0x0003;
+
+    var healthBar;
+    var keys = [];
+
   that.initialize = function(){
 
     renderGraphics = true;
@@ -26,14 +34,25 @@ var game = (function(){
     time = performance.now();
 
     maze = that.Maze({
-      height: 16,
-      width: 16,
+      height: 5,
+      width: 8,
       biomes: 4,
       cellHeight: 500,
       cellWidth: 500
     });
 
     objects.initialize(maze.width, maze.height);
+
+    //key slot for the character
+    for(let amount = 0; amount < 3; amount++){
+      keys.push(Stats.StatItem({
+        tag: 'key',
+        image: 'assets/missing-key.png',
+        position: {x: 400 + 75 * amount, y:10},
+        width: 100,
+        height: 100
+      }));
+    }
 
     let imgChar = new Image();
     imgChar.src = "assets/linkToThePast.png";
@@ -46,16 +65,23 @@ var game = (function(){
         isDead: false,
         isHit:false,
         center: {x:1000/2, y:1000/2},
-        health: 10,
+        health: 2,
+        keys: 1,
+        keyInventory: keys, //relates to the key images
         body: physics.createCircleBody((1000/2) + 60, (1000/2) + 70, 40),
+        sensor: physics.createSensorBody((1000/2) + 60, (1000/2) + 70, 75, 75),
+        direction: 'down',
+        attacking: false,
+        coolDown: 0,
         tag: 'Character'
     });
 
     //physics character body:
+    physics.addCollisionFilter(character.returnSensor(), enemyCategory);
     character.addBodyToWorld();
     //end
 
-    enemies = objects.initializeEnemies();
+    enemies = objects.initializeEnemies(100 ,maze.width, maze.height, maze.cellWidth);
 
     objects.buildQuadTree(8, enemies, maze.length*maze.cellWidth);
 
@@ -67,6 +93,26 @@ var game = (function(){
     that.dustParticles = ParticleSystem({
       image: "assets/dust.png"
     });
+
+    //gives more information on what collides with the player
+    physics.eventSensorStart(character, enemies);
+    physics.eventSensorActive(character, enemies);
+    physics.eventSensorEnd(character, enemies);
+
+
+    //stats initialize
+    Stats.initialize();
+
+    //creates and initializes a healthbar for the character
+    healthBar = Stats.StatItem({
+        tag: 'healthBar',
+        health: character.returnHealth(),
+        image: 'assets/healthBar5-5.png',
+        position: {x: 10, y: 10},
+        width: 400,
+        height: 100
+    });
+
 
     gameLoop();
   };
@@ -98,6 +144,9 @@ var game = (function(){
     //allows us to turn on and off the rendering of the maze
     keyboard.registerCommand(KeyEvent.DOM_VK_G, turnOffGraphics);
     keyboard.registerCommand(KeyEvent.DOM_VK_H, turnOnGraphics);
+
+    //key for attacking
+    keyboard.registerCommand(KeyEvent.DOM_VK_SPACE, coolDownCheck);
   }
 
   function turnOffGraphics(){
@@ -112,10 +161,23 @@ var game = (function(){
     }
   }
 
+  //checking cooldown of attack
+  function coolDownCheck(){
+    if(character.returnCoolDown() < time){
+      character.attack(true);
+      character.setCoolDown(time + 500);
+    }
+    else{
+      character.attack(false);
+    }
+  }
+
+
   function gameLoop(){
     let newTime = performance.now();
     let elapsedTime = newTime - time;
-
+    //console.log(character.returnAttackState());
+    //console.log(time);
     handleInput(elapsedTime);
 
     update(elapsedTime);
@@ -144,6 +206,10 @@ var game = (function(){
     //close to Link are updated. This would improve efficiency
     for(i = 0; i < enemies.length; i++){
       enemies[i].update(elapsedTime, character.center);
+      if(enemies[i].isDead === true){
+        physics.removeFromWorld(enemies[i].body);
+        enemies.splice(i--, 1);
+      }
     }
 
     objects.buildQuadTree(8, enemies, maze.width*maze.cellWidth);
@@ -160,6 +226,9 @@ var game = (function(){
         particles.splice(i--, 0);
       }
     }
+
+    //console.log(character.returnDirection());
+     healthBar.update(character);
   };
 
 
@@ -195,6 +264,13 @@ var game = (function(){
 
     graphics.renderEnemies(elapsedTime, enemies,character);
     character.render(elapsedTime);
+
+    healthBar.render();
+
+    for(let key = 0; key < keys.length; key++){
+      keys[key].render();
+    }
+
   };
 
   return that;

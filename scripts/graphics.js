@@ -2,6 +2,8 @@ var graphics = (function(){
   let that = {};
   let context = null;
   let canvas = null;
+  let statCanvas = null;
+  let statContext = null;
   let width = 0;
   let height = 0;
   let offset = {x:0, y:0};
@@ -18,6 +20,11 @@ var graphics = (function(){
 
     tileCanvas = document.getElementById('tiles');
     tileContext = tileCanvas.getContext('2d');
+
+    //stats overlay:
+    statCanvas = document.getElementById('stats');
+    statContext = statCanvas.getContext('2d');
+    //end
 
     tiles = {
       size: 500,
@@ -55,6 +62,78 @@ var graphics = (function(){
     return canvas;
   };
 
+  //rendering the overlay stats page
+
+  //rendering text
+  that.Text = function(spec){
+    let textThat = {};
+
+    //measures the height of the text
+    function measureTextHeight(spec) {
+			statContext.save();
+
+			statContext.font = spec.font;
+			statContext.fillStyle = spec.fill;
+			statContext.strokeStyle = spec.stroke;
+
+			var height = statContext.measureText('m').width;
+
+			statContext.restore();
+
+			return height;
+		}
+
+    //measures the width of the text
+    function measureTextWidth(spec) {
+			statContext.save();
+
+			statContext.font = spec.font;
+			statContext.fillStyle = spec.fill;
+			statContext.strokeStyle = spec.stroke;
+
+			var width = statContext.measureText(spec.text).width;
+
+			statContext.restore();
+
+			return width;
+		}
+
+    //main draw function
+    textThat.draw = function() {
+			statContext.save();
+
+			statContext.font = spec.font;
+			statContext.fillStyle = spec.fill;
+			statContext.strokeStyle = spec.stroke;
+			statContext.textBaseline = 'top';
+
+			statContext.translate(spec.position.x + textThat.width / 2, spec.position.y + textThat.height / 2);
+			statContext.translate(-(spec.position.x + textThat.width / 2), -(spec.position.y + textThat.height / 2));
+
+			statContext.fillText(spec.text, spec.positionition.x, spec.position.y);
+			statContext.strokeText(spec.text, spec.position.x, spec.position.y);
+
+			statContext.restore();
+		};
+
+		//
+		// Compute and expose some public properties for this text.
+		textThat.height = measureTextHeight(spec);
+		textThat.width = measureTextWidth(spec);
+		textThat.position = spec.position;
+
+
+    return textThat;
+  };
+
+
+  that.initializeStats = function(spec){
+
+  };
+
+
+  //end
+
   //allows us to move the canvas to where the character is
   that.drawCamera = function(character){
     context.setTransform(1,0,0,1,0,0);
@@ -73,9 +152,9 @@ var graphics = (function(){
         viewport = that.defineCamera(character.center.x, character.center.y);
         tileRenderXStart = Math.max(Math.floor(viewport.pt1.x/tiles.size), 0);
 
-        tileRenderXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), tiles.columns - 1);
+        tileRenderXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), maze.width - 1);
         tileRenderYStart =  Math.max(Math.floor(viewport.pt1.y/tiles.size), 0);
-        tileRenderYEnd = Math.min(Math.floor(viewport.pt2.y/tiles.size), tiles.columns - 1);
+        tileRenderYEnd = Math.min(Math.floor(viewport.pt2.y/tiles.size), maze.height - 1);
 
         for(let xPos = tileRenderXStart; xPos <= tileRenderXEnd; xPos++){
           for(let yPos = tileRenderYStart; yPos <= tileRenderYEnd; yPos++){
@@ -116,9 +195,9 @@ var graphics = (function(){
     //this will still draw out of bounds but to a reasonable extent
     viewport = that.defineCamera(character.center.x, character.center.y);
     cellXStart = Math.max(Math.floor(viewport.pt1.x/tiles.size), 0);
-    cellXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), tiles.columns - 1);
+    cellXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), maze.width - 1);
     cellYStart =  Math.max(Math.floor(viewport.pt1.y/tiles.size), 0);
-    cellYEnd = Math.min(Math.floor(viewport.pt2.y/tiles.size), tiles.columns - 1);
+    cellYEnd = Math.min(Math.floor(viewport.pt2.y/tiles.size), maze.height - 1);
 
     //draw north and west of each cell
   	for (let row = cellXStart; row <= cellXEnd; row++) {
@@ -128,11 +207,11 @@ var graphics = (function(){
   	}
 
     //draw the south and east edges
-  	context.moveTo(0, maze.length * maze.cellHeight);
-  	context.lineTo(maze[0].length * maze.cellWidth, maze.length * maze.cellHeight);
+  	context.moveTo(0, maze.height * maze.cellHeight);
+  	context.lineTo(maze.width * maze.cellWidth, maze.height * maze.cellHeight);
 
-    context.moveTo(maze[0].length * maze.cellWidth, 0);
-  	context.lineTo(maze[0].length * maze.cellWidth, maze.length * maze.cellHeight);
+    context.moveTo(maze.width * maze.cellWidth, 0);
+  	context.lineTo(maze.width * maze.cellWidth, maze.height * maze.cellHeight);
 
     context.stroke();
     context.restore();
@@ -190,7 +269,8 @@ var graphics = (function(){
 
     return camera;
 
-}
+  }
+
   that.renderEnemies = function(elapsedTime, enemies, character){
 
    visible = objects.quadTree.visibleObjects(that.defineCamera(character.center.x, character.center.y));
@@ -198,6 +278,7 @@ var graphics = (function(){
      visible[enemy].render(elapsedTime);
    }
   }
+
   //draw the character
   that.drawCharacter = function(spec){
 

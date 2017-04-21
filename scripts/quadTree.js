@@ -24,7 +24,7 @@ var QuadTree = function(numObjects, rootSize){
                 get left() {return bounds.left;},
                 get top(){return bounds.top;},
                 get center() {return center;},
-                
+
             };
 
     node.add = function(objectToAdd){                                              //adds node
@@ -62,10 +62,12 @@ var QuadTree = function(numObjects, rootSize){
                 });
                 children = [child1, child2, child3, child4];                                //if node was split, add new nodes to list of children
 
-                for(member = 0; member< node.members.length; member++){                     //insert objects that already existed into the new node
-                    insert(node, members[member]);
-                } 
-                insert(node,objectToAdd);                                                   //insert the new object to add into the new node.
+                for(let i = 0; i < children.length; i++){
+                  for(member = 0; member < members.length; member++){                     //insert objects that already existed into the new node
+                      insert(children[i], members[member]);
+                  }
+                  insert(children[i],objectToAdd);
+                }                                                   //insert the new object to add into the new node.
             }
             else{
                 members.push(objectToAdd);
@@ -156,14 +158,14 @@ function insert(node, objectToAdd){
                }
            }
         }
-           
+
     }
 
 //Checks to see if object is within the camera view.
     that.visibleObjects = function(camera){
         var visible = [],
             viewArea = {
-                    pt1: camera.pt1, 
+                    pt1: camera.pt1,
                     pt2: camera.pt2,
                     pt3: camera.pt3,
                     pt4: camera.pt4,
@@ -178,7 +180,7 @@ function insert(node, objectToAdd){
 
         return visible;
     };
-    
+
     function depthSearch(node){
         var depth0 = 0,
             depth1 = 0,
@@ -273,4 +275,3 @@ function insert(node, objectToAdd){
 
 //'camera' as seen above must contain:
 //       BoundingCircle (circle around visible space to test intersection with)
-  

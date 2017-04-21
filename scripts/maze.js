@@ -131,11 +131,11 @@ game.Maze = function(spec){
     }
   }
 
-  let southWall = physics.createRectangleBody(0, grid.length * grid.cellHeight, grid[0].length * grid.cellWidth * 2, 50);
+  let southWall = physics.createRectangleBody(0, grid.height * grid.cellHeight, grid.width * grid.cellWidth * 2, 50);
   physics.setStaticBody(southWall, true);
   physics.addToWorld(southWall);
 
-  let northWall = physics.createRectangleBody(grid.length * grid.cellWidth, 0, 50, grid[0].length * grid.cellHeight * 2);
+  let northWall = physics.createRectangleBody(grid.width * grid.cellWidth, 0, 50, grid.height * grid.cellHeight * 2);
   physics.setStaticBody(northWall, true);
   physics.addToWorld(northWall);
 
