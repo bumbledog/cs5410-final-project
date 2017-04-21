@@ -17,8 +17,9 @@ var game = (function(){
     var keys = [];
 
   that.initialize = function(){
-
     renderGraphics = true;
+    canceled = false;
+    time = performance.now();
 
     //physics initialize
     physics.initialize();
@@ -29,19 +30,56 @@ var game = (function(){
     // physics.setRestitution(2,characterBody);      //how bouncy/elastic
     //end
 
+    let imgChar = new Image();
+    imgChar.src = "assets/linkToThePast.png";
 
-    canceled = false;
-    time = performance.now();
+    let previousGame = memory.loadGame();
 
-    maze = that.Maze({
-      height: 5,
-      width: 8,
-      biomes: 4,
-      cellHeight: 500,
-      cellWidth: 500
+    character = objects.Character({
+        image: imgChar,
+        view:{width:1000, height:1000},
+        moveRate: 450/1000, //pixels per millisecond
+        radius: 1000*(1/100),
+        radiusSq: (1000*(1/100)*(1000*(1/100))),
+        isDead: false,
+        isHit:false,
+        body: physics.createCircleBody((1000/2) + 60, (1000/2) + 70, 40),
+        sensor: physics.createSensorBody((1000/2) + 60, (1000/2) + 70, 75, 75),
+        direction: 'down',
+        attacking: false,
+        coolDown: 0,
+        tag: 'Character'
     });
 
-    objects.initialize(maze.width, maze.height);
+    if (previousGame === undefined || previousGame === {}){
+
+      maze = that.Maze({
+        height: 5,
+        width: 8,
+        biomes: 4,
+        cellHeight: 500,
+        cellWidth: 500
+      });
+
+      character.center = {x:1000/2, y:1000/2};
+      character.health = 5;
+      character.keys = 0;
+      character.keyInventory = keys; //relates to the key images
+
+      enemies = objects.initializeEnemies(100, maze.width, maze.height, maze.cellWidth);
+    }
+    //load game
+    else{
+      maze = previousGame.maze;
+
+      character.center = previousGame.character.center;
+      character.health = previousGame.character.health;
+      character.keys = previousGame.character.keys;
+      character.keyInventory = previousGame.character.keyInventory; //relates to the key images
+
+      enemies = previousGame.enemies();
+    }
+
 
     //key slot for the character
     for(let amount = 0; amount < 3; amount++){
@@ -54,36 +92,10 @@ var game = (function(){
       }));
     }
 
-    let imgChar = new Image();
-    imgChar.src = "assets/linkToThePast.png";
-    character = objects.Character({
-        image: imgChar,
-        view:{width:1000, height:1000},
-        moveRate: 450/1000, //pixels per millisecond
-        radius: 1000*(1/100),
-        radiusSq: (1000*(1/100)*(1000*(1/100))),
-        isDead: false,
-        isHit:false,
-        center: {x:1000/2, y:1000/2},
-        health: 5,
-        keys: 0,
-        keyInventory: keys, //relates to the key images
-        body: physics.createCircleBody((1000/2) + 60, (1000/2) + 70, 40),
-        sensor: physics.createSensorBody((1000/2) + 60, (1000/2) + 70, 75, 75),
-        direction: 'down',
-        attacking: false,
-        coolDown: 0,
-        tag: 'Character'
-    });
-
     //physics character body:
     physics.addCollisionFilter(character.returnSensor(), enemyCategory);
     character.addBodyToWorld();
     //end
-
-    enemies = objects.initializeEnemies(100 ,maze.width, maze.height, maze.cellWidth);
-
-    objects.buildQuadTree(8, enemies, maze.length*maze.cellWidth);
 
     keyboard = input.Keyboard();
     setupControlScheme();
@@ -113,6 +125,9 @@ var game = (function(){
         height: 100
     });
 
+    objects.initialize(maze.width, maze.height);
+
+    objects.buildQuadTree(8, enemies, maze.length*maze.cellWidth);
 
     gameLoop();
   };

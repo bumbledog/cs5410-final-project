@@ -44,8 +44,19 @@ var memory = (function(){
   };
 
   that.saveGame = function(spec){
+    gameState.maze = spec.maze;
+
+    gameState.character = {
+      center: spec.character.center,
+      health: spec.character.health,
+      keys: spec.character.keys,
+      keyInventory: spec.character.keyInventory
+    }
+
+    gameState.enemies = previousGame.enemies();
+
     gameState = spec;
-    localStorage['gameState'] = JSON.stringify(spec);
+    localStorage['gameState'] = JSON.stringify(gameState);
   };
 
   that.resetGame = function(){
