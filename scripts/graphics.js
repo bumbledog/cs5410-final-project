@@ -152,9 +152,9 @@ var graphics = (function(){
         viewport = that.defineCamera(character.center.x, character.center.y);
         tileRenderXStart = Math.max(Math.floor(viewport.pt1.x/tiles.size), 0);
 
-        tileRenderXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), tiles.columns - 1);
+        tileRenderXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), maze.width - 1);
         tileRenderYStart =  Math.max(Math.floor(viewport.pt1.y/tiles.size), 0);
-        tileRenderYEnd = Math.min(Math.floor(viewport.pt2.y/tiles.size), tiles.columns - 1);
+        tileRenderYEnd = Math.min(Math.floor(viewport.pt2.y/tiles.size), maze.height - 1);
 
         for(let xPos = tileRenderXStart; xPos <= tileRenderXEnd; xPos++){
           for(let yPos = tileRenderYStart; yPos <= tileRenderYEnd; yPos++){
@@ -207,11 +207,11 @@ var graphics = (function(){
   	}
 
     //draw the south and east edges
-  	context.moveTo(0, maze.length * maze.cellHeight);
-  	context.lineTo(maze[0].length * maze.cellWidth, maze.length * maze.cellHeight);
+  	context.moveTo(0, maze.height * maze.cellHeight);
+  	context.lineTo(maze.width * maze.cellWidth, maze.height * maze.cellHeight);
 
-    context.moveTo(maze[0].length * maze.cellWidth, 0);
-  	context.lineTo(maze[0].length * maze.cellWidth, maze.length * maze.cellHeight);
+    context.moveTo(maze.width * maze.cellWidth, 0);
+  	context.lineTo(maze.width * maze.cellWidth, maze.height * maze.cellHeight);
 
     context.stroke();
     context.restore();

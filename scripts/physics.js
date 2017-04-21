@@ -30,22 +30,22 @@ var physics = (function(){
 
         //creating the main engine to run all of our physics
 //CHANGE BACK
-        engine = Engine.create({
-            render: {
-                element : document.body,
-                canvas: graphics.returnCanvas(),   //where to render to
-                options: {
-                    width: 1000,
-                    height: 1000,
-                    wireframes: false,
-                }
-            }
-        });
+//         engine = Engine.create({
+//             render: {
+//                 element : document.body,
+//                 canvas: graphics.returnCanvas(),   //where to render to
+//                 options: {
+//                     width: 1000,
+//                     height: 1000,
+//                     wireframes: false,
+//                 }
+//             }
+//         });
 
         // use this if you dont want to render
-//---->>>>// engine = Engine.create({
-        //     render: false
-        // });
+ engine = Engine.create({
+             render: false
+         });
 
 
         //sets the gravity to 0
@@ -58,7 +58,7 @@ var physics = (function(){
 
         // run the renderer
         //comment out for original game
-        Render.run(engine.render); //<----------CHANGE BACK
+        //Render.run(engine.render); //<----------CHANGE BACK
 
     };
 
