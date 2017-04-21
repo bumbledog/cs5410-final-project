@@ -18,7 +18,9 @@ var AnimatedSprite = function(spec){
   };
 
   that.update = function(elapsedTime){
-    spec.elapsedTime += elapsedTime;
+    if(elapsedTime < 2000){
+      spec.elapsedTime += elapsedTime;
+    }
 
     if(spec.elapsedTime >= spec.spriteTime[spec.sprite]){
       spec.elapsedTime -= spec.spriteTime[spec.sprite];
