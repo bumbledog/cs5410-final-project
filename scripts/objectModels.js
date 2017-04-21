@@ -39,7 +39,7 @@ var objects = (function(){
 
 
   function randomLocation(width,height, size){
-    let randLoc = {x:Math.random()*size*(width - 1), y:Math.random()*size*(height - 1)};
+    let randLoc = {x:Math.random()*size*width, y:Math.random()*size*height};
 
       return randLoc;
   }
@@ -235,7 +235,7 @@ var objects = (function(){
         return spec.keys;
       };
 
-      //programmically updates the key stat image on the overly 
+      //programmically updates the key stat image on the overly
       //whenever the character gets a new key
       function updateKeys(){
         for(let key = 0; key < spec.keys; key++){

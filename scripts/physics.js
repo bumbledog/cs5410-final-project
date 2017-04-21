@@ -43,9 +43,9 @@ var physics = (function(){
         });
 
         // use this if you dont want to render
-//---->>>>// engine = Engine.create({
-        //     render: false
-        // });
+ engine = Engine.create({
+             render: false
+         });
 
 
         //sets the gravity to 0
@@ -58,7 +58,7 @@ var physics = (function(){
 
         // run the renderer
         //comment out for original game
-        Render.run(engine.render); //<----------CHANGE BACK
+        //Render.run(engine.render); //<----------CHANGE BACK
 
     };
 
