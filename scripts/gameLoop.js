@@ -65,8 +65,8 @@ var game = (function(){
         isDead: false,
         isHit:false,
         center: {x:1000/2, y:1000/2},
-        health: 5,
-        keys: 0,
+        health: 2,
+        keys: 1,
         keyInventory: keys, //relates to the key images
         body: physics.createCircleBody((1000/2) + 60, (1000/2) + 70, 40),
         sensor: physics.createSensorBody((1000/2) + 60, (1000/2) + 70, 75, 75),
