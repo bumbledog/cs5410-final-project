@@ -79,7 +79,7 @@ var QuadTree = function(numObjects, rootSize){
 
 function insert(node, objectToAdd){
     var child = 0;
-    if(that.objectInSquare(objectToAdd, node)){
+    if(math.objectInSquare(objectToAdd, node)){
         if(node.hasChildren){
             for(child = 0; child < node.children.length; child++){
                 insert(node.children[child], objectToAdd);
@@ -102,7 +102,7 @@ function insert(node, objectToAdd){
         member = 0;
         hit = null;
 
-        if(that.objectInSquare(objectToAdd, node)){
+        if(math.objectInSquare(objectToAdd, node)){
             if(node.hasChildren){
                 for (child = 0; child < node.children.length; child++ ){
                     hit = intersects(node.children[child], objectToAdd);
@@ -137,7 +137,7 @@ function insert(node, objectToAdd){
             member = 0,
             objectToAdd = null;
 
-        if(that.objectInSquare(camera.boundingCircle, node))
+        if(math.objectInSquare(camera.boundingCircle, node))
            if(node.hasChildren){
                 for(child = 0; child < node.children.length; child++){
                     findVisible(node.children[child], camera, viewArea, visible);
@@ -150,7 +150,7 @@ function insert(node, objectToAdd){
                        testedSet[objectToAdd.id] = true;
                        tested += 1;
                        if(objectToAdd.intersects(camera.boundingCircle)){
-                           if(that.objectInSquare(objectToAdd, viewArea)){
+                           if(math.objectInSquare(objectToAdd, viewArea)){
                                visible.push(objectToAdd);
                        }
 
@@ -200,59 +200,6 @@ function insert(node, objectToAdd){
     }
 
 //checks to see if an object is within a given square. Returns true if any part of the object is in the square.
-
-    that.objectInSquare = function(objectToAdd, square){
-        var squareDiv2 = square.size/2,
-            objectDistanceX,
-            objectDistanceY,
-            distanceX,
-            distanceY,
-            cornerDistanceSq;
-
-        objectDistanceX = Math.abs(objectToAdd.center.x - square.center.x);
-        if(objectDistanceX > (squareDiv2 + objectToAdd.radius)) {return false;}
-        objectDistanceY = Math.abs(objectToAdd.center.y - square.center.y);
-        if(objectDistanceY > (squareDiv2 + objectToAdd.radius)) {return false};
-
-        if(objectDistanceX <= squareDiv2) { return true;}
-        if(objectDistanceY <= squareDiv2) { return true;}
-
-        distanceX = (objectDistanceX - squareDiv2);
-        distanceY = (objectDistanceY - squareDiv2);
-        distanceX *= distanceX;
-        distanceY *= distanceY;
-
-        cornerDistanceSq = distanceX + distanceY;
-        return ( cornerDistanceSq <= objectToAdd.radiusSq);
-    }
-
-//Creates a circle around a given square
-    that.circleFromSquare = function(pointA, pointB, pointC){
-        var circleSpec = {
-            center: {},
-            radius: 0
-        },
-
-        midPointAB = {
-            x: (pointA.x + pointB.x)/2,
-            y: (pointA.y + pointB.y)/2
-        },
-
-        midPointAC = {
-            x:(pointA.x + pointC.x)/2,
-            y:(pointA.y + pointC.y)/2
-        },
-            slopeAB = (pointB.y - pointA.y)/(pointB.x - pointA.x),
-            slopeAC = (pointC.y - pointA.y)/(pointC.x - pointA.x);
-        slopeAB = -(1/slopeAB);
-        slopeAC = -(1/slopeAC);
-
-        circleSpec.center.x = midPointAC.x;
-        circleSpec.center.y = midPointAB.y;
-        circleSpec.radius = Math.sqrt(Math.pow(circleSpec.center.x - pointA.x, 2) + Math.pow(circleSpec.center.y - pointA.y, 2));
-
-        return math.Circle(circleSpec);
-    }
 
 //defines the root node
     root = Node({

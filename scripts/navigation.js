@@ -1,5 +1,6 @@
 var navigation = {
   screens: {}
+  
 };
 
 navigation.showScreen = function(id){
@@ -12,11 +13,19 @@ navigation.showScreen = function(id){
   }
 
   document.getElementById(id).classList.add('active');
+  if(id === 'game'){
+    audio.sounds['assets/main-menu-music'].pause();
+    audio.playSound('assets/song-1');
+  }
+  if(id === 'menu'){
+    audio.sounds['assets/song-1'].pause();
+    audio.playSound('assets/main-menu-music');
+  }
 };
 
 navigation.initialize = function(){
   var screen = null;
-
+  audio.initialize();
   for (screen in this.screens) {
     this.screens[screen].initialize();
   }
@@ -28,6 +37,7 @@ navigation.screens['game'] = function(){
   let that = {};
   that.initialize = function(){
     graphics.initialize();
+    //audio.playSound('assets/main-menu-music');
   };
   return that;
 }();

@@ -149,7 +149,7 @@ var graphics = (function(){
 
         /*TODO: object to define
         TILESIZE, leading string, tileColumns*/
-        viewport = that.defineCamera(character.center.x, character.center.y);
+        let viewport = that.defineCamera(character.center.x, character.center.y);
         tileRenderXStart = Math.max(Math.floor(viewport.pt1.x/tiles.size), 0);
 
         tileRenderXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), maze.width - 1);
@@ -193,7 +193,7 @@ var graphics = (function(){
 
     //draw only cells in the viewport
     //this will still draw out of bounds but to a reasonable extent
-    viewport = that.defineCamera(character.center.x, character.center.y);
+    let viewport = that.defineCamera(character.center.x, character.center.y);
     cellXStart = Math.max(Math.floor(viewport.pt1.x/tiles.size), 0);
     cellXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), maze.width - 1);
     cellYStart =  Math.max(Math.floor(viewport.pt1.y/tiles.size), 0);
@@ -263,9 +263,9 @@ var graphics = (function(){
       ptC = {x: x + canvas.width/2, y:  y - canvas.height/2},
       ptD = {x: x + canvas.width/2, y:  y + canvas.height/2}
 
-      boundingCircle = objects.quadTree.circleFromSquare(ptA, ptB, ptC);
+      boundingCircle = math.circleFromSquare(ptA, ptB, ptC);
 
-    camera = {pt1:ptA, pt2:ptB, pt3:ptC, pt4:ptD, boundingCircle:boundingCircle};
+    camera = {pt1:ptA, pt2:ptB, pt3:ptC, pt4:ptD, boundingCircle:boundingCircle, size:(ptC.x - ptA.x), center:{x:x, y:y}};
 
     return camera;
 

@@ -30,6 +30,8 @@ var game = (function(){
     // physics.setRestitution(2,characterBody);      //how bouncy/elastic
     //end
 
+    audio.initialize();
+
     let imgChar = new Image();
     imgChar.src = "assets/linkToThePast.png";
 
@@ -67,7 +69,7 @@ var game = (function(){
           keyInventory: keys //relates to the key images
       });
 
-      enemies = objects.initializeEnemies(100, maze.width, maze.height, maze.cellWidth);
+      enemies = objects.initializeEnemies(50, maze.width, maze.height, maze.cellWidth);
     }
     //load game
     else{
@@ -230,12 +232,15 @@ var game = (function(){
   function update(elapsedTime){
 
     character.update(elapsedTime);
+    if(character.isHit){
+      audio.playSound('assets/grunt.wav')
+    }
     graphics.setOffset(character.center.x, character.center.y);
 
     // function could be changed so that only enemies
     //close to Link are updated. This would improve efficiency
     for(i = 0; i < enemies.length; i++){
-      enemies[i].update(elapsedTime);
+      enemies[i].update(elapsedTime, character.center);
       if(enemies[i].isDead === true){
         physics.removeFromWorld(enemies[i].body);
         enemies.splice(i--, 1);
