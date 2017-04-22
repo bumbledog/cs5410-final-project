@@ -9,7 +9,7 @@ var objects = (function(){
   let imgBat, imgSlime;
   that.quadTree = {};
 
-  let enemies;
+  let enemies, visible;
 
     //categories for collision detection
     var defaultCategory = 0x0001;
@@ -157,6 +157,7 @@ var objects = (function(){
           get width(){return spec.width},
           get radius(){return spec.radius},
           get radiusSq(){return spec.radiusSq},
+          get isHit(){return spec.isHit},
           get isDead(){return spec.isDead},
           get body(){return spec.body}
       };
@@ -216,19 +217,19 @@ var objects = (function(){
           var charDistanceY = character.y - spec.center.y;
 
           if(charDistanceX > 0){
-            Matter.Body.applyForce(spec.body, spec.body.position, {x: 0.001 * spec.body.mass, y:0});
+            Matter.Body.applyForce(spec.body, spec.body.position, {x: 0.0005 * spec.body.mass, y:0});
           }
 
           else{ 
-              Matter.Body.applyForce(spec.body, spec.body.position, {x: -0.001 * spec.body.mass, y:0});
+              Matter.Body.applyForce(spec.body, spec.body.position, {x: -0.0005 * spec.body.mass, y:0});
           }
 
           if(charDistanceY > 0){
-              Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:0.001 * spec.body.mass});
+              Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:0.0005 * spec.body.mass});
           }
 
           else{
-              Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:-0.001 * spec.body.mass});
+              Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:-0.0005 * spec.body.mass});
           }
 
       };
@@ -312,6 +313,8 @@ var objects = (function(){
             spec.center.x = spec.body.position.x;
             spec.center.y = spec.body.position.y;
 
+            that.checkIfHit();
+
             //change sensor position
             if(spec.direction === 'down'){
                 physics.setPosition(spec.sensor, spec.center.x, spec.center.y + 85);
@@ -332,7 +335,16 @@ var objects = (function(){
         //sprite & enemy position
         if(spec.tag === 'Enemy'){
           spec.sprite.update(elapsedTime);
-          that.updatePosition(characterPos);
+          // if enemy in viewport{
+              let square = {
+                  center:{x:characterPos.x , y:characterPos.y},
+                  size: graphics.defineCamera(characterPos.x, characterPos.y).size - 300
+              }
+
+              if(math.objectInSquare(spec, square)) {
+                    that.updatePosition(characterPos);
+              }
+              
             if(spec.health < 1){
                 spec.isDead = true;
             }
@@ -354,6 +366,10 @@ var objects = (function(){
       };
 
       that.checkIfHit = function(){
+          if(that.isHit){
+              audio.playSound('assets/grunt');
+          }
+          that.isHit = false;
           return false;
           //WILL NEED TO BE CHANGED. JUST WRITTEN LIKE THIS FOR CHARACTER MOVEMENT TESTING
       };
@@ -386,7 +402,7 @@ var objects = (function(){
 
       function checkHealth(object){
         if(that.isHit !== 0){
-            that.health -= that.isHit;
+            that.health -= 1;
             that.isHit = 0;
         }
 
@@ -444,10 +460,9 @@ var math = (function(){
 		};
 	}
 
-return that;
-}());
 
-math.Circle = function(spec) {
+
+that.Circle = function(spec) {
 	'use strict';
 	var radiusSq = spec.radius * spec.radius,	// This gets used by various mathematical operations to avoid a sqrt
 		that = {
@@ -468,6 +483,64 @@ math.Circle = function(spec) {
 		return (distance < Math.pow(spec.radius + other.radius, 2));
 	};
 
-	return that;
+
+    return that;
 };
 
+
+
+that.objectInSquare = function(objectToAdd, square){
+        var squareDiv2 = square.size/2,
+            objectDistanceX,
+            objectDistanceY,
+            distanceX,
+            distanceY,
+            cornerDistanceSq;
+
+        objectDistanceX = Math.abs(objectToAdd.center.x - square.center.x);
+        if(objectDistanceX > (squareDiv2 + objectToAdd.radius)) {return false;}
+        objectDistanceY = Math.abs(objectToAdd.center.y - square.center.y);
+        if(objectDistanceY > (squareDiv2 + objectToAdd.radius)) {return false};
+
+        if(objectDistanceX <= squareDiv2) { return true;}
+        if(objectDistanceY <= squareDiv2) { return true;}
+
+        distanceX = (objectDistanceX - squareDiv2);
+        distanceY = (objectDistanceY - squareDiv2);
+        distanceX *= distanceX;
+        distanceY *= distanceY;
+
+        cornerDistanceSq = distanceX + distanceY;
+        return ( cornerDistanceSq <= objectToAdd.radiusSq);
+    }
+
+//Creates a circle around a given square
+    that.circleFromSquare = function(pointA, pointB, pointC){
+        var circleSpec = {
+            center: {},
+            radius: 0
+        },
+
+        midPointAB = {
+            x: (pointA.x + pointB.x)/2,
+            y: (pointA.y + pointB.y)/2
+        },
+
+        midPointAC = {
+            x:(pointA.x + pointC.x)/2,
+            y:(pointA.y + pointC.y)/2
+        },
+            slopeAB = (pointB.y - pointA.y)/(pointB.x - pointA.x),
+            slopeAC = (pointC.y - pointA.y)/(pointC.x - pointA.x);
+        slopeAB = -(1/slopeAB);
+        slopeAC = -(1/slopeAC);
+
+        circleSpec.center.x = midPointAC.x;
+        circleSpec.center.y = midPointAB.y;
+        circleSpec.radius = Math.sqrt(Math.pow(circleSpec.center.x - pointA.x, 2) + Math.pow(circleSpec.center.y - pointA.y, 2));
+
+        return math.Circle(circleSpec);
+    }
+
+return that;
+}());

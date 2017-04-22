@@ -81,7 +81,7 @@ var game = (function(){
     character.addBodyToWorld();
     //end
 
-    enemies = objects.initializeEnemies(100 ,maze.width, maze.height, maze.cellWidth);
+    enemies = objects.initializeEnemies(50 ,maze.width, maze.height, maze.cellWidth);
 
     objects.buildQuadTree(8, enemies, maze.length*maze.cellWidth);
 
