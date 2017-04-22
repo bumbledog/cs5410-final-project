@@ -7,7 +7,7 @@ var memory = (function(){
     highScores = JSON.parse(previousScores);
   }
 
-  let gameState;
+  let gameState = {};
   let previousGame = localStorage.getItem('gameState');
   if(previousGame !== null){
     gameState = JSON.parse(previousGame);
@@ -44,7 +44,6 @@ var memory = (function(){
   };
 
   that.saveGame = function(spec){
-    gameState = spec;
     localStorage['gameState'] = JSON.stringify(spec);
   };
 
