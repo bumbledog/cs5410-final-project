@@ -122,8 +122,6 @@ var game = (function(){
     character.addBodyToWorld();
     //end
 
-    objects.buildQuadTree(8, enemies, maze.length*maze.cellWidth);
-
     keyboard = input.Keyboard();
     setupControlScheme();
 
