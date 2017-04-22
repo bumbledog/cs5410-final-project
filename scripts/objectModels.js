@@ -6,7 +6,7 @@ var objects = (function(){
   let characterSizePercent, characterInventory, /*enemies,*/ pots, potSizePercent;                  //array of breakable pots
   let movingLeft, movingRight,
       movingDown, movingUp;
-  let imgBat, imgSlime;
+  let imgBat, imgSlime, batSpec, slimeSpec;
   that.quadTree = {};
 
   let enemies;
@@ -31,9 +31,29 @@ var objects = (function(){
 
     imgSlime = new Image();
     imgSlime.src = "assets/slime.png";
+    slimeStats = {
+      spriteSheet: imgSlime,
+      spriteCount: 4,
+      spriteTime: [100, 250, 220, 300, 175],
+      spriteSize: 50,
+      width: 100,
+      height: 100,
+      pixelWidth: 32,
+      pixelHeight: 32
+    }
 
     imgBat = new Image();
     imgBat.src = "assets/bat.png";
+    batStats = {
+      spriteSheet: imgBat,
+      spriteCount: 6,
+      spriteTime: [100, 80, 75, 125, 75, 60],
+      spriteSize: 50,
+      width: 150,
+      height: 100,
+      pixelWidth: 48,
+      pixelHeight: 32
+    }
   };
 
 
@@ -81,31 +101,14 @@ var objects = (function(){
         let chooseSprite = Math.floor(Math.random()*2);
         let enemySprite;
         if(chooseSprite === 1){
-          enemySprite = AnimatedSprite({
-            spriteSheet: imgSlime,
-            spriteCount: 4,
-            spriteTime: [100, 250, 220, 300, 175],
-            spriteSize: 50,
-            width: 100,
-            height: 100,
-            pixelWidth: 32,
-            pixelHeight: 32
-          });
+          enemySprite = AnimatedSprite(slimeStats);
         }else{
-          enemySprite = AnimatedSprite({
-            spriteSheet: imgBat,
-            spriteCount: 6,
-            spriteTime: [100, 80, 75, 125, 75, 60],
-            spriteSize: 50,
-            width: 150,
-            height: 100,
-            pixelWidth: 48,
-            pixelHeight: 32
-          });
+          enemySprite = AnimatedSprite(batStats);
         }
           let randLoc = randomLocation(width, height, size);
           enemies.push(that.Character({
               sprite: enemySprite,
+              enemyType: chooseSprite,
               view:{width:1000, height:1000},
               moveRate: 1/100000, //pixels per millisecond
               radius: 1500*(characterSizePercent.y/100),
@@ -127,6 +130,40 @@ var objects = (function(){
 
       //if we want to have a minimum # of enemies per room, this may need to be changed
       return enemies;
+  };
+
+  that.loadEnemies = function(spec){
+    let enemies = [];
+    for(let i = 0; i < spec.length; i++){
+      let enemySprite;
+      if(spec[i].chooseSprite === 1){
+        enemySprite = AnimatedSprite(slimeStats);
+      }else{
+        enemySprite = AnimatedSprite(batStats);
+      }
+      enemies.push(that.Character({
+          sprite: enemySprite,
+          enemyType: spec[i].chooseSprite,
+          view:{width:1000, height:1000},
+          moveRate: 1/100000, //pixels per millisecond
+          radius: 1500*(characterSizePercent.y/100),
+          radiusSq: (1000*(characterSizePercent.y/100))*(1000*(characterSizePercent.y/100)) ,
+          isDead: false,
+          isHit: false,
+          center: spec[i].center,
+          health: spec[i].health,
+          tag: 'Enemy',
+          body: physics.createRectangleBody(spec[i].center.x + 1, spec[i].center.y + 7, 60, 60)
+      }));
+    }
+
+    for(let i = 0; i < enemies.length; i++) {
+      physics.setID(enemies[i].returnCharacterBody(), i);
+      enemies[i].addBodyToWorld();
+    }
+
+    //if we want to have a minimum # of enemies per room, this may need to be changed
+    return enemies;
   };
 
   //---------------------------------
@@ -158,7 +195,8 @@ var objects = (function(){
           get radius(){return spec.radius},
           get radiusSq(){return spec.radiusSq},
           get isDead(){return spec.isDead},
-          get body(){return spec.body}
+          get body(){return spec.body},
+          get enemyType(){ return spec.enemyType }
       };
 
       //adds the body to the physics world

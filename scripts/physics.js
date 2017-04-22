@@ -347,6 +347,35 @@ var physics = (function(){
         return myBody.id;
     };
 
+    that.addMazeBodies = function (grid){
+        for(let col = 0; col < grid.length; col++){
+          for(let row = 0; row < grid[0].length; row++){
+            let cell = grid[col][row];
+            let cellLeft = cell.x * grid.cellWidth;
+            let cellTop = cell.y * grid.cellHeight;
+
+            if(cell.edges.n !== false){
+              cell.edges.n = physics.createRectangleBody((cellLeft + (grid.cellWidth)/2), cellTop, grid.cellWidth, 50);
+              physics.setStaticBody(cell.edges.n , true);
+              physics.addToWorld(cell.edges.n);
+            }
+
+            if(cell.edges.w !== false){
+              cell.edges.w = physics.createRectangleBody(cellLeft, (cellTop + (grid.cellHeight)/2), 50, grid.cellHeight);
+              physics.setStaticBody(cell.edges.w , true);
+              physics.addToWorld(cell.edges.w);
+            }
+          }
+        }
+        let southWall = physics.createRectangleBody(0, grid.height * grid.cellHeight, grid.width * grid.cellWidth * 2, 50);
+        physics.setStaticBody(southWall, true);
+        physics.addToWorld(southWall);
+
+        let northWall = physics.createRectangleBody(grid.width * grid.cellWidth, 0, 50, grid.height * grid.cellHeight * 2);
+        physics.setStaticBody(northWall, true);
+        physics.addToWorld(northWall);
+    };
+
 
     return that;
 

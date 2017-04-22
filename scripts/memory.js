@@ -7,7 +7,7 @@ var memory = (function(){
     highScores = JSON.parse(previousScores);
   }
 
-  let gameState;
+  let gameState = {};
   let previousGame = localStorage.getItem('gameState');
   if(previousGame !== null){
     gameState = JSON.parse(previousGame);
@@ -44,19 +44,7 @@ var memory = (function(){
   };
 
   that.saveGame = function(spec){
-    gameState.maze = spec.maze;
-
-    gameState.character = {
-      center: spec.character.center,
-      health: spec.character.health,
-      keys: spec.character.keys,
-      keyInventory: spec.character.keyInventory
-    }
-
-    gameState.enemies = previousGame.enemies();
-
-    gameState = spec;
-    localStorage['gameState'] = JSON.stringify(gameState);
+    localStorage['gameState'] = JSON.stringify(spec);
   };
 
   that.resetGame = function(){

@@ -16,7 +16,7 @@ var game = (function(){
     var healthBar;
     var keys = [];
 
-  that.initialize = function(){
+  that.initialize = function(load){
     renderGraphics = true;
     canceled = false;
     time = performance.now();
@@ -35,23 +35,7 @@ var game = (function(){
 
     let previousGame = memory.loadGame();
 
-    character = objects.Character({
-        image: imgChar,
-        view:{width:1000, height:1000},
-        moveRate: 450/1000, //pixels per millisecond
-        radius: 1000*(1/100),
-        radiusSq: (1000*(1/100)*(1000*(1/100))),
-        isDead: false,
-        isHit:false,
-        body: physics.createCircleBody((1000/2) + 60, (1000/2) + 70, 40),
-        sensor: physics.createSensorBody((1000/2) + 60, (1000/2) + 70, 75, 75),
-        direction: 'down',
-        attacking: false,
-        coolDown: 0,
-        tag: 'Character'
-    });
-
-    if (previousGame === undefined || previousGame === {}){
+    if (!load || previousGame === undefined || previousGame === {}){
 
       maze = that.Maze({
         height: 5,
@@ -61,23 +45,62 @@ var game = (function(){
         cellWidth: 500
       });
 
-      character.center = {x:1000/2, y:1000/2};
-      character.health = 5;
-      character.keys = 0;
-      character.keyInventory = keys; //relates to the key images
+      objects.initialize(maze.width, maze.height);
+
+      character = objects.Character({
+          image: imgChar,
+          view:{width:1000, height:1000},
+          moveRate: 450/1000, //pixels per millisecond
+          radius: 1000*(1/100),
+          radiusSq: (1000*(1/100)*(1000*(1/100))),
+          isDead: false,
+          isHit:false,
+          body: physics.createCircleBody((1000/2) + 60, (1000/2) + 70, 40),
+          sensor: physics.createSensorBody((1000/2) + 60, (1000/2) + 70, 75, 75),
+          direction: 'down',
+          attacking: false,
+          coolDown: 0,
+          tag: 'Character',
+          center: {x:1000/2, y:1000/2},
+          health: 5,
+          keys: 0,
+          keyInventory: keys //relates to the key images
+      });
 
       enemies = objects.initializeEnemies(100, maze.width, maze.height, maze.cellWidth);
     }
     //load game
     else{
       maze = previousGame.maze;
+      maze.width = maze.length;
+      maze.height = maze[0].length;
+      maze.cellHeight = 500;
+      maze.cellWidth = 500;
+      physics.addMazeBodies(maze);
 
-      character.center = previousGame.character.center;
-      character.health = previousGame.character.health;
-      character.keys = previousGame.character.keys;
-      character.keyInventory = previousGame.character.keyInventory; //relates to the key images
+      objects.initialize(maze.width, maze.height);
 
-      enemies = previousGame.enemies();
+      character = objects.Character({
+          image: imgChar,
+          view:{width:1000, height:1000},
+          moveRate: 450/1000, //pixels per millisecond
+          radius: 1000*(1/100),
+          radiusSq: (1000*(1/100)*(1000*(1/100))),
+          isDead: false,
+          isHit:false,
+          body: physics.createCircleBody(previousGame.character.center.x, previousGame.character.center.y, 40),
+          sensor: physics.createSensorBody(previousGame.character.center.x, previousGame.character.center.y, 75, 75),
+          direction: 'down',
+          attacking: false,
+          coolDown: 0,
+          tag: 'Character',
+          center: previousGame.character.center,
+          health: previousGame.character.health,
+          keys: previousGame.character.keys,
+          keyInventory: previousGame.character.keyInventory //relates to the key images
+      });
+
+      enemies = objects.loadEnemies(previousGame.enemies);
     }
 
 
@@ -124,8 +147,6 @@ var game = (function(){
         width: 400,
         height: 100
     });
-
-    objects.initialize(maze.width, maze.height);
 
     objects.buildQuadTree(8, enemies, maze.length*maze.cellWidth);
 
@@ -187,7 +208,6 @@ var game = (function(){
     }
   }
 
-
   function gameLoop(){
     let newTime = performance.now();
     let elapsedTime = newTime - time;
@@ -206,8 +226,6 @@ var game = (function(){
   function handleInput(elapsedTime){
     keyboard.update(elapsedTime);
   };
-
-
 
   function update(elapsedTime){
 
@@ -242,8 +260,6 @@ var game = (function(){
     //console.log(character.returnDirection());
      healthBar.update(character);
   };
-
-
 
   function render(elapsedTime){
 
@@ -284,6 +300,54 @@ var game = (function(){
     }
 
   };
+
+  that.saveGame = function(){
+    let saveMaze = [];
+    //make smaller, saveable maze
+    for(let i = 0; i < maze.length; i++){
+      saveMaze[i] = [];
+      for(let j = 0; j < maze[i].length; j++){
+        let n = (maze[i][j].edges.n === false) ? false : null;
+        let s = (maze[i][j].edges.s === false) ? false : null;
+        let w = (maze[i][j].edges.w === false) ? false : null;
+        let e = (maze[i][j].edges.e === false) ? false : null;
+        saveMaze[i][j] = {
+          x: i, y: j,
+          biome: maze[i][j].biome,
+          edges: {
+            n: n,
+            s: s,
+            e: e,
+            w: w
+          }
+        }
+      }
+    }
+
+    let saveEnemies = [];
+    for(let i = 0; i < enemies.length; i++){
+      let current = enemies[i];
+      let newEnemy = {};
+      newEnemy.chooseSprite = current.enemyType;
+      newEnemy.health = current.returnHealth();
+      newEnemy.center = current.center;
+      saveEnemies.push(newEnemy);
+    }
+
+    let saveCharacter = {
+      center: character.center,
+      health: character.returnHealth(),
+      keys: character.returnKeyTotal()
+    }
+    //all needed perpetuated data
+    let spec =
+    {
+      maze: saveMaze,
+      character: saveCharacter,
+      enemies: saveEnemies
+    }
+    memory.saveGame(spec);
+  }
 
   return that;
 }());

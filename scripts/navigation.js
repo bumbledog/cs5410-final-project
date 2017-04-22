@@ -37,7 +37,11 @@ navigation.screens['menu'] = function(){
   that.initialize = function(){
     document.getElementById('newGame').addEventListener('click', function() {
       navigation.showScreen('game');
-      game.initialize();
+      game.initialize(false); //start a new game
+    });
+    document.getElementById('loadGame').addEventListener('click', function() {
+      navigation.showScreen('game');
+      game.initialize(true); //load game
     });
     document.getElementById('toOptions').addEventListener('click', function() {
       navigation.showScreen('options');
