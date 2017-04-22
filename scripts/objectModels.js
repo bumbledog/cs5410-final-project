@@ -31,29 +31,9 @@ var objects = (function(){
 
     imgSlime = new Image();
     imgSlime.src = "assets/slime.png";
-    slimeStats = {
-      spriteSheet: imgSlime,
-      spriteCount: 4,
-      spriteTime: [100, 250, 220, 300, 175],
-      spriteSize: 50,
-      width: 100,
-      height: 100,
-      pixelWidth: 32,
-      pixelHeight: 32
-    }
 
     imgBat = new Image();
     imgBat.src = "assets/bat.png";
-    batStats = {
-      spriteSheet: imgBat,
-      spriteCount: 6,
-      spriteTime: [100, 80, 75, 125, 75, 60],
-      spriteSize: 50,
-      width: 150,
-      height: 100,
-      pixelWidth: 48,
-      pixelHeight: 32
-    }
   };
 
 
@@ -101,9 +81,27 @@ var objects = (function(){
         let chooseSprite = Math.floor(Math.random()*2);
         let enemySprite;
         if(chooseSprite === 1){
-          enemySprite = AnimatedSprite(slimeStats);
+          enemySprite = AnimatedSprite({
+            spriteSheet: imgSlime,
+            spriteCount: 4,
+            spriteTime: [100, 250, 220, 300, 175],
+            spriteSize: 50,
+            width: 100,
+            height: 100,
+            pixelWidth: 32,
+            pixelHeight: 32
+          });
         }else{
-          enemySprite = AnimatedSprite(batStats);
+          enemySprite = AnimatedSprite({
+            spriteSheet: imgBat,
+            spriteCount: 6,
+            spriteTime: [100, 80, 75, 125, 75, 60],
+            spriteSize: 50,
+            width: 150,
+            height: 100,
+            pixelWidth: 48,
+            pixelHeight: 32
+          });
         }
           let randLoc = randomLocation(width, height, size);
           enemies.push(that.Character({
@@ -137,9 +135,27 @@ var objects = (function(){
     for(let i = 0; i < spec.length; i++){
       let enemySprite;
       if(spec[i].chooseSprite === 1){
-        enemySprite = AnimatedSprite(slimeStats);
+        enemySprite = AnimatedSprite({
+          spriteSheet: imgSlime,
+          spriteCount: 4,
+          spriteTime: [100, 250, 220, 300, 175],
+          spriteSize: 50,
+          width: 100,
+          height: 100,
+          pixelWidth: 32,
+          pixelHeight: 32
+        });
       }else{
-        enemySprite = AnimatedSprite(batStats);
+        enemySprite = AnimatedSprite({
+          spriteSheet: imgBat,
+          spriteCount: 6,
+          spriteTime: [100, 80, 75, 125, 75, 60],
+          spriteSize: 50,
+          width: 150,
+          height: 100,
+          pixelWidth: 48,
+          pixelHeight: 32
+        });
       }
       enemies.push(that.Character({
           sprite: enemySprite,
