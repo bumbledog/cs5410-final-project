@@ -338,6 +338,8 @@ var objects = (function(){
             if(spec.direction === 'left'){
                 physics.setPosition(spec.sensor, spec.center.x - 85, spec.center.y);
             }
+
+            updateKeys();
         }
 
         //sprite & enemy position

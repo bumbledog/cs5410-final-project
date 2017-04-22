@@ -114,7 +114,7 @@ var game = (function(){
         height: 100
       }));
     }
-
+    
     //physics character body:
     physics.addCollisionFilter(character.returnSensor(), enemyCategory);
     character.addBodyToWorld();
