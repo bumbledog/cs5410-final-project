@@ -69,3 +69,20 @@ button:active {
   position: relative;
   left: 400px;
 }
+
+#controls{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+#controls div{
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  margin: 5px;
+}
+
+#controls p{
+  margin: 13px;
+}

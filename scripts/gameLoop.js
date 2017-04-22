@@ -116,7 +116,7 @@ var game = (function(){
         height: 100
       }));
     }
-    
+
     //physics character body:
     physics.addCollisionFilter(character.returnSensor(), enemyCategory);
     character.addBodyToWorld();
@@ -160,31 +160,16 @@ var game = (function(){
     window.addEventListener("keyup", keyboard.keyRelease, false);
 
     let controlScheme = memory.getControls();
-    if(controlScheme === "Arrows"){
-      keyboard.registerCommand(KeyEvent.DOM_VK_LEFT, character.moveLeft);
-      keyboard.registerCommand(KeyEvent.DOM_VK_RIGHT, character.moveRight);
-      keyboard.registerCommand(KeyEvent.DOM_VK_UP, character.moveUp);
-      keyboard.registerCommand(KeyEvent.DOM_VK_DOWN, character.moveDown);
-    }
-    else if(controlScheme === "ASDW"){
-      keyboard.registerCommand(KeyEvent.DOM_VK_A, character.moveLeft);
-      keyboard.registerCommand(KeyEvent.DOM_VK_D, character.moveRight);
-      keyboard.registerCommand(KeyEvent.DOM_VK_W, character.moveUp);
-      keyboard.registerCommand(KeyEvent.DOM_VK_S, character.moveDown);
-    }
-    else if(controlScheme === "JKLI"){
-      keyboard.registerCommand(KeyEvent.DOM_VK_J, character.moveLeft);
-      keyboard.registerCommand(KeyEvent.DOM_VK_L, character.moveRight);
-      keyboard.registerCommand(KeyEvent.DOM_VK_I, character.moveUp);
-      keyboard.registerCommand(KeyEvent.DOM_VK_K, character.moveDown);
-    }
+    keyboard.registerCommand(controlScheme.left, character.moveLeft);
+    keyboard.registerCommand(controlScheme.right, character.moveRight);
+    keyboard.registerCommand(controlScheme.up, character.moveUp);
+    keyboard.registerCommand(controlScheme.down, character.moveDown);
+    //key for attacking
+    keyboard.registerCommand(controlScheme.attack, coolDownCheck);
 
     //allows us to turn on and off the rendering of the maze
-    keyboard.registerCommand(KeyEvent.DOM_VK_G, turnOffGraphics);
-    keyboard.registerCommand(KeyEvent.DOM_VK_H, turnOnGraphics);
-
-    //key for attacking
-    keyboard.registerCommand(KeyEvent.DOM_VK_SPACE, coolDownCheck);
+    //keyboard.registerCommand(KeyEvent.DOM_VK_G, turnOffGraphics);
+    //keyboard.registerCommand(KeyEvent.DOM_VK_H, turnOnGraphics);
   }
 
   function turnOffGraphics(){
