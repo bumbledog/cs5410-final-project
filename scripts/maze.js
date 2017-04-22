@@ -111,50 +111,26 @@ game.Maze = function(spec){
   }
 
   //add physics bodies
-  for(let col = 0; col < grid.length; col++){
-    for(let row = 0; row < grid[0].length; row++){
-      let cell = grid[col][row];
-      let cellLeft = cell.x * grid.cellWidth;
-      let cellTop = cell.y * grid.cellHeight;
+  physics.addMazeBodies(grid);
 
-      if(cell.edges.n === null){
-        cell.edges.n = physics.createRectangleBody((cellLeft + (grid.cellWidth)/2), cellTop, grid.cellWidth, 50);
-        physics.setStaticBody(cell.edges.n , true);
-        physics.addToWorld(cell.edges.n);
-      }
-
-      if(cell.edges.w === null){
-        cell.edges.w = physics.createRectangleBody(cellLeft, (cellTop + (grid.cellHeight)/2), 50, grid.cellHeight);
-        physics.setStaticBody(cell.edges.w , true);
-        physics.addToWorld(cell.edges.w);
-      }
-    }
-  }
-
-  let southWall = physics.createRectangleBody(0, grid.height * grid.cellHeight, grid.width * grid.cellWidth * 2, 50);
-  physics.setStaticBody(southWall, true);
-  physics.addToWorld(southWall);
-
-  let northWall = physics.createRectangleBody(grid.width * grid.cellWidth, 0, 50, grid.height * grid.cellHeight * 2);
-  physics.setStaticBody(northWall, true);
-  physics.addToWorld(northWall);
-
+  //we don't use the references for anything, so false just means no wall
+  //easier to save data this way
   function connectWalls(x,y,dir){
     if(dir === 'n' || dir === 0){
-      grid[x][y].edges.n = grid[x][y - 1];
-      grid[x][y - 1].edges.s = grid[x][y];
+      grid[x][y].edges.n = false;
+      grid[x][y - 1].edges.s = false;
     }
     else if(dir === 's' || dir === 1){
-      grid[x][y].edges.s = grid[x][y + 1];
-      grid[x][y + 1].edges.n = grid[x][y];
+      grid[x][y].edges.s = false;
+      grid[x][y + 1].edges.n = false;
     }
     else if(dir === 'w' || dir === 2){
-      grid[x][y].edges.w = grid[x - 1][y];
-      grid[x - 1][y].edges.e = grid[x][y];
+      grid[x][y].edges.w = false;
+      grid[x - 1][y].edges.e = false;
     }
     else if(dir === 'e' || dir === 3){
-      grid[x][y].edges.e = grid[x + 1][y];
-      grid[x + 1][y].edges.w = grid[x][y];
+      grid[x][y].edges.e = false;
+      grid[x + 1][y].edges.w = false;
     }
   }
 

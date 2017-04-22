@@ -39,7 +39,7 @@ button{
   font-size: 12px;
   font-family: bit;
   text-align: center;
-  border-radius: 8px; 
+  border-radius: 8px;
   padding: 14px 30px;
   background-color: rgb(79, 108, 155);
   color: white;
@@ -63,4 +63,9 @@ button:active {
 
 .active{
   display: block;
+}
+
+#game button{
+  position: relative;
+  left: 400px;
 }
