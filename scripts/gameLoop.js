@@ -69,7 +69,7 @@ var game = (function(){
           keyInventory: keys //relates to the key images
       });
 
-      enemies = objects.initializeEnemies(100, maze.width, maze.height, maze.cellWidth);
+      enemies = objects.initializeEnemies(50, maze.width, maze.height, maze.cellWidth);
     }
     //load game
     else{
@@ -121,8 +121,6 @@ var game = (function(){
     physics.addCollisionFilter(character.returnSensor(), enemyCategory);
     character.addBodyToWorld();
     //end
-
-    enemies = objects.initializeEnemies(50 ,maze.width, maze.height, maze.cellWidth);
 
     objects.buildQuadTree(8, enemies, maze.length*maze.cellWidth);
 
