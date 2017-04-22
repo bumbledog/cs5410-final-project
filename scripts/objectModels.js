@@ -352,6 +352,7 @@ var objects = (function(){
             spec.center.y = spec.body.position.y;
 
             that.checkIfHit();
+            that.checkHealth();
 
             //change sensor position
             if(spec.direction === 'down'){
@@ -438,7 +439,7 @@ var objects = (function(){
           return (distance < Math.pow(spec.radius + other.radius, 2));
       }
 
-      function checkHealth(object){
+      that.checkHealth = function(object){
         if(that.isHit !== 0){
             that.health -= 1;
             that.isHit = 0;
