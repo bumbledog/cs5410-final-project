@@ -28,8 +28,8 @@ var graphics = (function(){
 
     tiles = {
       size: 500,
-      src0: "assets/map/map [www.imagesplitter.net]-",
-      src1: "assets/map/marsh background [www.imagesplitter.net]-",
+      src0: "assets/map/marsh background [www.imagesplitter.net]-",
+      src1: "assets/map/map [www.imagesplitter.net]-",
       //src2:
       //src3:
       columns: 16,
@@ -161,8 +161,6 @@ var graphics = (function(){
 
         for(let xPos = tileRenderXStart; xPos <= tileRenderXEnd; xPos++){
           for(let yPos = tileRenderYStart; yPos <= tileRenderYEnd; yPos++){
-            let tile = new Image();
-            tile.src = tiles.src + yPos + "-" + xPos + ".png";
 
             let tileXDepth = (xPos - tileRenderXStart) * tiles.size;
             let xOffset = (tileRenderXStart * tiles.size) - camera.pt1.x;
@@ -177,7 +175,7 @@ var graphics = (function(){
             let xWidth = Math.min(tiles.size, viewport.pt3.x - xPos*tiles.size);
             let yWidth = Math.min(tiles.size, viewport.pt2.y - yPos*tiles.size);
 
-            tileContext.drawImage(tile,
+            tileContext.drawImage(tiles[xPos][yPos],
                 cropX, cropY, xWidth, yWidth,
                 xDraw, yDraw, xWidth, yWidth);
           }
