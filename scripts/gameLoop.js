@@ -105,6 +105,7 @@ var game = (function(){
       enemies = objects.loadEnemies(previousGame.enemies);
     }
 
+    graphics.initialize(maze);
 
     //key slot for the character
     for(let amount = 0; amount < 3; amount++){

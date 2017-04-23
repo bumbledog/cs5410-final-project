@@ -36,7 +36,6 @@ navigation.initialize = function(){
 navigation.screens['game'] = function(){
   let that = {};
   that.initialize = function(){
-    graphics.initialize();
     //audio.playSound('assets/main-menu-music');
   };
   return that;
