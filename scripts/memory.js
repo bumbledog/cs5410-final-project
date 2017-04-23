@@ -13,7 +13,13 @@ var memory = (function(){
     gameState = JSON.parse(previousGame);
   }
 
-  let controls = "Arrows";
+  let controls = {
+    up: 38,
+    down: 40,
+    left: 37,
+    right: 39,
+    attack: 32
+  };
   let previousControls = localStorage.getItem('controls');
   if(previousControls !== null){
     controls = JSON.parse(previousControls);

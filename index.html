@@ -25,11 +25,22 @@
       <p>volume</p>
       <input type="range"></input>
       <p>Control Scheme:</p>
-      <form>
-        <input type="radio" name="controls" value="Arrows">Arrow Keys<br>
-        <input type="radio" name="controls" value="ASDW">ASDW<br>
-        <input type="radio" name="controls" value="JKLI">JKLI
-      </form>
+      <div id="controls">
+        <div>
+          <p>Up:</p>
+          <p>Down:</p>
+          <p>Left:</p>
+          <p>Right:</p>
+          <p>Attack</p>
+        </div>
+        <div>
+          <button id="upControl"></button>
+          <button id="downControl"></button>
+          <button id="leftControl"></button>
+          <button id="rightControl"></button>
+          <button id="attackControl"></button>
+        </div>
+      </div>
       <button id="options-menu">Menu</button>
     </div>
     <div id="about" class="screen">

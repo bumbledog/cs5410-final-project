@@ -5,19 +5,19 @@ var audio = (function(){
      function loadSound(source) {
         let sound = new Audio();
         sound.addEventListener('canplay', function(){
-            console.log(`${source} is ready to play`);
+//            console.log(`${source} is ready to play`);
         });
         sound.addEventListener('play', function(){
-            console.log(`${source} started playing`);
+//            console.log(`${source} started playing`);
         });
         sound.addEventListener('canplaythrough', function(){
-            console.log(`${source} can play through`);
+//            console.log(`${source} can play through`);
         });
         sound.addEventListener('progress', function(){
-            console.log(`${source} progress in loading`);
+//            console.log(`${source} progress in loading`);
         });
         sound.addEventListener('timeupdate', function(){
-            console.log(`${source} time update: ${this.currentTime}`);
+//            console.log(`${source} time update: ${this.currentTime}`);
         });
         sound.src = source;
         return sound;
@@ -43,4 +43,3 @@ that.playSound = function(soundToPlay){
 
 return that;
 }());
-
