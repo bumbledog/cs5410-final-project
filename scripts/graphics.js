@@ -12,7 +12,7 @@ var graphics = (function(){
   let camera;
   let tiles;
 
-  that.initialize = function(){
+  that.initialize = function(maze){
     canvas = document.getElementById('canvas-main');
     context = canvas.getContext('2d');
     width = canvas.width;
@@ -28,17 +28,20 @@ var graphics = (function(){
 
     tiles = {
       size: 500,
-      src: "assets/map/map [www.imagesplitter.net]-",
+      src0: "assets/map/marsh background [www.imagesplitter.net]-",
+      src1: "assets/map/map [www.imagesplitter.net]-",
+      //src2:
+      //src3:
       columns: 16,
       loaded: 0
     };
 
     //load all files before rendering
-    for(let i = 0; i < tiles.columns; i++){
+    for(let i = 0; i < maze.width; i++){
       tiles[i] = [];
-      for(let j = 0; j < tiles.columns; j++){
+      for(let j = 0; j < maze.height; j++){
         tiles[i][j] = new Image();
-        tiles[i][j].src = tiles.src + j + "-" + i + ".png";
+        tiles[i][j].src = tiles["src" + (maze[i][j].biome % 2)] + (j % 4) + "-" + (i % 4) + ".png";
         tiles[i][j].onload = function(){
           tiles.loaded++;
         };
@@ -143,7 +146,7 @@ var graphics = (function(){
 
   that.renderTiles = function(maze, character){
 
-    if(tiles.loaded === tiles.columns * tiles.columns){
+    if(tiles.loaded === maze.width * maze.height){
 
         tileContext.clear();
 
@@ -158,8 +161,6 @@ var graphics = (function(){
 
         for(let xPos = tileRenderXStart; xPos <= tileRenderXEnd; xPos++){
           for(let yPos = tileRenderYStart; yPos <= tileRenderYEnd; yPos++){
-            let tile = new Image();
-            tile.src = tiles.src + yPos + "-" + xPos + ".png";
 
             let tileXDepth = (xPos - tileRenderXStart) * tiles.size;
             let xOffset = (tileRenderXStart * tiles.size) - camera.pt1.x;
@@ -174,7 +175,7 @@ var graphics = (function(){
             let xWidth = Math.min(tiles.size, viewport.pt3.x - xPos*tiles.size);
             let yWidth = Math.min(tiles.size, viewport.pt2.y - yPos*tiles.size);
 
-            tileContext.drawImage(tile,
+            tileContext.drawImage(tiles[xPos][yPos],
                 cropX, cropY, xWidth, yWidth,
                 xDraw, yDraw, xWidth, yWidth);
           }
