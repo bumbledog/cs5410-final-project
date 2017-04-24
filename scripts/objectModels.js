@@ -274,7 +274,7 @@ var objects = (function(){
             Matter.Body.applyForce(spec.body, spec.body.position, {x: 0.0005 * spec.body.mass, y:0});
           }
 
-          else{ 
+          else{
               Matter.Body.applyForce(spec.body, spec.body.position, {x: -0.0005 * spec.body.mass, y:0});
           }
 
@@ -324,7 +324,7 @@ var objects = (function(){
 //MOVEMENT:
       that.moveRight = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: 0.002 * spec.body.mass, y:0});
-          game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
+          game.dustParticles.createParticles(1, spec.center.x , spec.center.y + 20, 20);
         //   if(spec.direction === 'down' || spec.direction === 'up'){
         //     Matter.Body.setAngle(spec.sensor, 90);
         //   }
@@ -333,19 +333,19 @@ var objects = (function(){
 
       that.moveLeft = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: -0.002 * spec.body.mass, y:0});
-          game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
+          game.dustParticles.createParticles(1, spec.center.x , spec.center.y + 20, 20);
           spec.direction = 'left';
       };
 
       that.moveUp = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:-0.002 * spec.body.mass});
-          game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
+          game.dustParticles.createParticles(1, spec.center.x , spec.center.y + 20, 20);
           spec.direction = 'up';
       };
 
       that.moveDown = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:0.002 * spec.body.mass});
-          game.dustParticles.createParticles(1, math.gaussian(spec.center.x, 20), math.gaussian(spec.center.y + 20, 20));
+          game.dustParticles.createParticles(1, spec.center.x , spec.center.y + 20, 20);
           spec.direction = 'down';
       };
 
@@ -399,7 +399,7 @@ var objects = (function(){
               if(math.objectInSquare(spec, square)) {
                     that.updatePosition(characterPos);
               }
-              
+
             if(spec.health < 1){
                 spec.isDead = true;
             }
