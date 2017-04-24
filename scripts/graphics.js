@@ -29,7 +29,7 @@ var graphics = (function(){
     tiles = {
       size: 500,
       src0: "assets/map/marsh background [www.imagesplitter.net]-",
-      src1: "assets/map/map [www.imagesplitter.net]-",
+      src1: "assets/map/forestBackground [www.imagesplitter.net]-",
       //src2:
       //src3:
       columns: 16,
@@ -273,10 +273,32 @@ var graphics = (function(){
   }
 
   that.renderEnemies = function(elapsedTime, enemies, character){
+    let count1 = 0;
+        count2 = 0;
+
+  let square = {
+        center:{x:character.center.x , y:character.center.y},
+        size: that.defineCamera(character.center.x, character.center.y).size - 300
+  }
 
    visible = objects.quadTree.visibleObjects(that.defineCamera(character.center.x, character.center.y));
    for(let enemy = 0; enemy < visible.length; enemy++){
      visible[enemy].render(elapsedTime);
+     if(math.objectInSquare(visible[enemy], square)){
+        if(visible[enemy].enemyType === 1){
+          count1++;
+        }
+        else if(visible[enemy].enemyType === 0){
+          count2++;
+        }
+     }
+   }
+
+   if(count1 === 0){
+     audio.sounds['assets/slime-sound'].pause()
+   }
+   if(count2 === 0){
+     audio.sounds['assets/bat-sound'].pause()
    }
   }
 

@@ -218,9 +218,9 @@ var game = (function(){
   function update(elapsedTime){
 
     character.update(elapsedTime);
-    if(character.isHit){
-      audio.playSound('assets/grunt.wav')
-    }
+   // if(character.isHit){
+    //  audio.playSound('assets/grunt.wav')
+   // }
     graphics.setOffset(character.center.x, character.center.y);
 
     // function could be changed so that only enemies

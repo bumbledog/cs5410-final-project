@@ -10,6 +10,8 @@ var objects = (function(){
   that.quadTree = {};
 
   let enemies, visible;
+  //that.moreSlime = false;
+  //that.moreBats = false;
 
     //categories for collision detection
     var defaultCategory = 0x0001;
@@ -291,6 +293,9 @@ var objects = (function(){
       //sets if the character is in a state of attacking
       that.attack = function(state){
         spec.attacking = state;
+        if(state){
+            audio.playSound('assets/sword-swipe');
+        }
       };
 
       //returns if the character is in a state of attacking
@@ -397,7 +402,25 @@ var objects = (function(){
               }
 
               if(math.objectInSquare(spec, square)) {
+                  if(spec.enemyType === 1){
+                        audio.sounds['assets/slime-sound'].loop = true;
+                         audio.playSound('assets/slime-sound');
+                }
+
+                else if(spec.enemyType === 0){
+                    audio.sounds['assets/bat-sound'].loop = true;
+                    audio.playSound('assets/bat-sound');
+                }
+
                     that.updatePosition(characterPos);
+              }
+
+              else{
+                  audio.sounds['assets/slime-sound'].loop = false;
+                  //audio.pauseSound('assets/slime-sound');
+                  audio.sounds['assets/bat-sound'].loop = false;
+                  //audio.pauseSound('assets/bat-sound');
+
               }
               
             if(spec.health < 1){
@@ -421,12 +444,11 @@ var objects = (function(){
       };
 
       that.checkIfHit = function(){
-          if(that.isHit){
-              audio.playSound('assets/grunt');
+         if(that.isHit && spec.tag === 'Character'){
+             audio.playSound('assets/grunt');
           }
           that.isHit = false;
           return false;
-          //WILL NEED TO BE CHANGED. JUST WRITTEN LIKE THIS FOR CHARACTER MOVEMENT TESTING
       };
 
       that.render = function(){
@@ -456,14 +478,14 @@ var objects = (function(){
       }
 
       that.checkHealth = function(object){
-        if(that.isHit !== 0){
-            that.health -= 1;
-            that.isHit = 0;
+        if(spec.isHit !== false){
+            spec.health -= 1;
+            spec.isHit = false;
         }
 
-        if(that.health <= 0){
+        if(spec.health <= false){
 
-            that.isDead = true;
+            spec.isDead = true;
         }
       }
 

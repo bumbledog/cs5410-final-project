@@ -253,6 +253,7 @@ var physics = (function(){
                 }
                 else if(pair.bodyB === character.returnSensor()) {
                     character.attack(false);
+                    //audio.playSound('assets/song-1');
                     // if(enemies[pair.bodyA.id] === pair.bodyA){
                     //     if(enemies[pair.bodyA.id].returnHealth() <= 0){
                     //         enemies.splice(pair.bodyA.id, 1);
