@@ -153,6 +153,9 @@ var game = (function(){
 
     objects.buildQuadTree(8, enemies, maze.length*maze.cellWidth);
 
+    //allow enemies to damage character
+    physics.enemyDamageEvent(character, enemies);
+
     gameLoop();
   };
 
@@ -217,10 +220,11 @@ var game = (function(){
 
   function update(elapsedTime){
 
+    //console.log(character.returnIsHit());
+    console.log(character.returnHealth());
+
     character.update(elapsedTime);
-    if(character.isHit){
-      audio.playSound('assets/grunt.wav')
-    }
+
     graphics.setOffset(character.center.x, character.center.y);
 
     // function could be changed so that only enemies
@@ -283,7 +287,7 @@ var game = (function(){
 
     graphics.renderEnemies(elapsedTime, enemies,character);
     character.render(elapsedTime);
-
+    Stats.returnContext().clear();
     healthBar.render();
 
     for(let key = 0; key < keys.length; key++){

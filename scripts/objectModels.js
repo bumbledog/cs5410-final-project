@@ -298,6 +298,31 @@ var objects = (function(){
         return spec.attacking;
       };
 
+      //allows the status of 'isHit' to be changed manually
+      that.setHit = function(){
+          spec.isHit = true;
+      };
+
+      that.setFalseHit = function(){
+          spec.isHit = false;
+      };
+
+      that.returnIsHit = function(){
+          return spec.isHit;
+      };
+
+      //checks if the character is hit
+      that.checkIfHit = function(){
+          if(spec.isHit){
+              audio.playSound('assets/grunt');
+          }
+          //spec.isHit = false;
+
+          
+          return false;
+          //WILL NEED TO BE CHANGED. JUST WRITTEN LIKE THIS FOR CHARACTER MOVEMENT TESTING
+      };
+
       //allows the character or enemy to receive damage
       that.damaged = function(){
         spec.health--;
@@ -306,6 +331,18 @@ var objects = (function(){
       that.returnHealth = function(){
         return spec.health;
       };
+
+      that.checkHealth = function(object){
+        if(spec.isHit !== false){
+            spec.health -= 1;
+            spec.isHit = false;
+        }
+
+        if(spec.health <= 0){
+
+            spec.isDead = true;
+        }
+      }
 
       //returns the amount of keys on the character
       that.returnKeyTotal = function(){
@@ -420,15 +457,6 @@ var objects = (function(){
 
       };
 
-      that.checkIfHit = function(){
-          if(that.isHit){
-              audio.playSound('assets/grunt');
-          }
-          that.isHit = false;
-          return false;
-          //WILL NEED TO BE CHANGED. JUST WRITTEN LIKE THIS FOR CHARACTER MOVEMENT TESTING
-      };
-
       that.render = function(){
 
           if(spec.tag === 'Character'){
@@ -455,17 +483,7 @@ var objects = (function(){
           return (distance < Math.pow(spec.radius + other.radius, 2));
       }
 
-      that.checkHealth = function(object){
-        if(that.isHit !== 0){
-            that.health -= 1;
-            that.isHit = 0;
-        }
-
-        if(that.health <= 0){
-
-            that.isDead = true;
-        }
-      }
+      
 
       return that;
   };

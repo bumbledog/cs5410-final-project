@@ -21,7 +21,7 @@ var audio = (function(){
         });
         sound.src = source;
         return sound;
- }
+ };
 
 function loadAudio(){
     that.sounds = {};
