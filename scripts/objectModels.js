@@ -303,6 +303,31 @@ var objects = (function(){
         return spec.attacking;
       };
 
+      //allows the status of 'isHit' to be changed manually
+      that.setHit = function(){
+          spec.isHit = true;
+      };
+
+      that.setFalseHit = function(){
+          spec.isHit = false;
+      };
+
+      that.returnIsHit = function(){
+          return spec.isHit;
+      };
+
+      //checks if the character is hit
+      that.checkIfHit = function(){
+          if(spec.isHit){
+              audio.playSound('assets/grunt');
+          }
+          //spec.isHit = false;
+
+          
+          return false;
+          //WILL NEED TO BE CHANGED. JUST WRITTEN LIKE THIS FOR CHARACTER MOVEMENT TESTING
+      };
+
       //allows the character or enemy to receive damage
       that.damaged = function(){
         spec.health--;
@@ -311,6 +336,18 @@ var objects = (function(){
       that.returnHealth = function(){
         return spec.health;
       };
+
+      that.checkHealth = function(object){
+        if(spec.isHit !== false){
+            spec.health -= 1;
+            spec.isHit = false;
+        }
+
+        if(spec.health <= 0){
+
+            spec.isDead = true;
+        }
+      }
 
       //returns the amount of keys on the character
       that.returnKeyTotal = function(){
@@ -443,13 +480,6 @@ var objects = (function(){
 
       };
 
-      that.checkIfHit = function(){
-         if(that.isHit && spec.tag === 'Character'){
-             audio.playSound('assets/grunt');
-          }
-          that.isHit = false;
-          return false;
-      };
 
       that.render = function(){
 
@@ -475,18 +505,6 @@ var objects = (function(){
           var distance = Math.pow((spec.center.x - other.center.x), 2) + Math.pow((spec.center.y - other.center.y), 2)
 
           return (distance < Math.pow(spec.radius + other.radius, 2));
-      }
-
-      that.checkHealth = function(object){
-        if(spec.isHit !== false){
-            spec.health -= 1;
-            spec.isHit = false;
-        }
-
-        if(spec.health <= false){
-
-            spec.isDead = true;
-        }
       }
 
       return that;

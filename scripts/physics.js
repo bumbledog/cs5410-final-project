@@ -85,6 +85,40 @@ var physics = (function(){
         return collider;
     };
 
+    //allows the event if the character is hit by the enemy
+    //allows the character to take damage now
+    that.enemyDamageEvent = function(character, enemies){
+
+        Events.on(engine, 'collisionStart', function(event){
+            var pairs = event.pairs;
+
+            for(var i = 0, j = pairs.length; i != j; i++){
+                var pair = pairs[i];
+
+                //if bodyA is the character and if the character isnt attacking
+                if(pair.bodyA === character.returnCharacterBody() && character.returnAttackState() === false){
+                    //bodyB is the enemy
+                    if(enemyMatchingId(enemies, pair.bodyB.id) !== undefined){
+                        character.setHit();
+                    }
+                    //character.setFalseHit();
+                    //console.log('hit');
+                }
+                //if bodyB is the character and if the character isnt attacking
+                else if(pair.bodyB === character.returnCharacterBody() && character.returnAttackState() === false){
+                    //bodyA is the enemy
+                    if(enemyMatchingId(enemies, pair.bodyA.id) !== undefined){
+                        character.setHit();
+                    }
+                    //character.setFalseHit();
+                    //console.log('hit');
+                }
+            }
+
+        });
+
+    };
+
     //at the start of a collision between two objects
     that.eventSensorStart = function(character, enemies){
 
@@ -349,6 +383,7 @@ var physics = (function(){
     };
 
     that.addMazeBodies = function (grid){
+        var count = 500;
         for(let col = 0; col < grid.length; col++){
           for(let row = 0; row < grid[0].length; row++){
             let cell = grid[col][row];
@@ -357,22 +392,29 @@ var physics = (function(){
 
             if(cell.edges.n !== false){
               cell.edges.n = physics.createRectangleBody((cellLeft + (grid.cellWidth)/2), cellTop, grid.cellWidth, 50);
+              physics.setID(cell.edges.n, count);
               physics.setStaticBody(cell.edges.n , true);
               physics.addToWorld(cell.edges.n);
             }
 
             if(cell.edges.w !== false){
               cell.edges.w = physics.createRectangleBody(cellLeft, (cellTop + (grid.cellHeight)/2), 50, grid.cellHeight);
+              physics.setID(cell.edges.w, count);
               physics.setStaticBody(cell.edges.w , true);
               physics.addToWorld(cell.edges.w);
             }
+            count++;
           }
         }
         let southWall = physics.createRectangleBody(0, grid.height * grid.cellHeight, grid.width * grid.cellWidth * 2, 50);
+        physics.setID(southWall, count);
         physics.setStaticBody(southWall, true);
         physics.addToWorld(southWall);
 
+        count++;
+
         let northWall = physics.createRectangleBody(grid.width * grid.cellWidth, 0, 50, grid.height * grid.cellHeight * 2);
+        physics.setID(northWall, count);
         physics.setStaticBody(northWall, true);
         physics.addToWorld(northWall);
     };
