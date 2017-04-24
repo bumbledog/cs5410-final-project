@@ -4,10 +4,16 @@ function ParticleSystem(spec){
   let particles = {};
   let nextId = 0;
 
-  that.createParticles = function(num, x, y){
+  that.createParticles = function(num, x, y, distribution){
+    let partX, partY;
     for(let i = 0; i < num; i++){
+      partX = math.gaussian(x, distribution);
+      partY = math.gaussian(y, distribution);
       particles[nextId++] = Particle({
-          x: x, y: y
+          x: partX, y: partY,
+          size: spec.size,
+          speed: spec.speed,
+          lifetime: spec.lifetime
       });
     }
     if(nextId > 100) nextId = 0;
@@ -25,7 +31,13 @@ function ParticleSystem(spec){
     }
   };
 
-  that.render = function(){}; //filler function for before the image loads
+  that.render = function(){
+    for(let value in particles){
+      if(particles.hasOwnProperty(value)){
+        particles[value].render();
+      }
+    }
+  }; //filler function for before the image loads
 
   let image = new Image();
   image.onload = function() {
@@ -44,11 +56,11 @@ function ParticleSystem(spec){
     let that = {
       x: spec.x,
       y: spec.y,
-      size: math.gaussian(50,5),
+      size: math.gaussian(spec.size,5),
       direction: math.circleVector(),
-      speed: math.gaussian(10,4),
+      speed: math.gaussian(spec.speed,4),
       alive: 0,
-      lifetime: math.gaussian(0,1),
+      lifetime: math.gaussian(spec.lifetime.avg, spec.lifetime.dist),
       grow: 50
     };
 

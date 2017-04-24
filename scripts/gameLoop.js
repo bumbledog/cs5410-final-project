@@ -129,7 +129,10 @@ var game = (function(){
     particles = [];
     //initialize dust trail
     that.dustParticles = ParticleSystem({
-      image: "assets/dust.png"
+      image: "assets/dust.png",
+      size: 50,
+      speed: 10,
+      lifetime: {avg:0, dist: 1}
     });
 
     //gives more information on what collides with the player
@@ -227,22 +230,8 @@ var game = (function(){
 
     graphics.setOffset(character.center.x, character.center.y);
 
-    // function could be changed so that only enemies
-    //close to Link are updated. This would improve efficiency
-    for(i = 0; i < enemies.length; i++){
-      enemies[i].update(elapsedTime, character.center);
-      if(enemies[i].isDead === true){
-        physics.removeFromWorld(enemies[i].body);
-        enemies.splice(i--, 1);
-      }
-    }
-
     objects.buildQuadTree(8, enemies, maze.width*maze.cellWidth);
-    //set the offset to the body position
-    //we dont use quite use offset anymore
-    graphics.setOffset(character.returnCharacterBody().position.x, character.returnCharacterBody().position.y);
 
-    //PARTICLE SYSTEM UPDATES SHOULD BE ADDED HERE
     that.dustParticles.update(elapsedTime);
     for(let i = 0; i < particles.length; i++){
       particles[i].update(elapsedTime);
@@ -251,6 +240,29 @@ var game = (function(){
         particles.splice(i--, 0);
       }
     }
+
+    // function could be changed so that only enemies
+    //close to Link are updated. This would improve efficiency
+    for(i = 0; i < enemies.length; i++){
+      enemies[i].update(elapsedTime, character.center);
+      if(enemies[i].isDead === true){
+        //make ParticleSystem
+        let enemiesDissolve = ParticleSystem({
+          image: "assets/enemyDeath.png",
+          size: 20,
+          speed: 30,
+          lifetime: {avg: .3, dist: .2}
+        });
+        enemiesDissolve.createParticles(20, enemies[i].center.x, enemies[i].center.y, 25);
+        particles.push(enemiesDissolve);
+        physics.removeFromWorld(enemies[i].body);
+        enemies.splice(i--, 1);
+      }
+    }
+
+    //set the offset to the body position
+    //we dont use quite use offset anymore
+    graphics.setOffset(character.returnCharacterBody().position.x, character.returnCharacterBody().position.y);
 
     //console.log(character.returnDirection());
      healthBar.update(character);
@@ -261,7 +273,6 @@ var game = (function(){
     //only render background when character moves
     //TODO: move this to update only when the OFFSET changes!!!
     graphics.renderTiles(maze, character);
-    //TODO: use quad tree to only render on-screen enemies
     //TODO: only render this (and tiles) if character moves
     //Added a key listener to the 'G' and 'H' Key
     //'G' -> Turns off rendering of Graphics
@@ -278,12 +289,6 @@ var game = (function(){
     for(let i = 0; i < particles.length; i++){
       particles[i].render();
     }
-
-    // TODO: function could be changed so that only enemies
-    //close to Link are updated. This would improve efficiency
-    //for(i = 0; i < enemies.length; i++){
-    //  enemies[i].render(elapsedTime);
-    //}
 
     graphics.renderEnemies(elapsedTime, enemies,character);
     character.render(elapsedTime);
@@ -342,6 +347,10 @@ var game = (function(){
       enemies: saveEnemies
     }
     memory.saveGame(spec);
+  }
+
+  that.quit = function(){
+    canceled = true;
   }
 
   return that;
