@@ -164,3 +164,16 @@ navigation.screens['high-scores'] = function(){
   };
   return that;
 }();
+
+navigation.screens['game-over'] = function(){
+  let that = {};
+  that.initialize = function(){
+    document.getElementById('game-over-menu').addEventListener('click', function() {
+      navigation.showScreen('menu');
+    });
+  document.getElementById('game-over-to-scores').addEventListener('click', function() {
+        navigation.showScreen('high-scores');
+      });
+  };
+  return that;
+}();

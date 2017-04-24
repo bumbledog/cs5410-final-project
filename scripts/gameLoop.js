@@ -2,6 +2,7 @@ var game = (function(){
   let that = {};
   let time, canceled, maze, keyboard;
   let boxA;
+  let score = 500;
 
   that.y = {};
   let renderGraphics;
@@ -254,6 +255,11 @@ var game = (function(){
 
     //console.log(character.returnDirection());
      healthBar.update(character);
+     if(character.isDead){
+       canceled = true;
+       document.getElementById("score").innerHTML = "You Scored " + score + " points";
+       navigation.showScreen('game-over');
+     }
   };
 
   function render(elapsedTime){
