@@ -68,6 +68,8 @@ button:active {
 #game button{
   position: relative;
   left: 400px;
+  display: block;
+  top: -245px;
 }
 
 #controls{

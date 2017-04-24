@@ -38,6 +38,10 @@ navigation.screens['game'] = function(){
   that.initialize = function(){
     //audio.playSound('assets/main-menu-music');
   };
+  document.getElementById('quitGame').addEventListener('click', function() {
+    navigation.showScreen('menu');
+    game.quit();
+  });
   return that;
 }();
 
