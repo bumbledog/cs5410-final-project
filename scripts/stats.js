@@ -23,6 +23,10 @@ var Stats = (function(){
         };
     };
 
+    that.returnContext = function(){
+        return statContext;
+    };
+
 
     //creating a stat/inventory item to be displayed
     that.StatItem = function(spec){
@@ -51,6 +55,7 @@ var Stats = (function(){
 
         //main rendering function for all of the stats
         that.render = function(){
+            //statContext.clear();
             statContext.drawImage(loadImage(), spec.position.x, spec.position.y, spec.width, spec.height);
         };
 

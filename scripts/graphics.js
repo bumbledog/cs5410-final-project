@@ -208,11 +208,17 @@ var graphics = (function(){
   	}
 
     //draw the south and east edges
-  	context.moveTo(0, maze.height * maze.cellHeight);
-  	context.lineTo(maze.width * maze.cellWidth, maze.height * maze.cellHeight);
+    for(let col = 0; col < maze.width; col++){
+      var wallImage = new Image();
+      wallImage.src = 'assets/RuggedWall.png';
+      context.drawImage(wallImage, col * maze.cellWidth, maze.height * maze.cellHeight, 500, 148);
+    }
 
-    context.moveTo(maze.width * maze.cellWidth, 0);
-  	context.lineTo(maze.width * maze.cellWidth, maze.height * maze.cellHeight);
+    for(let row = 0; row < maze.height; row++){
+      var wallImage = new Image();
+      wallImage.src = 'assets/VerticalWall.png';
+      context.drawImage(wallImage, maze.width * maze.cellWidth - 50, row * maze.cellHeight, 128, 650);
+    }
 
     context.stroke();
     context.restore();
@@ -247,14 +253,16 @@ var graphics = (function(){
     //added physics bodies and updated the position of their bodies
     //NORTH
     if(cell.edges.n.hasOwnProperty('position')){
-      context.moveTo(cellLeft, cellTop);
-  		context.lineTo(cellLeft + cellW, cellTop);
+      var wallImage = new Image();
+      wallImage.src = 'assets/RuggedWall.png';
+      context.drawImage(wallImage, cellLeft, cellTop, 500, 148);
     }
 
     //WEST
     if(cell.edges.w.hasOwnProperty('position')){
-      context.moveTo(cellLeft, cellTop);
-  		context.lineTo(cellLeft, cellTop + cellH);
+      var wallImage = new Image();
+      wallImage.src = 'assets/VerticalWall.png';
+      context.drawImage(wallImage, cellLeft - 30, cellTop, 128, 650);
     }
   }
 
