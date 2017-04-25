@@ -14,7 +14,8 @@ var game = (function(){
     var enemyCategory = 0x0003;
 
     var healthBar;
-    var keys = [];
+    var keyStats = [], keys = [];
+    let maxKeys;
 
   that.initialize = function(load){
     renderGraphics = true;
@@ -29,9 +30,7 @@ var game = (function(){
     // physics.setFrictionAir(0.075, characterBody);  //how much friction in the air when it moves
     // physics.setRestitution(2,characterBody);      //how bouncy/elastic
     //end
-
-    audio.initialize();
-
+    maxKeys = 1;
     let imgChar = new Image();
     imgChar.src = "assets/linkToThePast.png";
 
@@ -57,8 +56,8 @@ var game = (function(){
           radiusSq: (1000*(1/100)*(1000*(1/100))),
           isDead: false,
           isHit:false,
-          body: physics.createCircleBody((1000/2) + 60, (1000/2) + 70, 40),
-          sensor: physics.createSensorBody((1000/2) + 60, (1000/2) + 70, 75, 75),
+          body: physics.createCircleBody((maze.cellWidth/2) + 60, (maze.cellHeight/2) + 70, 40),
+          sensor: physics.createSensorBody((maze.cellWidth/2) + 60, (maze.cellHeight/2) + 70, 75, 75),
           direction: 'down',
           attacking: false,
           coolDown: 0,
@@ -108,8 +107,10 @@ var game = (function(){
     graphics.initialize(maze);
 
     //key slot for the character
-    for(let amount = 0; amount < 3; amount++){
-      keys.push(Stats.StatItem({
+    for(let amount = 0; amount < maxKeys; amount++){
+      keys[amount] = objects.Key(math.randomLocation(maze.width, maze.height, maze.cellWidth), maze);
+
+      keyStats.push(Stats.StatItem({
         tag: 'key',
         image: 'assets/missing-key.png',
         position: {x: 400 + 75 * amount, y:10},
@@ -295,8 +296,9 @@ var game = (function(){
     Stats.returnContext().clear();
     healthBar.render();
 
-    for(let key = 0; key < keys.length; key++){
-      keys[key].render();
+    for(let key = 0; key < keyStats.length; key++){
+      if(key < keys.length) keys[key].render();
+      keyStats[key].render();
     }
 
   };

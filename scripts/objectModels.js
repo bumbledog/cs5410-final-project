@@ -34,15 +34,10 @@ var objects = (function(){
 
     imgBat = new Image();
     imgBat.src = "assets/bat.png";
+
+    imgKey = new Image();
+    imgKey.src = "assets/key.png";
   };
-
-
-
-  function randomLocation(width,height, size){
-    let randLoc = {x:Math.random()*size*width, y:Math.random()*size*height};
-
-      return randLoc;
-  }
 
   function randPotLocation(){
       let randLoc = {x:Math.random()*1000, y:Math.random()*1000};
@@ -103,7 +98,7 @@ var objects = (function(){
             pixelHeight: 32
           });
         }
-          let randLoc = randomLocation(width, height, size);
+          let randLoc = math.randomLocation(width, height, size);
           enemies.push(that.Character({
               sprite: enemySprite,
               enemyType: chooseSprite,
@@ -324,7 +319,7 @@ var objects = (function(){
           }
           //spec.isHit = false;
 
-          
+
           return false;
           //WILL NEED TO BE CHANGED. JUST WRITTEN LIKE THIS FOR CHARACTER MOVEMENT TESTING
       };
@@ -489,7 +484,7 @@ var objects = (function(){
           return (distance < Math.pow(spec.radius + other.radius, 2));
       }
 
-      
+
 
       return that;
   };
@@ -503,6 +498,23 @@ var objects = (function(){
       }
   };
 
+  that.Key = function(spec, maze){
+    //keep the keys from generating in walls
+    if(spec.x % maze.cellWidth < 20) spec.x + 20;
+    if(spec.y % maze.cellWidth < 20) spec.y + 20;
+    let that = {
+      //x: spec.x, y:spec.y, image:imgKey
+      x: 30, y:30, image:imgKey
+    };
+
+    that.update = function(){};
+    that.render = function(){
+      graphics.drawCharacter(that);
+    };
+
+    return that;
+  }
+
   return that;
 }());
 
@@ -510,6 +522,15 @@ var math = (function(){
     let that = {};
     let usePrevious = false;
     let y2, x1, x2, z;
+
+that.randomLocation = function(width,height, size){
+      let randLoc;
+      do{
+        randLoc = {x:Math.random()*size*width, y:Math.random()*size*height};
+      }while(randLoc.x < size && randLoc.y < size) //keeps enemies out of starting block for fairness sake
+
+        return randLoc;
+    }
 
  that.gaussian = function(mean, stdDev){   //performs a gaussian distribution.
       if(usePrevious){               //I use this function to initialize how many enemies are generated.

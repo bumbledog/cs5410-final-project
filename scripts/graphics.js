@@ -11,6 +11,7 @@ var graphics = (function(){
   let visible = [];
   let camera;
   let tiles;
+  let wallImage1, wallImage2;
 
   that.initialize = function(maze){
     canvas = document.getElementById('canvas-main');
@@ -25,6 +26,12 @@ var graphics = (function(){
     statCanvas = document.getElementById('stats');
     statContext = statCanvas.getContext('2d');
     //end
+
+    wallImage1 = new Image();
+    wallImage1.src = 'assets/RuggedWall.png';
+
+    wallImage2 = new Image();
+    wallImage2.src = 'assets/VerticalWall.png';
 
     tiles = {
       size: 500,
@@ -209,15 +216,11 @@ var graphics = (function(){
 
     //draw the south and east edges
     for(let col = 0; col < maze.width; col++){
-      var wallImage = new Image();
-      wallImage.src = 'assets/RuggedWall.png';
-      context.drawImage(wallImage, col * maze.cellWidth, maze.height * maze.cellHeight, 500, 148);
+      context.drawImage(wallImage1, col * maze.cellWidth, maze.height * maze.cellHeight, 500, 148);
     }
 
     for(let row = 0; row < maze.height; row++){
-      var wallImage = new Image();
-      wallImage.src = 'assets/VerticalWall.png';
-      context.drawImage(wallImage, maze.width * maze.cellWidth - 50, row * maze.cellHeight, 128, 650);
+      context.drawImage(wallImage2, maze.width * maze.cellWidth - 50, row * maze.cellHeight, 128, 650);
     }
 
     context.stroke();
@@ -253,16 +256,12 @@ var graphics = (function(){
     //added physics bodies and updated the position of their bodies
     //NORTH
     if(cell.edges.n.hasOwnProperty('position')){
-      var wallImage = new Image();
-      wallImage.src = 'assets/RuggedWall.png';
-      context.drawImage(wallImage, cellLeft, cellTop, 500, 148);
+      context.drawImage(wallImage1, cellLeft, cellTop, 500, 148);
     }
 
     //WEST
     if(cell.edges.w.hasOwnProperty('position')){
-      var wallImage = new Image();
-      wallImage.src = 'assets/VerticalWall.png';
-      context.drawImage(wallImage, cellLeft - 30, cellTop, 128, 650);
+      context.drawImage(wallImage2, cellLeft - 30, cellTop, 128, 650);
     }
   }
 
