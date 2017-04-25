@@ -100,6 +100,23 @@ var physics = (function(){
                     //bodyB is the enemy
                     if(enemyMatchingId(enemies, pair.bodyB.id) !== undefined){
                         character.setHit();
+
+                        if(enemyMatchingId(enemies, pair.bodyB.id).returnDirection() === 'right'){
+                            Matter.Body.setPosition(pair.bodyB, {x: pair.bodyB.position.x - 30, y: pair.bodyB.position.y});
+                            Matter.Body.setVelocity(pair.bodyB, { x: 7, y: 3 });
+                        }
+                        if(enemyMatchingId(enemies, pair.bodyB.id).returnDirection() === 'left'){
+                            Matter.Body.setPosition(pair.bodyB, {x: pair.bodyB.position.x + 30, y: pair.bodyB.position.y});
+                            Matter.Body.setVelocity(pair.bodyB, { x: 7, y: 3 });
+                        }
+                        if(enemyMatchingId(enemies, pair.bodyB.id).returnDirection() === 'up'){
+                            Matter.Body.setPosition(pair.bodyB, {x: pair.bodyB.position.x, y: pair.bodyB.position.y + 30});
+                            Matter.Body.setVelocity(pair.bodyB, { x: 3, y: 7 });
+                        }
+                        if(enemyMatchingId(enemies, pair.bodyB.id).returnDirection() === 'down'){
+                            Matter.Body.setPosition(pair.bodyB, {x: pair.bodyB.position.x, y: pair.bodyB.position.y - 30});
+                            Matter.Body.setVelocity(pair.bodyB, { x: 3, y: 7 });
+                        }
                     }
                     //character.setFalseHit();
                     //console.log('hit');
@@ -109,6 +126,23 @@ var physics = (function(){
                     //bodyA is the enemy
                     if(enemyMatchingId(enemies, pair.bodyA.id) !== undefined){
                         character.setHit();
+
+                        if(enemyMatchingId(enemies, pair.bodyA.id).returnDirection() === 'right'){
+                            Matter.Body.setPosition(pair.bodyA, {x: pair.bodyA.position.x - 30, y: pair.bodyA.position.y});
+                            Matter.Body.setVelocity(pair.bodyA, { x: 7, y: 3 });
+                        }
+                        if(enemyMatchingId(enemies, pair.bodyA.id).returnDirection() === 'left'){
+                            Matter.Body.setPosition(pair.bodyA, {x: pair.bodyA.position.x + 30, y: pair.bodyA.position.y});
+                            Matter.Body.setVelocity(pair.bodyA, { x: 7, y: 3 });
+                        }
+                        if(enemyMatchingId(enemies, pair.bodyA.id).returnDirection() === 'up'){
+                            Matter.Body.setPosition(pair.bodyA, {x: pair.bodyA.position.x, y: pair.bodyA.position.y + 30});
+                            Matter.Body.setVelocity(pair.bodyA, { x: 3, y: 7 });
+                        }
+                        if(enemyMatchingId(enemies, pair.bodyA.id).returnDirection() === 'down'){
+                            Matter.Body.setPosition(pair.bodyA, {x: pair.bodyA.position.x, y: pair.bodyA.position.y - 30});
+                            Matter.Body.setVelocity(pair.bodyA, { x: 3, y: 7 });
+                        }
                     }
                     //character.setFalseHit();
                     //console.log('hit');
@@ -390,14 +424,14 @@ var physics = (function(){
             let cellTop = cell.y * grid.cellHeight;
 
             if(cell.edges.n !== false){
-              cell.edges.n = physics.createRectangleBody((cellLeft + (grid.cellWidth)/2), cellTop, grid.cellWidth, 50);
+              cell.edges.n = physics.createRectangleBody((cellLeft + (grid.cellWidth)/2), cellTop + 35, grid.cellWidth, 70);
               physics.setID(cell.edges.n, count);
               physics.setStaticBody(cell.edges.n , true);
               physics.addToWorld(cell.edges.n);
             }
 
             if(cell.edges.w !== false){
-              cell.edges.w = physics.createRectangleBody(cellLeft, (cellTop + (grid.cellHeight)/2), 50, grid.cellHeight);
+              cell.edges.w = physics.createRectangleBody(cellLeft + 35, (cellTop + (grid.cellHeight)/2), 70, grid.cellHeight);
               physics.setID(cell.edges.w, count);
               physics.setStaticBody(cell.edges.w , true);
               physics.addToWorld(cell.edges.w);
@@ -405,14 +439,14 @@ var physics = (function(){
             count++;
           }
         }
-        let southWall = physics.createRectangleBody(0, grid.height * grid.cellHeight, grid.width * grid.cellWidth * 2, 50);
+        let southWall = physics.createRectangleBody(0, grid.height * grid.cellHeight + 35, grid.width * grid.cellWidth * 2, 70);
         physics.setID(southWall, count);
         physics.setStaticBody(southWall, true);
         physics.addToWorld(southWall);
 
         count++;
 
-        let northWall = physics.createRectangleBody(grid.width * grid.cellWidth, 0, 50, grid.height * grid.cellHeight * 2);
+        let northWall = physics.createRectangleBody(grid.width * grid.cellWidth + 35, 0, 70, grid.height * grid.cellHeight * 2);
         physics.setID(northWall, count);
         physics.setStaticBody(northWall, true);
         physics.addToWorld(northWall);
