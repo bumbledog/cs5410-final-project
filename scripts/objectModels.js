@@ -116,6 +116,7 @@ var objects = (function(){
               isDead: false,
               isHit: false,
               center: randLoc,
+              direction: null,
               health: 2,
               tag: 'Enemy',
               body: physics.createRectangleBody(randLoc.x + 1, randLoc.y + 7, 60, 60)
@@ -123,6 +124,7 @@ var objects = (function(){
       }
 
       for(let i = 0; i < enemies.length; i++) {
+        physics.setRestitution(50, enemies[i]);
         physics.setID(enemies[i].returnCharacterBody(), i);
         enemies[i].addBodyToWorld();
       }
@@ -274,18 +276,22 @@ var objects = (function(){
 
           if(charDistanceX > 0){
             Matter.Body.applyForce(spec.body, spec.body.position, {x: 0.0005 * spec.body.mass, y:0});
+            spec.direction = 'right';
           }
 
           else{
               Matter.Body.applyForce(spec.body, spec.body.position, {x: -0.0005 * spec.body.mass, y:0});
+              spec.direction = 'left';
           }
 
           if(charDistanceY > 0){
               Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:0.0005 * spec.body.mass});
+              spec.direction = 'down';
           }
 
           else{
               Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:-0.0005 * spec.body.mass});
+              spec.direction = 'up';
           }
 
       };
