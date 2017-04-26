@@ -279,6 +279,7 @@ var graphics = (function(){
 
   }
 
+<<<<<<< HEAD:public/scripts/graphics.js
   that.renderEnemies = function(elapsedTime, enemies, character){
     let count1 = 0;
         count2 = 0;
@@ -308,6 +309,13 @@ var graphics = (function(){
      audio.sounds['assets/bat-sound'].pause()
    }
   }
+=======
+  that.drawKey = function(spec){
+    //draw the character and the body in the same aread
+    context.drawImage(spec.image,
+    (spec.center.x - (spec.width)/2), (spec.center.y - (spec.height)/2), spec.width, spec.height)
+  };
+>>>>>>> 4187365d40f70b8af003eb1293f29b594f9a1459:scripts/graphics.js
 
   that.drawKey = function(spec){
     //draw the character and the body in the same aread

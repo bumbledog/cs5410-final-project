@@ -9,6 +9,11 @@ var game = (function(){
   let maxKeys;
   let visibleObjects = [];
 
+  let keyStats = [];
+  let exitKeys = [];
+  let maxKeys;
+  let visibleObjects = [];
+
   that.y = {};
   let renderGraphics;
   let character, enemies, particles;
@@ -32,7 +37,6 @@ var game = (function(){
     // physics.setFrictionAir(0.075, characterBody);  //how much friction in the air when it moves
     // physics.setRestitution(2,characterBody);      //how bouncy/elastic
     //end
-
     let imgChar = new Image();
     imgChar.src = "assets/linkToThePast.png";
     maxKeys = 4;
@@ -358,6 +362,7 @@ var game = (function(){
        addScore(score);
        document.getElementById("score").innerHTML = "You Scored " + score + " points";
        navigation.showScreen('game-over');
+
   }
 
   return that;
