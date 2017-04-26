@@ -455,7 +455,7 @@ var objects = (function(){
                   //audio.pauseSound('assets/bat-sound');
 
               }
-              
+
             if(spec.health < 1){
                 spec.isDead = true;
             }
@@ -530,9 +530,11 @@ var objects = (function(){
       tag: "item"
     };
 
+    //pick up distance
     that.update = function(elapsedTime, position){
       if(Math.abs(that.center.x - position.x) < 30 && Math.abs(that.center.y - position.y) < 50) that.isDead = true;
     };
+    //basic render
     that.render = function(){
       graphics.drawKey(that);
     };

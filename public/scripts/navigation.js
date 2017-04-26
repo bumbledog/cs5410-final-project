@@ -180,10 +180,47 @@ navigation.screens['high-scores'] = function(){
 navigation.screens['levelUp'] = function(){
   let that = {};
   that.initialize = function(){
-    document.getElementById('nextLevel').addEventListener('click', function() {
+    let upgradeControl = [];
+    upgradeControl['health'] = document.getElementById('healthUpgrade');
+    upgradeControl['attack'] = document.getElementById('attackUpgrade');
+    upgradeControl['item'] = document.getElementById('itemUpgrade');
+
+    upgradeControl['health'].addEventListener('click', function() {
+      game.upgrade['health'] = true;
       game.initialize(false);
       navigation.showScreen('game');
+      upgradeControl[upgrade].disabled = true;
     });
+
+    upgradeControl['attack'].addEventListener('click', function() {
+      game.upgrade['attack'] = true;
+      game.initialize(false);
+      navigation.showScreen('game');
+      upgradeControl[upgrade].disabled = true;
+    });
+
+    upgradeControl['item'].addEventListener('click', function() {
+      game.upgrade['item'] = true;
+      game.initialize(false);
+      navigation.showScreen('game');
+      upgradeControl[upgrade].disabled = true;
+    });
+
+
+    that.registerUpgrades = function(){
+      for(var upgrade in upgradeControl){
+        if(upgradeControl.hasOwnProperty(upgrade)){
+          upgradeControl[upgrade].disabled = false;
+        }
+      }
+
+      for(var upgrade in game.upgrades){
+        if(game.upgrades.hasOwnProperty(upgrade)){
+          upgradeControl[upgrade].disabled = true;
+        }
+      }
+    }
+
   };
   return that;
 }();
