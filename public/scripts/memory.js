@@ -50,7 +50,8 @@ var memory = (function(){
   };
 
   that.saveGame = function(spec){
-    localStorage['gameState'] = JSON.stringify(spec);
+    gameState = spec;
+    localStorage['gameState'] = JSON.stringify(gameState);
   };
 
   that.resetGame = function(){

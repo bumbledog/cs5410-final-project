@@ -4,7 +4,7 @@ game.Maze = function(spec){
   grid.height = spec.height;
   grid.cellHeight = spec.cellHeight;
   grid.cellWidth = spec.cellWidth;
-  let braidPercent = .6;
+  let braidPercent = .95;
 
   //create Empty Grid
   for(let col = 0; col < spec.width; col++){

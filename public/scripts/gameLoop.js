@@ -4,6 +4,11 @@ var game = (function(){
   let boxA;
   let score = 500;
 
+  let keyStats = [];
+  let exitKeys = [];
+  let maxKeys;
+  let visibleObjects = [];
+
   that.y = {};
   let renderGraphics;
   let character, enemies, particles;
@@ -13,9 +18,6 @@ var game = (function(){
     var defaultCategory = 0x0001;
     var characterCategory = 0x0002;
     var enemyCategory = 0x0003;
-
-    var healthBar;
-    var keys = [];
 
   that.initialize = function(load){
     renderGraphics = true;
@@ -31,10 +33,12 @@ var game = (function(){
     // physics.setRestitution(2,characterBody);      //how bouncy/elastic
     //end
 
-    //audio.initialize();
-
     let imgChar = new Image();
     imgChar.src = "assets/linkToThePast.png";
+    maxKeys = 4;
+    Stats.initialize(maxKeys);
+    //key slot for the character
+
 
     let previousGame = memory.loadGame();
 
@@ -58,19 +62,22 @@ var game = (function(){
           radiusSq: (1000*(1/100)*(1000*(1/100))),
           isDead: false,
           isHit:false,
-          body: physics.createCircleBody((1000/2) + 60, (1000/2) + 70, 40),
-          sensor: physics.createSensorBody((1000/2) + 60, (1000/2) + 70, 75, 75),
+          body: physics.createCircleBody((maze.cellWidth/2) + 60, (maze.cellHeight/2) + 70, 40),
+          sensor: physics.createSensorBody((maze.cellWidth/2) + 60, (maze.cellHeight/2) + 70, 75, 75),
           direction: 'down',
           attacking: false,
           coolDown: 0,
           tag: 'Character',
           center: {x:1000/2, y:1000/2},
           health: 5,
-          keys: 0,
-          keyInventory: keys //relates to the key images
+          keys: 0
       });
 
-      enemies = objects.initializeEnemies(50, maze.width, maze.height, maze.cellWidth);
+      enemies = objects.initializeEnemies(30, maze.width, maze.height, maze.cellWidth);
+
+      for(let amount = 0; amount < maxKeys; amount++){
+        exitKeys[amount] = objects.Key(math.randomLocation(maze.width, maze.height, maze.cellWidth), maze);
+      }
     }
     //load game
     else{
@@ -99,25 +106,20 @@ var game = (function(){
           tag: 'Character',
           center: previousGame.character.center,
           health: previousGame.character.health,
-          keys: previousGame.character.keys,
-          keyInventory: previousGame.character.keyInventory //relates to the key images
+          keys: 0
       });
 
+      Stats.updateHealth(previousGame.character.health);
+      for(let i = 0; i < previousGame.character.keys; i++){
+        character.addKey();
+      }
+
       enemies = objects.loadEnemies(previousGame.enemies);
+
+      exitKeys = objects.loadKeys(previousGame.keys, maze)
     }
 
     graphics.initialize(maze);
-
-    //key slot for the character
-    for(let amount = 0; amount < 3; amount++){
-      keys.push(Stats.StatItem({
-        tag: 'key',
-        image: 'assets/missing-key.png',
-        position: {x: 400 + 75 * amount, y:10},
-        width: 100,
-        height: 100
-      }));
-    }
 
     //physics character body:
     physics.addCollisionFilter(character.returnSensor(), enemyCategory);
@@ -140,22 +142,6 @@ var game = (function(){
     physics.eventSensorStart(character, enemies);
     physics.eventSensorActive(character, enemies);
     physics.eventSensorEnd(character, enemies);
-
-
-    //stats initialize
-    Stats.initialize();
-
-    //creates and initializes a healthbar for the character
-    healthBar = Stats.StatItem({
-        tag: 'healthBar',
-        health: character.returnHealth(),
-        image: 'assets/healthBar5-5.png',
-        position: {x: 10, y: 10},
-        width: 400,
-        height: 100
-    });
-
-    objects.buildQuadTree(8, enemies, maze.length*maze.cellWidth);
 
     //allow enemies to damage character
     physics.enemyDamageEvent(character, enemies);
@@ -225,13 +211,15 @@ var game = (function(){
   function update(elapsedTime){
 
     //console.log(character.returnIsHit());
-    console.log(character.returnHealth());
+    //console.log(character.returnHealth());
 
     character.update(elapsedTime);
 
     graphics.setOffset(character.center.x, character.center.y);
 
-    objects.buildQuadTree(8, enemies, maze.width*maze.cellWidth);
+    //we pass all the objects we want to be in the visible objects in one array
+    objects.buildQuadTree(8, exitKeys.concat(enemies), maze.width*maze.cellWidth);
+    visibleObjects = objects.quadTree.visibleObjects(graphics.defineCamera(character.center.x, character.center.y));
 
     that.dustParticles.update(elapsedTime);
     for(let i = 0; i < particles.length; i++){
@@ -242,22 +230,32 @@ var game = (function(){
       }
     }
 
-    // function could be changed so that only enemies
-    //close to Link are updated. This would improve efficiency
-    for(i = 0; i < enemies.length; i++){
-      enemies[i].update(elapsedTime, character.center);
-      if(enemies[i].isDead === true){
-        //make ParticleSystem
-        let enemiesDissolve = ParticleSystem({
-          image: "assets/enemyDeath.png",
-          size: 20,
-          speed: 30,
-          lifetime: {avg: .3, dist: .2}
-        });
-        enemiesDissolve.createParticles(20, enemies[i].center.x, enemies[i].center.y, 25);
-        particles.push(enemiesDissolve);
-        physics.removeFromWorld(enemies[i].body);
-        enemies.splice(i--, 1);
+    for(let enemy = 0; enemy < visibleObjects.length; enemy++){
+      visibleObjects[enemy].update(elapsedTime, character.center);
+      if(visibleObjects[enemy].isDead === true){
+        //enemy killed
+        if(visibleObjects[enemy].tag === "Enemy"){
+          //make ParticleSystem
+          let enemiesDissolve = ParticleSystem({
+            image: "assets/enemyDeath.png",
+            size: 20,
+            speed: 30,
+            lifetime: {avg: .3, dist: .2}
+          });
+          enemiesDissolve.createParticles(20, visibleObjects[enemy].center.x, visibleObjects[enemy].center.y, 25);
+          particles.push(enemiesDissolve);
+          //remove dead enemy from world
+          let index = enemies.indexOf(visibleObjects[enemy]);
+          physics.removeFromWorld(enemies[index].body);
+          enemies.splice(index, 1);
+        }
+        //pick up key
+        else if(visibleObjects[enemy].tag === "item"){
+          let index = exitKeys.indexOf(visibleObjects[enemy]);
+          exitKeys.splice(index, 1);
+          character.addKey();
+        }
+        visibleObjects.splice(enemy--, 1);
       }
     }
 
@@ -266,14 +264,12 @@ var game = (function(){
     graphics.setOffset(character.returnCharacterBody().position.x, character.returnCharacterBody().position.y);
 
     //console.log(character.returnDirection());
-     healthBar.update(character);
      if(character.isDead){
        that.quit();
      }
   };
 
   function render(elapsedTime){
-
     //only render background when character moves
     //TODO: move this to update only when the OFFSET changes!!!
     graphics.renderTiles(maze, character);
@@ -294,15 +290,12 @@ var game = (function(){
       particles[i].render();
     }
 
-    graphics.renderEnemies(elapsedTime, enemies,character);
-    character.render(elapsedTime);
-    Stats.returnContext().clear();
-    healthBar.render();
-
-    for(let key = 0; key < keys.length; key++){
-      keys[key].render();
+    for(let object = 0; object < visibleObjects.length; object++){
+      visibleObjects[object].render(elapsedTime);
     }
 
+    character.render(elapsedTime);
+    Stats.render();
   };
 
   that.saveGame = function(){
@@ -328,6 +321,12 @@ var game = (function(){
       }
     }
 
+    let saveKeys = [];
+    for(let i = 0; i < exitKeys.length; i++){
+      let current = exitKeys[i];
+      saveKeys.push(current.center);
+    }
+
     let saveEnemies = [];
     for(let i = 0; i < enemies.length; i++){
       let current = enemies[i];
@@ -348,7 +347,8 @@ var game = (function(){
     {
       maze: saveMaze,
       character: saveCharacter,
-      enemies: saveEnemies
+      enemies: saveEnemies,
+      keys: saveKeys
     }
     memory.saveGame(spec);
   }
