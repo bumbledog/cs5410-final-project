@@ -1,0 +1,24 @@
+{
+  "name": "webservice",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.15.2"
+  },
+  "description": "- Gameplay - 35\r - Menuing - 10\r - Reconfig controls - 15\r - Particle effects - 15\r - Server based highscores - 10\r - Animation - 10\r - Sound and Music - 10\r - AI enemy - 10\r - Tile rendering - 15\r - 2D Camera - 20\r - Procedural generation - 25\r - Player Progression - 10\r - 2D physics Integration - 20\r - Save game - 20\r - Frustum Culling - 20\r - Enemy Triggering - 10",
+  "main": "index.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bumbledog/cs5410-final-project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bumbledog/cs5410-final-project/issues"
+  },
+  "homepage": "https://github.com/bumbledog/cs5410-final-project#readme"
+}
