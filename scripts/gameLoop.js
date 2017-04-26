@@ -12,6 +12,7 @@ var game = (function(){
   let renderGraphics;
   let character, enemies, particles;
   that.dustParticles;
+  that.level = 1;
 
     //categories:
     var defaultCategory = 0x0001;
@@ -25,31 +26,59 @@ var game = (function(){
 
     //physics initialize
     physics.initialize();
-    // characterBody = physics.createRectangleBody(800, 800, 75, 75);
+    // characterBody = physics.createRectanglceBody(800, 800, 75, 75);
     // physics.addToWorld(characterBody);
     // //physics.setStaticBody(boxA, true);
     // physics.setFrictionAir(0.075, characterBody);  //how much friction in the air when it moves
     // physics.setRestitution(2,characterBody);      //how bouncy/elastic
     //end
-    let imgChar = new Image();
-    imgChar.src = "assets/linkToThePast.png";
-    maxKeys = 4;
-    Stats.initialize(maxKeys);
-    //key slot for the character
-
 
     let previousGame = memory.loadGame();
+    if(load){ that.level = previousGame.level}
 
+    let imgChar = new Image();
+    imgChar.src = "assets/linkToThePast.png";
+    if(that.level === 1){ maxKeys = 2; }
+    else if(that.level === 2){ maxKeys = 3;}
+    else if(that.level === 3){ maxKeys = 5;}
+    Stats.initialize(maxKeys);
+
+    //not a save game
     if (!load || previousGame === undefined || previousGame === {}){
+      let numEnemies;
 
-      maze = that.Maze({
-        height: 5,
-        width: 8,
-        biomes: 4,
-        cellHeight: 500,
-        cellWidth: 500
-      });
+      if(that.level === 1){
+        maze = that.Maze({
+          height: 5,
+          width: 8,
+          biomes: 4,
+          cellHeight: 500,
+          cellWidth: 500
+        });
 
+        numEnemies = 20;
+      }
+      else if(that.level === 2){
+        maze = that.Maze({
+          height: 7,
+          width: 9,
+          biomes: 4,
+          cellHeight: 500,
+          cellWidth: 500
+        });
+
+        numEnemies = 45;
+      }else if(that.level === 3){
+        maze = that.Maze({
+          height: 16,
+          width: 16,
+          biomes: 4,
+          cellHeight: 500,
+          cellWidth: 500
+        });
+
+        numEnemies = 100;
+      }
       objects.initialize(maze.width, maze.height);
 
       character = objects.Character({
@@ -71,7 +100,7 @@ var game = (function(){
           keys: 0
       });
 
-      enemies = objects.initializeEnemies(30, maze.width, maze.height, maze.cellWidth);
+      enemies = objects.initializeEnemies(numEnemies, maze.width, maze.height, maze.cellWidth);
 
       for(let amount = 0; amount < maxKeys; amount++){
         exitKeys[amount] = objects.Key(math.randomLocation(maze.width, maze.height, maze.cellWidth), maze);
@@ -143,6 +172,8 @@ var game = (function(){
 
     //allow enemies to damage character
     physics.enemyDamageEvent(character, enemies);
+
+    canExit = false;
 
     gameLoop();
   };
@@ -260,6 +291,22 @@ var game = (function(){
     //set the offset to the body position
     //we dont use quite use offset anymore
     graphics.setOffset(character.returnCharacterBody().position.x, character.returnCharacterBody().position.y);
+
+    //open the exit
+    if(character.returnKeyTotal() === maxKeys){
+      graphics.openDoor();
+      //let the character exit
+      let distanceToDoorX = Math.abs(character.center.x - maze.width * maze.cellWidth + maze.cellWidth / 2);
+      if(distanceToDoorX < 20 && character.center.y < 120){
+        if(that.level < 3){
+          navigation.showScreen('levelUp');
+          that.level++;
+        }else{
+          navigation.showScreen('win');
+        }
+        that.quit();
+      }
+    }
   };
 
   function render(elapsedTime){
@@ -341,13 +388,14 @@ var game = (function(){
       maze: saveMaze,
       character: saveCharacter,
       enemies: saveEnemies,
-      keys: saveKeys
+      keys: saveKeys,
+      level: that.level
     }
     memory.saveGame(spec);
   }
 
   that.quit = function(){
-    
+
     canceled = true;
   }
 

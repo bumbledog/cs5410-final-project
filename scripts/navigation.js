@@ -50,6 +50,7 @@ navigation.screens['menu'] = function(){
   that.initialize = function(){
     document.getElementById('newGame').addEventListener('click', function() {
       navigation.showScreen('game');
+      game.level = 1;
       game.initialize(false); //start a new game
     });
     document.getElementById('loadGame').addEventListener('click', function() {
@@ -163,6 +164,27 @@ navigation.screens['high-scores'] = function(){
   let that = {};
   that.initialize = function(){
     document.getElementById('scores-menu').addEventListener('click', function() {
+      navigation.showScreen('menu');
+    });
+  };
+  return that;
+}();
+
+navigation.screens['levelUp'] = function(){
+  let that = {};
+  that.initialize = function(){
+    document.getElementById('nextLevel').addEventListener('click', function() {
+      game.initialize(false);
+      navigation.showScreen('game');
+    });
+  };
+  return that;
+}();
+
+navigation.screens['win'] = function(){
+  let that = {};
+  that.initialize = function(){
+    document.getElementById('win-menu').addEventListener('click', function() {
       navigation.showScreen('menu');
     });
   };
