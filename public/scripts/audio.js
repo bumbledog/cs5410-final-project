@@ -39,12 +39,6 @@ function loadAudio(){
     that.sounds['assets/sword-hit'].volume = 0.05;
     that.sounds['assets/slime-sound'].volume = 0.50;
     that.sounds['assets/bat-sound'].volume = 0.07;
-
-<<<<<<< HEAD:public/scripts/audio.js
-=======
-    that.sounds['assets/main-menu-music'].volume = 0.0;
-    that.sounds['assets/song-1'].volume = 0.0;
->>>>>>> 4187365d40f70b8af003eb1293f29b594f9a1459:scripts/audio.js
 };
 
 loadAudio();
