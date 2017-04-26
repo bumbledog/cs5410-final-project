@@ -279,13 +279,11 @@ var graphics = (function(){
 
   }
 
-  that.renderEnemies = function(elapsedTime, enemies, character){
-
-   visible = objects.quadTree.visibleObjects(that.defineCamera(character.center.x, character.center.y));
-   for(let enemy = 0; enemy < visible.length; enemy++){
-     visible[enemy].render(elapsedTime);
-   }
-  }
+  that.drawKey = function(spec){
+    //draw the character and the body in the same aread
+    context.drawImage(spec.image,
+    (spec.center.x - (spec.width)/2), (spec.center.y - (spec.height)/2), spec.width, spec.height)
+  };
 
   //draw the character
   that.drawCharacter = function(spec){

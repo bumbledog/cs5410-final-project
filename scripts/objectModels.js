@@ -210,7 +210,8 @@ var objects = (function(){
           get isHit(){return spec.isHit},
           get isDead(){return spec.isDead},
           get body(){return spec.body},
-          get enemyType(){ return spec.enemyType }
+          get enemyType(){ return spec.enemyType },
+          get tag(){return spec.tag}
       };
 
       //adds the body to the physics world
@@ -350,6 +351,10 @@ var objects = (function(){
         return spec.keys;
       };
 
+      that.addKey = function(){
+        spec.keys++;
+      };
+
       //programmically updates the key stat image on the overly
       //whenever the character gets a new key
       function updateKeys(){
@@ -484,8 +489,6 @@ var objects = (function(){
           return (distance < Math.pow(spec.radius + other.radius, 2));
       }
 
-
-
       return that;
   };
 
@@ -500,19 +503,41 @@ var objects = (function(){
 
   that.Key = function(spec, maze){
     //keep the keys from generating in walls
-    if(spec.x % maze.cellWidth < 20) spec.x + 20;
-    if(spec.y % maze.cellWidth < 20) spec.y + 20;
+    if(spec.x % maze.cellWidth < 125) spec.x += 125;
+    if(spec.y % maze.cellHeight < 200) spec.y += 200;
+    if(spec.y % maze.cellHeight > 475) spec.y -= 75;
     let that = {
       //x: spec.x, y:spec.y, image:imgKey
-      x: 30, y:30, image:imgKey
+      center: {x: spec.x, y:spec.y},
+      image: imgKey,
+      width: 75, height: 75,
+      radius: 75/2,
+      isDead: false,
+      tag: "item"
     };
 
-    that.update = function(){};
-    that.render = function(){
-      graphics.drawCharacter(that);
+    that.update = function(elapsedTime, position){
+      if(Math.abs(that.center.x - position.x) < 30 && Math.abs(that.center.y - position.y) < 50) that.isDead = true;
     };
+    that.render = function(){
+      graphics.drawKey(that);
+    };
+
+    that.intersects = function(other) {
+  		var distance = Math.pow((that.center.x - other.center.x), 2) + Math.pow((that.center.y - other.center.y), 2);
+
+  		return (distance < Math.pow(that.radius + other.radius, 2));
+  	};
 
     return that;
+  }
+
+  that.loadKeys = function(array, maze){
+    let key = [];
+    for(let i = 0; i < array.length; i++){
+      key.push(that.Key(array[i], maze));
+    }
+    return key;
   }
 
   return that;
@@ -523,124 +548,124 @@ var math = (function(){
     let usePrevious = false;
     let y2, x1, x2, z;
 
-that.randomLocation = function(width,height, size){
-      let randLoc;
-      do{
-        randLoc = {x:Math.random()*size*width, y:Math.random()*size*height};
-      }while(randLoc.x < size && randLoc.y < size) //keeps enemies out of starting block for fairness sake
+  that.randomLocation = function(width,height, size){
+        let randLoc;
+        do{
+          randLoc = {x:Math.random()*size*width, y:Math.random()*size*height};
+        }while(randLoc.x < size && randLoc.y < size) //keeps enemies out of starting block for fairness sake
 
-        return randLoc;
-    }
-
- that.gaussian = function(mean, stdDev){   //performs a gaussian distribution.
-      if(usePrevious){               //I use this function to initialize how many enemies are generated.
-          usePrevious = false;
-          return mean + y2*stdDev;
+          return randLoc;
       }
 
-      usePrevious = true;
+   that.gaussian = function(mean, stdDev){   //performs a gaussian distribution.
+        if(usePrevious){               //I use this function to initialize how many enemies are generated.
+            usePrevious = false;
+            return mean + y2*stdDev;
+        }
 
-      do{
-          x1 = 2*Math.random() - 1;
-          x2 = 2*Math.random() - 1;
-          z = (x1*x1) + (x2*x2);
-      } while(z>=1);
+        usePrevious = true;
 
-      z = Math.sqrt((-2*Math.log(z)));
-      y1 = x1*z;
-      y2 = x2*z;
-      return mean + y1*stdDev;
-  }
+        do{
+            x1 = 2*Math.random() - 1;
+            x2 = 2*Math.random() - 1;
+            z = (x1*x1) + (x2*x2);
+        } while(z>=1);
 
-  that.circleVector = function() {
-		var angle = Math.random() * 2 * Math.PI;
-		return {
-			x: Math.cos(angle),
-			y: Math.sin(angle)
-		};
-	}
-
-
-
-that.Circle = function(spec) {
-	'use strict';
-	var radiusSq = spec.radius * spec.radius,	// This gets used by various mathematical operations to avoid a sqrt
-		that = {
-			get center() { return spec.center; },
-			get radius() { return spec.radius; },
-			get radiusSq() { return radiusSq; }
-		};
-
-	//------------------------------------------------------------------
-	//
-	// Checks to see if the two circles intersect each other.  Returns
-	// true if they do, false otherwise.
-	//
-	//------------------------------------------------------------------
-	that.intersects = function(other) {
-		var distance = Math.pow((spec.center.x - other.center.x), 2) + Math.pow((spec.center.y - other.center.y), 2);
-
-		return (distance < Math.pow(spec.radius + other.radius, 2));
-	};
-
-
-    return that;
-};
-
-
-
-that.objectInSquare = function(objectToAdd, square){
-        var squareDiv2 = square.size/2,
-            objectDistanceX,
-            objectDistanceY,
-            distanceX,
-            distanceY,
-            cornerDistanceSq;
-
-        objectDistanceX = Math.abs(objectToAdd.center.x - square.center.x);
-        if(objectDistanceX > (squareDiv2 + objectToAdd.radius)) {return false;}
-        objectDistanceY = Math.abs(objectToAdd.center.y - square.center.y);
-        if(objectDistanceY > (squareDiv2 + objectToAdd.radius)) {return false};
-
-        if(objectDistanceX <= squareDiv2) { return true;}
-        if(objectDistanceY <= squareDiv2) { return true;}
-
-        distanceX = (objectDistanceX - squareDiv2);
-        distanceY = (objectDistanceY - squareDiv2);
-        distanceX *= distanceX;
-        distanceY *= distanceY;
-
-        cornerDistanceSq = distanceX + distanceY;
-        return ( cornerDistanceSq <= objectToAdd.radiusSq);
+        z = Math.sqrt((-2*Math.log(z)));
+        y1 = x1*z;
+        y2 = x2*z;
+        return mean + y1*stdDev;
     }
 
-//Creates a circle around a given square
-    that.circleFromSquare = function(pointA, pointB, pointC){
-        var circleSpec = {
-            center: {},
-            radius: 0
-        },
+    that.circleVector = function() {
+  		var angle = Math.random() * 2 * Math.PI;
+  		return {
+  			x: Math.cos(angle),
+  			y: Math.sin(angle)
+  		};
+  	}
 
-        midPointAB = {
-            x: (pointA.x + pointB.x)/2,
-            y: (pointA.y + pointB.y)/2
-        },
 
-        midPointAC = {
-            x:(pointA.x + pointC.x)/2,
-            y:(pointA.y + pointC.y)/2
-        },
-            slopeAB = (pointB.y - pointA.y)/(pointB.x - pointA.x),
-            slopeAC = (pointC.y - pointA.y)/(pointC.x - pointA.x);
-        slopeAB = -(1/slopeAB);
-        slopeAC = -(1/slopeAC);
 
-        circleSpec.center.x = midPointAC.x;
-        circleSpec.center.y = midPointAB.y;
-        circleSpec.radius = Math.sqrt(Math.pow(circleSpec.center.x - pointA.x, 2) + Math.pow(circleSpec.center.y - pointA.y, 2));
+  that.Circle = function(spec) {
+  	'use strict';
+  	var radiusSq = spec.radius * spec.radius,	// This gets used by various mathematical operations to avoid a sqrt
+  		that = {
+  			get center() { return spec.center; },
+  			get radius() { return spec.radius; },
+  			get radiusSq() { return radiusSq; }
+  		};
 
-        return math.Circle(circleSpec);
-    }
+  	//------------------------------------------------------------------
+  	//
+  	// Checks to see if the two circles intersect each other.  Returns
+  	// true if they do, false otherwise.
+  	//
+  	//------------------------------------------------------------------
+  	that.intersects = function(other) {
+  		var distance = Math.pow((spec.center.x - other.center.x), 2) + Math.pow((spec.center.y - other.center.y), 2);
 
-return that;
+  		return (distance < Math.pow(spec.radius + other.radius, 2));
+  	};
+
+
+      return that;
+  };
+
+
+
+  that.objectInSquare = function(objectToAdd, square){
+          var squareDiv2 = square.size/2,
+              objectDistanceX,
+              objectDistanceY,
+              distanceX,
+              distanceY,
+              cornerDistanceSq;
+
+          objectDistanceX = Math.abs(objectToAdd.center.x - square.center.x);
+          if(objectDistanceX > (squareDiv2 + objectToAdd.radius)) {return false;}
+          objectDistanceY = Math.abs(objectToAdd.center.y - square.center.y);
+          if(objectDistanceY > (squareDiv2 + objectToAdd.radius)) {return false};
+
+          if(objectDistanceX <= squareDiv2) { return true;}
+          if(objectDistanceY <= squareDiv2) { return true;}
+
+          distanceX = (objectDistanceX - squareDiv2);
+          distanceY = (objectDistanceY - squareDiv2);
+          distanceX *= distanceX;
+          distanceY *= distanceY;
+
+          cornerDistanceSq = distanceX + distanceY;
+          return ( cornerDistanceSq <= objectToAdd.radiusSq);
+      }
+
+  //Creates a circle around a given square
+      that.circleFromSquare = function(pointA, pointB, pointC){
+          var circleSpec = {
+              center: {},
+              radius: 0
+          },
+
+          midPointAB = {
+              x: (pointA.x + pointB.x)/2,
+              y: (pointA.y + pointB.y)/2
+          },
+
+          midPointAC = {
+              x:(pointA.x + pointC.x)/2,
+              y:(pointA.y + pointC.y)/2
+          },
+              slopeAB = (pointB.y - pointA.y)/(pointB.x - pointA.x),
+              slopeAC = (pointC.y - pointA.y)/(pointC.x - pointA.x);
+          slopeAB = -(1/slopeAB);
+          slopeAC = -(1/slopeAC);
+
+          circleSpec.center.x = midPointAC.x;
+          circleSpec.center.y = midPointAB.y;
+          circleSpec.radius = Math.sqrt(Math.pow(circleSpec.center.x - pointA.x, 2) + Math.pow(circleSpec.center.y - pointA.y, 2));
+
+          return math.Circle(circleSpec);
+      }
+
+  return that;
 }());

@@ -10,11 +10,11 @@ var Stats = (function(){
 
     //initialization of the stats
     that.initialize = function(){
-        
+
         //yes, stats have their own canvas
         statCanvas = document.getElementById('stats');
         statContext = statCanvas.getContext('2d');
-        
+
         CanvasRenderingContext2D.prototype.clear = function() {
             this.save();
             this.setTransform(1, 0, 0, 1, 0, 0);
@@ -35,14 +35,16 @@ var Stats = (function(){
 
         //initial loading of the image
         function loadImage(){
-            var image = new Image();
-            image.src = spec.image;
-            return image;
+          var image = new Image();
+          image.src = spec.image;
+          return image;
         }
 
         //allows us to manually set the image anywhere if needed
         that.setImage = function(image){
-            spec.image = image;
+          var image = new Image();
+          image.src = spec.image;
+          return image;
         };
 
         //main update for all of the overlays
@@ -56,7 +58,7 @@ var Stats = (function(){
         //main rendering function for all of the stats
         that.render = function(){
             //statContext.clear();
-            statContext.drawImage(loadImage(), spec.position.x, spec.position.y, spec.width, spec.height);
+            statContext.drawImage(image, spec.position.x, spec.position.y, spec.width, spec.height);
         };
 
 
