@@ -30,8 +30,8 @@ function loadAudio(){
     that.sounds['assets/main-menu-music'] = loadSound('assets/main-menu-music.mp3');
     that.sounds['assets/song-1'] = loadSound('assets/song-1.mp3');
 
-    that.sounds['assets/main-menu-music'].volume = 0.09;
-    that.sounds['assets/song-1'].volume = 0.07;
+    that.sounds['assets/main-menu-music'].volume = 0.0;
+    that.sounds['assets/song-1'].volume = 0.0;
 };
 
 loadAudio();
