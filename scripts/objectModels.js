@@ -337,6 +337,7 @@ var objects = (function(){
       that.checkHealth = function(object){
         if(spec.isHit !== false){
             spec.health -= 1;
+            Stats.updateHealth(spec.health);
             spec.isHit = false;
         }
 
@@ -352,16 +353,8 @@ var objects = (function(){
       };
 
       that.addKey = function(){
-        spec.keys++;
+        Stats.updateKeys(++spec.keys);
       };
-
-      //programmically updates the key stat image on the overly
-      //whenever the character gets a new key
-      function updateKeys(){
-        for(let key = 0; key < spec.keys; key++){
-            spec.keyInventory[key].setImage('assets/key.png');
-        }
-      }
 
 
 //MOVEMENT:
@@ -426,8 +419,6 @@ var objects = (function(){
             if(spec.direction === 'left'){
                 physics.setPosition(spec.sensor, spec.center.x - 85, spec.center.y);
             }
-
-            updateKeys();
         }
 
         //sprite & enemy position

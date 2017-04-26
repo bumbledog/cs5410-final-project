@@ -3,7 +3,6 @@ var game = (function(){
   let time, canceled, maze, keyboard;
   let boxA;
 
-  var healthBar;
   let keyStats = [];
   let exitKeys = [];
   let maxKeys;
@@ -35,16 +34,9 @@ var game = (function(){
     let imgChar = new Image();
     imgChar.src = "assets/linkToThePast.png";
     maxKeys = 4;
+    Stats.initialize(maxKeys);
     //key slot for the character
-    for(let amount = 0; amount < maxKeys; amount++){
-      keyStats.push(Stats.StatItem({
-        tag: 'key',
-        image: 'assets/missing-key.png',
-        position: {x: 400 + 75 * amount, y:10},
-        width: 100,
-        height: 100
-      }));
-    }
+
 
     let previousGame = memory.loadGame();
 
@@ -76,8 +68,7 @@ var game = (function(){
           tag: 'Character',
           center: {x:1000/2, y:1000/2},
           health: 5,
-          keys: 0,
-          keyInventory: keyStats //relates to the key images
+          keys: 0
       });
 
       enemies = objects.initializeEnemies(30, maze.width, maze.height, maze.cellWidth);
@@ -113,14 +104,13 @@ var game = (function(){
           tag: 'Character',
           center: previousGame.character.center,
           health: previousGame.character.health,
-          keys: previousGame.character.keys,
-          keyInventory: keyStats //relates to the key images
+          keys: 0
       });
 
-      //for some reason it won't add keys other ways
-      /*for(let i = 0; i < previousGame.character.keys; i++){
+      Stats.updateHealth(previousGame.character.health);
+      for(let i = 0; i < previousGame.character.keys; i++){
         character.addKey();
-      }*/
+      }
 
       enemies = objects.loadEnemies(previousGame.enemies);
 
@@ -150,20 +140,6 @@ var game = (function(){
     physics.eventSensorStart(character, enemies);
     physics.eventSensorActive(character, enemies);
     physics.eventSensorEnd(character, enemies);
-
-
-    //stats initialize
-    //Stats.initialize();
-
-    //creates and initializes a healthbar for the character
-    healthBar = Stats.StatItem({
-        tag: 'healthBar',
-        health: character.returnHealth(),
-        image: 'assets/healthBar5-5.png',
-        position: {x: 10, y: 10},
-        width: 400,
-        height: 100
-    });
 
     //allow enemies to damage character
     physics.enemyDamageEvent(character, enemies);
@@ -277,20 +253,16 @@ var game = (function(){
           exitKeys.splice(index, 1);
           character.addKey();
         }
-        visibleObjects.splice(i--, 1);
+        visibleObjects.splice(enemy--, 1);
       }
     }
 
     //set the offset to the body position
     //we dont use quite use offset anymore
     graphics.setOffset(character.returnCharacterBody().position.x, character.returnCharacterBody().position.y);
-
-    //console.log(character.returnDirection());
-     healthBar.update(character);
   };
 
   function render(elapsedTime){
-
     //only render background when character moves
     //TODO: move this to update only when the OFFSET changes!!!
     graphics.renderTiles(maze, character);
@@ -316,14 +288,7 @@ var game = (function(){
     }
 
     character.render(elapsedTime);
-
-    Stats.returnContext().clear();
-    healthBar.render();
-
-    for(let key = 0; key < keyStats.length; key++){
-      keyStats[key].render();
-    }
-
+    Stats.render();
   };
 
   that.saveGame = function(){
@@ -382,6 +347,7 @@ var game = (function(){
   }
 
   that.quit = function(){
+    
     canceled = true;
   }
 
