@@ -9,11 +9,6 @@ var game = (function(){
   let maxKeys;
   let visibleObjects = [];
 
-  let keyStats = [];
-  let exitKeys = [];
-  let maxKeys;
-  let visibleObjects = [];
-
   that.y = {};
   let renderGraphics;
   let character, enemies, particles;
@@ -315,6 +310,7 @@ var game = (function(){
     }
      if(character.isDead){
        that.quit();
+       navigation.showScreen('game-over');
      }
   };
 
@@ -404,16 +400,9 @@ var game = (function(){
   }
 
   that.quit = function(){
-<<<<<<< HEAD:scripts/gameLoop.js
-
-    canceled = true;
-=======
        canceled = true;
        addScore(score);
        document.getElementById("score").innerHTML = "You Scored " + score + " points";
-       navigation.showScreen('game-over');
-
->>>>>>> master:public/scripts/gameLoop.js
   }
 
   return that;
