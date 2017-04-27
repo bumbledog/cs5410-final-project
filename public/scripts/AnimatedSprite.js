@@ -29,9 +29,5 @@ var AnimatedSprite = function(spec){
     }
   };
 
-  that.returnSprite = function(){
-    return spec.sprite;
-  };
-
   return that;
 }

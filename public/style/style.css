@@ -88,14 +88,3 @@ button:active {
 #controls p{
   margin: 13px;
 }
-
-#levelUp div{
-  display: flex;
-  flex-direction: column;
-}
-
-button:disabled,
-button[disabled]{
-  color: black;
-  background-color: gray;
-}

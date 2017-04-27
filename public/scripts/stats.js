@@ -19,6 +19,7 @@ var Stats = (function(){
     that.initialize = function(maxKeys){
       allKeys = [];
       healthBar = {};
+      changed = true;
 
         //yes, stats have their own canvas
         statCanvas = document.getElementById('stats');
@@ -44,15 +45,12 @@ var Stats = (function(){
 
         noKeyImg = new Image();
         noKeyImg.src = 'assets/missing-key.png';
-        noKeyImg.onload = function(){changed = true;};
 
         coinImg = new Image();
         coinImg.src = 'assets/coinDisplay.png';
 
         //creates and initializes a healthbar for the character
         healthBar = StatItem({
-            tag: 'health',
-            health: 5,
             image: healthImg[5],
             position: {x: 10, y: 10},
             width: 400,
@@ -70,7 +68,7 @@ var Stats = (function(){
           allKeys.push(StatItem({
             tag: 'key',
             image: noKeyImg,
-            position: {x: 980 - 75 * maxKeys + 75 * amount, y:890},
+            position: {x: 400 + 75 * amount, y:10},
             width: 100,
             height: 100
           }));
@@ -83,23 +81,10 @@ var Stats = (function(){
 
         let that = {};
 
-        that.health = spec.health;
-
         //main rendering function for all of the stats
         that.render = function(){
+            //statContext.clear();
             statContext.drawImage(spec.image, spec.position.x, spec.position.y, spec.width, spec.height);
-            if(game.upgrade["health"] && spec.tag === 'health') {
-              statContext.strokeStyle = "rgb(122,12,6)";
-              statContext.lineWidth = 3;
-              statContext.rect(spec.position.x + spec.width - 8, spec.position.y + 11, 68 * 5 + 10, spec.height - 20);
-            }
-            if(that.health > 5){
-              for (let i = 0; i < that.health - 5; i++){
-                statContext.fillStyle = "rgb(" + (150 + i * 20) + ", 10, 24)";
-                statContext.fillRect(spec.position.x + spec.width + 68 * i, spec.position.y + 17, 63, spec.height - 33)
-              }
-            }
-            statContext.stroke();
         };
 
         that.setImage = function(newImage){
@@ -117,13 +102,13 @@ var Stats = (function(){
     };
 
     that.updateHealth = function(newHealth){
-      healthBar.health = Math.max(0, newHealth);
-      if(newHealth <= 5) healthBar.setImage(healthImg[healthBar.health]);
+      newHealth = Math.max(0, newHealth);
+      healthBar.setImage(healthImg[newHealth])
       changed = true;
     };
 
     that.render = function(){
-      if(changed){
+      //if(changed){
         statContext.clear();
         healthBar.render();
         for(let i = 0; i < allKeys.length; i++){
@@ -132,8 +117,12 @@ var Stats = (function(){
         game.scoreDraw.draw();
         coinDisplay.render();
         changed = false;
-      }
+      //}
     };
+
+    that.clear = function(){
+
+    }
 
     return that;
 

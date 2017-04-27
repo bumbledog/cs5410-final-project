@@ -56,7 +56,6 @@ navigation.screens['menu'] = function(){
   that.initialize = function(){
     document.getElementById('newGame').addEventListener('click', function() {
       navigation.showScreen('game');
-      game.level = 1;
       game.initialize(false); //start a new game
     });
     document.getElementById('loadGame').addEventListener('click', function() {
@@ -177,64 +176,6 @@ navigation.screens['high-scores'] = function(){
   return that;
 }();
 
-navigation.screens['levelUp'] = function(){
-  let that = {};
-  that.initialize = function(){
-    let upgradeControl = [];
-    upgradeControl['health'] = document.getElementById('healthUpgrade');
-    upgradeControl['attack'] = document.getElementById('attackUpgrade');
-    upgradeControl['item'] = document.getElementById('itemUpgrade');
-
-    upgradeControl['health'].addEventListener('click', function() {
-      game.upgrade['health'] = true;
-      game.initialize(false);
-      navigation.showScreen('game');
-      upgradeControl['health'].disabled = true;
-    });
-
-    upgradeControl['attack'].addEventListener('click', function() {
-      game.upgrade['attack'] = true;
-      game.initialize(false);
-      navigation.showScreen('game');
-      upgradeControl['attack'].disabled = true;
-    });
-
-    upgradeControl['item'].addEventListener('click', function() {
-      game.upgrade['item'] = true;
-      game.initialize(false);
-      navigation.showScreen('game');
-      upgradeControl['item'].disabled = true;
-    });
-
-
-    that.registerUpgrades = function(){
-      for(var upgrade in upgradeControl){
-        if(upgradeControl.hasOwnProperty(upgrade)){
-          upgradeControl[upgrade].disabled = false;
-        }
-      }
-
-      for(var upgrade in game.upgrade){
-        if(game.upgrade.hasOwnProperty(upgrade)){
-          if(game.upgrade[upgrade]) upgradeControl[upgrade].disabled = true;
-        }
-      }
-    }
-
-  };
-  return that;
-}();
-
-navigation.screens['win'] = function(){
-  let that = {};
-  that.initialize = function(){
-    document.getElementById('win-menu').addEventListener('click', function() {
-      navigation.showScreen('menu');
-    });
-  };
-  return that;
-}();
-
 navigation.screens['game-over'] = function(){
   let that = {};
   that.initialize = function(){
@@ -244,6 +185,6 @@ navigation.screens['game-over'] = function(){
   document.getElementById('game-over-to-scores').addEventListener('click', function() {
         navigation.showScreen('high-scores');
       });
-    };
+  };
   return that;
 }();

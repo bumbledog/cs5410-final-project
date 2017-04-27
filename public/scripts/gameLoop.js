@@ -9,20 +9,11 @@ var game = (function(){
   let maxKeys;
   let visibleObjects = [];
 
-  that.upgrade = {
-    health: false,
-    item: false,
-    attack: false
-  };
-
   that.y = {};
   let renderGraphics;
   let character, enemies, particles;
   that.dustParticles;
-
   let totCoins = [];
-
-  that.level = 1;
 
     //categories:
     var defaultCategory = 0x0001;
@@ -36,68 +27,34 @@ var game = (function(){
 
     //physics initialize
     physics.initialize();
-
-    let previousGame = memory.loadGame();
-    if(load){ that.level = previousGame.level}
-
+    // characterBody = physics.createRectangleBody(800, 800, 75, 75);
+    // physics.addToWorld(characterBody);
+    // //physics.setStaticBody(boxA, true);
+    // physics.setFrictionAir(0.075, characterBody);  //how much friction in the air when it moves
+    // physics.setRestitution(2,characterBody);      //how bouncy/elastic
+    //end
     let imgChar = new Image();
-    imgChar.src = "assets/Character/downCharacter.png";
-    //should never have upgrades on first level
-    if(that.level === 1){ maxKeys = 2;
-    that.upgrade = {
-      health: false,
-      item: false,
-      attack: false
-    };}
-    else if(that.level === 2){ maxKeys = 3;}
-    else if(that.level === 3){ maxKeys = 5;}
+    imgChar.src = "assets/linkToThePast.png";
+    maxKeys = 4;
     Stats.initialize(maxKeys);
     //key slot for the character
 
-    //not a save game
+    let previousGame = memory.loadGame();
+
     if (!load || previousGame === undefined || previousGame === {}){
-      let numEnemies;
 
-      if(that.level === 1){
-        maze = that.Maze({
-          height: 5,
-          width: 8,
-          biomes: 4,
-          cellHeight: 500,
-          cellWidth: 500
-        });
+      maze = that.Maze({
+        height: 5,
+        width: 8,
+        biomes: 4,
+        cellHeight: 500,
+        cellWidth: 500
+      });
 
-        numEnemies = 20;
-      }
-      else if(that.level === 2){
-        maze = that.Maze({
-          height: 7,
-          width: 9,
-          biomes: 4,
-          cellHeight: 500,
-          cellWidth: 500
-        });
-
-        numEnemies = 45;
-      }else if(that.level === 3){
-        maze = that.Maze({
-          height: 16,
-          width: 16,
-          biomes: 4,
-          cellHeight: 500,
-          cellWidth: 500
-        });
-
-        numEnemies = 100;
-      }
       objects.initialize(maze.width, maze.height);
-
-      let health = 5;
-      if (that.upgrade["health"]) health = 10;
 
       character = objects.Character({
           image: imgChar,
-          spritesheet: null,
           view:{width:1000, height:1000},
           moveRate: 450/1000, //pixels per millisecond
           radius: 1000*(1/100),
@@ -111,16 +68,12 @@ var game = (function(){
           coolDown: 0,
           tag: 'Character',
           center: {x:1000/2, y:1000/2},
+          health: 5,
           keys: 0,
-          coins: 0,
-          health: health
+          coins: 0
       });
 
-      Stats.updateHealth(health);
-
-      character.loadAnimations();
-
-      enemies = objects.initializeEnemies(numEnemies, maze.width, maze.height, maze.cellWidth);
+      enemies = objects.initializeEnemies(30, maze.width, maze.height, maze.cellWidth);
 
       for(let amount = 0; amount < maxKeys; amount++){
         exitKeys[amount] = objects.Key(math.randomLocation(maze.width, maze.height, maze.cellWidth), maze);
@@ -128,9 +81,6 @@ var game = (function(){
     }
     //load game
     else{
-      that.upgrade = previousGame.upgrade;
-      navigation.screens['levelUp'].registerUpgrades();
-
       maze = previousGame.maze;
       maze.width = maze.length;
       maze.height = maze[0].length;
@@ -142,7 +92,6 @@ var game = (function(){
 
       character = objects.Character({
           image: imgChar,
-          spritesheet: null,
           view:{width:1000, height:1000},
           moveRate: 450/1000, //pixels per millisecond
           radius: 1000*(1/100),
@@ -160,8 +109,6 @@ var game = (function(){
           keys: 0,
           coins: 0
       });
-
-      character.loadAnimations();
 
       Stats.updateHealth(previousGame.character.health);
       for(let i = 0; i < previousGame.character.keys; i++){
@@ -217,8 +164,6 @@ var game = (function(){
     //allow enemies to damage character
     physics.enemyDamageEvent(character, enemies);
 
-    canExit = false;
-
     gameLoop();
   };
 
@@ -233,11 +178,33 @@ var game = (function(){
     keyboard.registerCommand(controlScheme.down, character.moveDown);
     //key for attacking
     keyboard.registerCommand(controlScheme.attack, coolDownCheck);
+
+    //allows us to turn on and off the rendering of the maze
+    //keyboard.registerCommand(KeyEvent.DOM_VK_G, turnOffGraphics);
+    //keyboard.registerCommand(KeyEvent.DOM_VK_H, turnOnGraphics);
+  }
+
+  function turnOffGraphics(){
+    if(renderGraphics === true){
+      renderGraphics = false;
+    }
+  }
+
+  function turnOnGraphics(){
+    if(renderGraphics === false){
+      renderGraphics = true;
+    }
   }
 
   //checking cooldown of attack
   function coolDownCheck(){
-    character.attack(true);
+    if(character.returnCoolDown() < time){
+      character.attack(true);
+      character.setCoolDown(time + 500);
+    }
+    else{
+      character.attack(false);
+    }
   }
 
   function gameLoop(){
@@ -262,7 +229,7 @@ var game = (function(){
   function update(elapsedTime){
 
     //console.log(character.returnIsHit());
-    console.log(character.returnAttackState());
+    //console.log(character.returnHealth());
 
     character.update(elapsedTime);
 
@@ -331,24 +298,8 @@ var game = (function(){
     game.scoreDraw.changeText(score);
 
     //console.log(character.returnDirection());
-    //open the exit
-    if(character.returnKeyTotal() === maxKeys){
-      graphics.openDoor();
-      //let the character exit
-      let distanceToDoorX = Math.abs(character.center.x - maze.width * maze.cellWidth + maze.cellWidth / 2);
-      if(distanceToDoorX < 20 && character.center.y < 120){
-        if(that.level < 3){
-          navigation.showScreen('levelUp');
-          that.level++;
-        }else{
-          navigation.showScreen('win');
-        }
-        that.quit();
-      }
-    }
      if(character.isDead){
        that.quit();
-       navigation.showScreen('game-over');
      }
   };
 
@@ -442,9 +393,7 @@ var game = (function(){
       character: saveCharacter,
       enemies: saveEnemies,
       keys: saveKeys,
-      coins: saveCoins,
-      level: that.level,
-      upgrade: that.upgrade
+      coins: saveCoins
     }
     memory.saveGame(spec);
   }
@@ -455,6 +404,7 @@ var game = (function(){
        document.getElementById("score").innerHTML = "You Scored " + score + " points";
        navigation.showScreen('game-over');
        score = 0;
+
   }
 
   return that;
