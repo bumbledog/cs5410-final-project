@@ -2,7 +2,7 @@ var game = (function(){
   let that = {};
   let time, canceled, maze, keyboard;
   let boxA;
-  let score = 0;
+  let score;
 
   let keyStats = [];
   let exitKeys = [];
@@ -55,6 +55,7 @@ var game = (function(){
       let numEnemies;
 
       if(that.level === 1){
+        score = 0;
         maze = that.Maze({
           height: 5,
           width: 8,
@@ -108,7 +109,8 @@ var game = (function(){
           tag: 'Character',
           center: {x:1000/2, y:1000/2},
           health: health,
-          keys: 0
+          keys: 0,
+          coins: score
       });
 
       Stats.updateHealth(health);
@@ -153,7 +155,7 @@ var game = (function(){
           center: previousGame.character.center,
           health: previousGame.character.health,
           keys: 0,
-          coins: 0
+          coins: score
       });
 
       character.loadAnimations();
@@ -244,6 +246,13 @@ var game = (function(){
   };
 
   function update(elapsedTime){
+    let count1 = 0;
+    let count2 = 0;
+
+    let square = {
+          center:{x:character.center.x , y:character.center.y},
+          size: graphics.defineCamera(character.center.x, character.center.y).size - 300
+        }
     character.update(elapsedTime);
 
     graphics.setOffset(character.center.x, character.center.y);
@@ -251,6 +260,25 @@ var game = (function(){
     //we pass all the objects we want to be in the visible objects in one array
     objects.buildQuadTree(8, exitKeys.concat(totCoins).concat(enemies), maze.width*maze.cellWidth);
     visibleObjects = objects.quadTree.visibleObjects(graphics.defineCamera(character.center.x, character.center.y));
+
+
+for(let j = 0; j < visibleObjects.length; j++){
+    if(math.objectInSquare(visibleObjects[j], square)){
+       if(visibleObjects[j].enemyType === 1){
+         count1++;
+       }
+       else if(visibleObjects[j].enemyType === 0){
+         count2++;
+       }
+    }
+  }
+
+  if(count1 === 0){
+    audio.sounds['assets/slime-sound'].pause()
+  }
+  if(count2 === 0){
+    audio.sounds['assets/bat-sound'].pause()
+  }
 
     that.dustParticles.update(elapsedTime);
     for(let i = 0; i < particles.length; i++){
@@ -425,7 +453,7 @@ var game = (function(){
       keys: saveKeys,
       level: that.level,
       upgrade: that.upgrade,
-      coins: saveCoins
+      coins: score
     }
     memory.saveGame(spec);
   }
