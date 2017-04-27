@@ -93,6 +93,10 @@ var graphics = (function(){
 			return height;
 		}
 
+    textThat.changeText = function(textToChange){
+      spec.text = textToChange;
+    }
+
     //measures the width of the text
     function measureTextWidth(spec) {
 			statContext.save();
@@ -120,7 +124,7 @@ var graphics = (function(){
 			statContext.translate(spec.position.x + textThat.width / 2, spec.position.y + textThat.height / 2);
 			statContext.translate(-(spec.position.x + textThat.width / 2), -(spec.position.y + textThat.height / 2));
 
-			statContext.fillText(spec.text, spec.positionition.x, spec.position.y);
+			statContext.fillText(spec.text, spec.position.x, spec.position.y);
 			statContext.strokeText(spec.text, spec.position.x, spec.position.y);
 
 			statContext.restore();
@@ -191,6 +195,8 @@ var graphics = (function(){
         tileContext.restore();
     }
   };
+
+  
 
   //just for testing
   that.renderMaze = function(maze, character) {
@@ -279,7 +285,6 @@ var graphics = (function(){
 
   }
 
-<<<<<<< HEAD:public/scripts/graphics.js
   that.renderEnemies = function(elapsedTime, enemies, character){
     let count1 = 0;
         count2 = 0;
@@ -309,13 +314,11 @@ var graphics = (function(){
      audio.sounds['assets/bat-sound'].pause()
    }
   }
-=======
   that.drawKey = function(spec){
     //draw the character and the body in the same aread
     context.drawImage(spec.image,
     (spec.center.x - (spec.width)/2), (spec.center.y - (spec.height)/2), spec.width, spec.height)
   };
->>>>>>> 4187365d40f70b8af003eb1293f29b594f9a1459:scripts/graphics.js
 
   that.drawKey = function(spec){
     //draw the character and the body in the same aread

@@ -32,6 +32,7 @@ function loadAudio(){
     that.sounds['assets/sword-hit'] = loadSound('assets/sword-hit.wav');
     that.sounds['assets/slime-sound'] = loadSound('assets/slime-sound.wav');
     that.sounds['assets/bat-sound'] = loadSound('assets/bat-sound3.wav');
+    that.sounds['assets/coin-sound'] = loadSound('assets/coin-sound.wav');
 
     that.sounds['assets/main-menu-music'].volume = 0.00;
     that.sounds['assets/song-1'].volume = 0.00;
@@ -39,12 +40,8 @@ function loadAudio(){
     that.sounds['assets/sword-hit'].volume = 0.05;
     that.sounds['assets/slime-sound'].volume = 0.50;
     that.sounds['assets/bat-sound'].volume = 0.07;
+    that.sounds['assets/coin-sound'].volumet = 0.10;
 
-<<<<<<< HEAD:public/scripts/audio.js
-=======
-    that.sounds['assets/main-menu-music'].volume = 0.0;
-    that.sounds['assets/song-1'].volume = 0.0;
->>>>>>> 4187365d40f70b8af003eb1293f29b594f9a1459:scripts/audio.js
 };
 
 loadAudio();

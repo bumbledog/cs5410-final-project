@@ -2,12 +2,7 @@ var game = (function(){
   let that = {};
   let time, canceled, maze, keyboard;
   let boxA;
-  let score = 500;
-
-  let keyStats = [];
-  let exitKeys = [];
-  let maxKeys;
-  let visibleObjects = [];
+  let score = 0;
 
   let keyStats = [];
   let exitKeys = [];
@@ -18,6 +13,7 @@ var game = (function(){
   let renderGraphics;
   let character, enemies, particles;
   that.dustParticles;
+  let totCoins = [];
 
     //categories:
     var defaultCategory = 0x0001;
@@ -42,7 +38,6 @@ var game = (function(){
     maxKeys = 4;
     Stats.initialize(maxKeys);
     //key slot for the character
-
 
     let previousGame = memory.loadGame();
 
@@ -74,7 +69,8 @@ var game = (function(){
           tag: 'Character',
           center: {x:1000/2, y:1000/2},
           health: 5,
-          keys: 0
+          keys: 0,
+          coins: 0
       });
 
       enemies = objects.initializeEnemies(30, maze.width, maze.height, maze.cellWidth);
@@ -110,7 +106,8 @@ var game = (function(){
           tag: 'Character',
           center: previousGame.character.center,
           health: previousGame.character.health,
-          keys: 0
+          keys: 0,
+          coins: 0
       });
 
       Stats.updateHealth(previousGame.character.health);
@@ -118,12 +115,29 @@ var game = (function(){
         character.addKey();
       }
 
+      for(let j = 0; j < previousGame.character.coins; j++){
+        character.addCoin();
+        score += 1;
+      }
+
       enemies = objects.loadEnemies(previousGame.enemies);
 
-      exitKeys = objects.loadKeys(previousGame.keys, maze)
+      exitKeys = objects.loadKeys(previousGame.keys, maze);
+
+      totCoins = objects.loadCoins(previousGame.coins, maze);
+
     }
 
     graphics.initialize(maze);
+
+    that.scoreDraw = graphics.Text({
+            text: score,
+            font: '64px Comic Sans MS Bold',
+            fill: 'rgb(0, 0, 0)',
+            stroke: 'rgba(0, 0, 0, 1)',
+            position: {x:100, y: 900},
+            rotation: 0
+    });
 
     //physics character body:
     physics.addCollisionFilter(character.returnSensor(), enemyCategory);
@@ -222,7 +236,7 @@ var game = (function(){
     graphics.setOffset(character.center.x, character.center.y);
 
     //we pass all the objects we want to be in the visible objects in one array
-    objects.buildQuadTree(8, exitKeys.concat(enemies), maze.width*maze.cellWidth);
+    objects.buildQuadTree(8, exitKeys.concat(totCoins).concat(enemies), maze.width*maze.cellWidth);
     visibleObjects = objects.quadTree.visibleObjects(graphics.defineCamera(character.center.x, character.center.y));
 
     that.dustParticles.update(elapsedTime);
@@ -246,6 +260,13 @@ var game = (function(){
             speed: 30,
             lifetime: {avg: .3, dist: .2}
           });
+          totCoins.push(objects.Coin({
+            sprite: objects.coinSprite,
+            center: visibleObjects[enemy].center,
+            radius: 50/2,
+            isDead: false,
+            tag: "coin"
+          }));
           enemiesDissolve.createParticles(20, visibleObjects[enemy].center.x, visibleObjects[enemy].center.y, 25);
           particles.push(enemiesDissolve);
           //remove dead enemy from world
@@ -254,10 +275,16 @@ var game = (function(){
           enemies.splice(index, 1);
         }
         //pick up key
-        else if(visibleObjects[enemy].tag === "item"){
+        else if(visibleObjects[enemy].tag === "key"){
           let index = exitKeys.indexOf(visibleObjects[enemy]);
           exitKeys.splice(index, 1);
           character.addKey();
+        }
+        else if(visibleObjects[enemy].tag === "coin"){
+          let index2 = totCoins.indexOf(visibleObjects[enemy]);
+          totCoins.splice(index2, 1);
+          character.addCoin();
+          score += 1;
         }
         visibleObjects.splice(enemy--, 1);
       }
@@ -266,6 +293,9 @@ var game = (function(){
     //set the offset to the body position
     //we dont use quite use offset anymore
     graphics.setOffset(character.returnCharacterBody().position.x, character.returnCharacterBody().position.y);
+
+    //score = character.coins;
+    game.scoreDraw.changeText(score);
 
     //console.log(character.returnDirection());
      if(character.isDead){
@@ -293,6 +323,10 @@ var game = (function(){
     for(let i = 0; i < particles.length; i++){
       particles[i].render();
     }
+
+    //for(let j = 0; j < coins.length; j++){
+    //  coins[j].render(elapsedTime);
+    //}
 
     for(let object = 0; object < visibleObjects.length; object++){
       visibleObjects[object].render(elapsedTime);
@@ -330,6 +364,12 @@ var game = (function(){
       let current = exitKeys[i];
       saveKeys.push(current.center);
     }
+    
+    let saveCoins = [];
+    for(let j = 0; j < totCoins.length; j++){
+      let current2 = totCoins[j];
+      saveCoins.push(current2.center);
+    }
 
     let saveEnemies = [];
     for(let i = 0; i < enemies.length; i++){
@@ -352,7 +392,8 @@ var game = (function(){
       maze: saveMaze,
       character: saveCharacter,
       enemies: saveEnemies,
-      keys: saveKeys
+      keys: saveKeys,
+      coins: saveCoins
     }
     memory.saveGame(spec);
   }
@@ -362,6 +403,7 @@ var game = (function(){
        addScore(score);
        document.getElementById("score").innerHTML = "You Scored " + score + " points";
        navigation.showScreen('game-over');
+       score = 0;
 
   }
 

@@ -10,8 +10,10 @@ var Stats = (function(){
     let changed = true;
     let allKeys = [];
     let healthBar;
+    let coinDisplay;
     let healthImg = [];
     let keyImg, noKeyImg;
+    let coinImg;
 
     //initialization of the stats
     that.initialize = function(maxKeys){
@@ -44,12 +46,22 @@ var Stats = (function(){
         noKeyImg = new Image();
         noKeyImg.src = 'assets/missing-key.png';
 
+        coinImg = new Image();
+        coinImg.src = 'assets/coinDisplay.png';
+
         //creates and initializes a healthbar for the character
         healthBar = StatItem({
             image: healthImg[5],
             position: {x: 10, y: 10},
             width: 400,
             height: 100
+        });
+
+        coinDisplay = StatItem({
+            image: coinImg,
+            position: {x: 10 , y: 900},
+            width: 64,
+            height: 64
         });
 
         for(let amount = 0; amount < maxKeys; amount++){
@@ -102,6 +114,8 @@ var Stats = (function(){
         for(let i = 0; i < allKeys.length; i++){
           allKeys[i].render();
         }
+        game.scoreDraw.draw();
+        coinDisplay.render();
         changed = false;
       //}
     };

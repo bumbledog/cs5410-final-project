@@ -39,6 +39,20 @@ var objects = (function(){
 
     imgKey = new Image();
     imgKey.src = "assets/key.png";
+
+    imgCoin = new Image();
+    imgCoin.src = "assets/coin.png"
+
+    that.coinSprite = AnimatedSprite({
+                spriteSheet: imgCoin,
+                spriteCount: 8,
+                spriteTime: [200, 200, 200, 200, 200, 200, 200 ,200],
+                spriteSize: 50,
+                width: 50,
+                height: 50,
+                pixelWidth: 32,
+                pixelHeight: 32
+     })
   };
 
   function randPotLocation(){
@@ -192,6 +206,45 @@ var objects = (function(){
   //    isHit:  bool    (could use number here instead that could be the damage taken if variable damage is possible depending on enemy)
   //    center: {x,y}
   //    health: number
+that.updateSprite = function(spriteToPlay, elapsedTime){
+    spriteToPlay.sprite.update(elapsedTime);
+}
+
+  that.Coin = function(spec){
+      var that = {
+      get center(){return spec.center},
+      get spec(){return spec},
+      get width(){return spec.width},
+      get height(){return spec.height},
+      get radius(){return spec.radius},
+      get isDead(){return spec.isDead},
+      get tag(){return spec.tag}
+      }
+
+      that.update = function(elapsedTime, position){
+        if(Math.abs(that.center.x - position.x) < 30 && Math.abs(that.center.y - position.y) < 50) spec.isDead = true;
+    };
+      that.render = function(elapsedTime){
+          spec.sprite.render(spec.center.x, spec.center.y);
+      }
+
+     that.intersects = function(other) {
+  		var distance = Math.pow((that.center.x - other.center.x), 2) + Math.pow((that.center.y - other.center.y), 2);
+
+  		return (distance < Math.pow(that.radius + other.radius, 2));
+  	};
+
+      return that;
+};
+
+ that.loadCoins = function(array, maze){
+            let coins = [];
+            for(let i = 0; i < array.length; i++){
+                coins.push(that.Coin({center: array[i], radius:50/2, sprite: objects.coinSprite, isDead: false, tag: "coin"}, maze));
+            }
+            return coins;
+    }
+
   that.Character = function(spec){
       var that;
 
@@ -361,6 +414,13 @@ var objects = (function(){
         Stats.updateKeys(++spec.keys);
       };
 
+      that.addCoin = function(){
+          spec.coins += 1;
+      }
+      that.returnCoinTotal = function(){
+          return spec.coins;
+      }
+
 
 //MOVEMENT:
       that.moveRight = function(elapsedTime){
@@ -527,7 +587,7 @@ var objects = (function(){
       width: 75, height: 75,
       radius: 75/2,
       isDead: false,
-      tag: "item"
+      tag: "key"
     };
 
     that.update = function(elapsedTime, position){
