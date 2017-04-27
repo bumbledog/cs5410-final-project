@@ -17,7 +17,6 @@ var Stats = (function(){
     that.initialize = function(maxKeys){
       allKeys = [];
       healthBar = {};
-      changed = true;
 
         //yes, stats have their own canvas
         statCanvas = document.getElementById('stats');
@@ -43,6 +42,7 @@ var Stats = (function(){
 
         noKeyImg = new Image();
         noKeyImg.src = 'assets/missing-key.png';
+        noKeyImg.onload = function(){changed = true;};
 
         //creates and initializes a healthbar for the character
         healthBar = StatItem({
@@ -111,14 +111,14 @@ var Stats = (function(){
     };
 
     that.render = function(){
-      //if(changed){
+      if(changed){
         statContext.clear();
         healthBar.render();
         for(let i = 0; i < allKeys.length; i++){
           allKeys[i].render();
         }
         changed = false;
-      //}
+      }
     };
 
     return that;
