@@ -244,7 +244,7 @@ var physics = (function(){
                     // Matter.Body.applyForce(pair.bodyA, pair.bodyA.position, {x: 100 * pair.bodyA.mass, y:0});
                     if(character.returnDirection() === 'down' && character.returnAttackState()){
                         Matter.Body.setVelocity(pair.bodyA, { x: 0, y: 10});
-                        Matter.Body.setPosition(pair.bodyA, {x: pair.bodyB.position.x, y: pair.bodyA.position.y + 50});
+                        Matter.Body.setPosition(pair.bodyA, {x: pair.bodyA.position.x, y: pair.bodyA.position.y + 50});
                         // enemyMatchingId(enemies, pair.bodyA.id).damaged();
                         //console.log(enemies[pair.bodyA.id].returnHealth());
                         //console.log('hit active');
@@ -256,7 +256,7 @@ var physics = (function(){
                     }
                     if(character.returnDirection() === 'up' && character.returnAttackState()){
                         Matter.Body.setVelocity(pair.bodyA, { x: 0, y: -10});
-                        Matter.Body.setPosition(pair.bodyA, {x: pair.bodyB.position.x, y: pair.bodyA.position.y - 50});
+                        Matter.Body.setPosition(pair.bodyA, {x: pair.bodyA.position.x, y: pair.bodyA.position.y - 50});
                         // enemyMatchingId(enemies, pair.bodyA.id).damaged();
                         //console.log(enemies[pair.bodyA.id].returnHealth());
                         //console.log('hit active');
@@ -268,7 +268,7 @@ var physics = (function(){
                     }
                     if(character.returnDirection() === 'right' && character.returnAttackState()){
                         Matter.Body.setVelocity(pair.bodyA, { x: 10, y: 0});
-                        Matter.Body.setPosition(pair.bodyA, {x: pair.bodyB.position.x + 50, y: pair.bodyA.position.y});
+                        Matter.Body.setPosition(pair.bodyA, {x: pair.bodyA.position.x + 50, y: pair.bodyA.position.y});
                         // enemyMatchingId(enemies, pair.bodyA.id).damaged();
                         //console.log(enemies[pair.bodyA.id].returnHealth());
                         //console.log('hit active');
@@ -280,7 +280,7 @@ var physics = (function(){
                     }
                     if(character.returnDirection() === 'left' && character.returnAttackState()){
                         Matter.Body.setVelocity(pair.bodyA, { x: -10, y: 0});
-                        Matter.Body.setPosition(pair.bodyA, {x: pair.bodyB.position.x - 50, y: pair.bodyA.position.y});
+                        Matter.Body.setPosition(pair.bodyA, {x: pair.bodyA.position.x - 50, y: pair.bodyA.position.y});
                         //enemyMatchingId(enemies, pair.bodyA.id).damaged();
                         //console.log(enemies[pair.bodyA.id].returnHealth());
                         //console.log('hit active');
