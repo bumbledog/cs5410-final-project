@@ -333,6 +333,7 @@ var objects = (function(){
       //allows the character or enemy to receive damage
       that.damaged = function(){
         spec.health--;
+        if(game.upgrade['attack']) spec.health--;
       };
 
       that.returnHealth = function(){
