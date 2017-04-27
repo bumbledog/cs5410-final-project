@@ -304,6 +304,8 @@ var game = (function(){
       }
     }
 
+    
+
     //set the offset to the body position
     //we dont use quite use offset anymore
     graphics.setOffset(character.returnCharacterBody().position.x, character.returnCharacterBody().position.y);
@@ -331,6 +333,8 @@ var game = (function(){
        navigation.showScreen('game-over');
        document.getElementById("score").innerHTML = "You Scored " + score + " points";
      }
+
+     objects.updateCoinSprite(elapsedTime);
   };
 
   function render(elapsedTime){

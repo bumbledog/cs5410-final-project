@@ -223,6 +223,10 @@ var objects = (function(){
       return that;
 };
 
+that.updateCoinSprite = function(elapsedTime){
+    objects.coinSprite.update(elapsedTime);
+}
+
   that.loadCoins = function(array, maze){
              let coins = [];
              for(let i = 0; i < array.length; i++){
