@@ -37,8 +37,8 @@ var graphics = (function(){
       size: 500,
       src0: "assets/map/marsh background [www.imagesplitter.net]-",
       src1: "assets/map/forestBackground [www.imagesplitter.net]-",
-      //src2:
-      //src3:
+      src2: "assets/map/castle/castle [www.imagesplitter.net]-",
+      src3: "assets/map/mountain/mountain [www.imagesplitter.net]-",
       columns: 16,
       loaded: 0
     };
@@ -48,7 +48,7 @@ var graphics = (function(){
       tiles[i] = [];
       for(let j = 0; j < maze.height; j++){
         tiles[i][j] = new Image();
-        tiles[i][j].src = tiles["src" + (maze[i][j].biome % 2)] + (j % 4) + "-" + (i % 4) + ".png";
+        tiles[i][j].src = tiles["src" + (maze[i][j].biome)] + (j % 4) + "-" + (i % 4) + ".png";
         tiles[i][j].onload = function(){
           tiles.loaded++;
         };
