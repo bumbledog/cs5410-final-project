@@ -8,7 +8,11 @@ var game = (function(){
   let exitKeys = [];
   let maxKeys;
   let visibleObjects = [];
-  that.upgrade = [];
+  that.upgrade = {
+    health: false,
+    item: false,
+    attack: false
+  };
 
   that.y = {};
   let renderGraphics;
@@ -28,12 +32,6 @@ var game = (function(){
 
     //physics initialize
     physics.initialize();
-    // characterBody = physics.createRectanglceBody(800, 800, 75, 75);
-    // physics.addToWorld(characterBody);
-    // //physics.setStaticBody(boxA, true);
-    // physics.setFrictionAir(0.075, characterBody);  //how much friction in the air when it moves
-    // physics.setRestitution(2,characterBody);      //how bouncy/elastic
-    //end
 
     let previousGame = memory.loadGame();
     if(load){ that.level = previousGame.level}
@@ -41,7 +39,12 @@ var game = (function(){
     let imgChar = new Image();
     imgChar.src = "assets/linkToThePast.png";
     //should never have upgrades on first level
-    if(that.level === 1){ maxKeys = 2; that.upgrade = [];}
+    if(that.level === 1){ maxKeys = 2;
+    that.upgrade = {
+      health: false,
+      item: false,
+      attack: false
+    };}
     else if(that.level === 2){ maxKeys = 3;}
     else if(that.level === 3){ maxKeys = 5;}
     Stats.initialize(maxKeys);

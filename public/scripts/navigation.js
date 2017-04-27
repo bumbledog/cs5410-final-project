@@ -189,21 +189,21 @@ navigation.screens['levelUp'] = function(){
       game.upgrade['health'] = true;
       game.initialize(false);
       navigation.showScreen('game');
-      upgradeControl[upgrade].disabled = true;
+      upgradeControl['health'].disabled = true;
     });
 
     upgradeControl['attack'].addEventListener('click', function() {
       game.upgrade['attack'] = true;
       game.initialize(false);
       navigation.showScreen('game');
-      upgradeControl[upgrade].disabled = true;
+      upgradeControl['attack'].disabled = true;
     });
 
     upgradeControl['item'].addEventListener('click', function() {
       game.upgrade['item'] = true;
       game.initialize(false);
       navigation.showScreen('game');
-      upgradeControl[upgrade].disabled = true;
+      upgradeControl['item'].disabled = true;
     });
 
 
