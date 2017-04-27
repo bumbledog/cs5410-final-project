@@ -50,7 +50,9 @@ var game = (function(){
       health: false,
       item: false,
       attack: false
-    };}
+    };
+    navigation.screens['levelUp'].registerUpgrades();
+    }
     else if(that.level === 2){ maxKeys = 3;}
     else if(that.level === 3){ maxKeys = 5;}
     Stats.initialize(maxKeys);
