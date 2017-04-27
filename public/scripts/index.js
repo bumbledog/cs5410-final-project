@@ -22,11 +22,26 @@ function showScores(){
             var list = $("#id-scores"),
             value,
             scoreValue;
+            var displayScores = [];
+            var maxScores = 10;
 
             list.empty();
             for(value = 0; value < data.length; value++){
-                scoreValue = (data[value].score);
-                list.append($('<li>', { text : scoreValue}));
+                scoreValue = Number(data[value].score);
+                for(let i = 0; i <= displayScores.length && i < maxScores; i++){
+                    if(displayScores[i] === undefined){
+                        displayScores[i] = scoreValue;
+                        break;
+                    }
+                    if(scoreValue > displayScores[i]){
+                        let temp = displayScores[i];
+                        displayScores[i] = scoreValue;
+                        scoreValue = temp;
+                    }
+                }
+            }
+            for(let i = 0; i < displayScores.length; i++){
+                list.append($('<li>', { text : i + 1 + ".   " + displayScores[i]}));
             }
         }
     });
