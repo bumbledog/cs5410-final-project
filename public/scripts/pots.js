@@ -31,9 +31,19 @@ var Pot = function(spec) {
         return spec.dimensions;
     };
 
-    that.update = function(){
+    that.update = function(totCoins){
         spec.position.x = spec.body.position.x;
         spec.position.y = spec.body.position.y;
+
+        if(spec.broken === true){
+            totCoins.push(objects.Coin({
+                sprite: objects.coinSprite,
+                center: spec.position,
+                radius: 50/2,
+                isDead: false,
+                tag: "coin"
+            }));
+        }
     };
 
     return that;

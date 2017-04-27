@@ -394,7 +394,7 @@ var physics = (function(){
 
 
     //collision between character and pot
-    that.potCollisionStart = function(character, pots){
+    that.potCollisionStart = function(character, pots, totCoins){
 
         Events.on(engine, 'collisionStart', function(event){
             var pairs = event.pairs;
