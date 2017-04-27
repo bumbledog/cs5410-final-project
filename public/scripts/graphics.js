@@ -276,6 +276,10 @@ var graphics = (function(){
 			sprite.width, sprite.height);
 	};
 
+  that.renderPots = function(pot){
+    context.drawImage(pot.returnImage(), pot.returnPosition().x - 65, pot.returnPosition().y - 50, pot.returnDimensions().width, pot.returnDimensions().height);
+  };
+
   that.openDoor = function(){
     if(!doorOpened){
       doorImage = new Image();

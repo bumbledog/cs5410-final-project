@@ -2,7 +2,10 @@ var game = (function(){
   let that = {};
   let time, canceled, maze, keyboard;
   let boxA;
-  let score;
+
+  let pots = [];
+  let score = 500;
+
 
   let keyStats = [];
   let exitKeys = [];
@@ -64,7 +67,7 @@ var game = (function(){
           biomes: 4,
           cellHeight: 500,
           cellWidth: 500
-        });
+        }, pots);
 
         numEnemies = 20;
       }
@@ -75,7 +78,7 @@ var game = (function(){
           biomes: 4,
           cellHeight: 500,
           cellWidth: 500
-        });
+        }, pots);
 
         numEnemies = 45;
       }else if(that.level === 3){
@@ -85,10 +88,11 @@ var game = (function(){
           biomes: 4,
           cellHeight: 500,
           cellWidth: 500
-        });
+        }, pots);
 
         numEnemies = 100;
       }
+      Stats.updateCoins(score);
       objects.initialize(maze.width, maze.height);
 
       let health = 5;
@@ -127,6 +131,7 @@ var game = (function(){
     }
     //load game
     else{
+      score = 0;
       that.upgrade = previousGame.upgrade;
       navigation.screens['levelUp'].registerUpgrades();
 
@@ -135,7 +140,7 @@ var game = (function(){
       maze.height = maze[0].length;
       maze.cellHeight = 500;
       maze.cellWidth = 500;
-      physics.addMazeBodies(maze);
+      physics.addMazeBodies(maze, pots);
 
       objects.initialize(maze.width, maze.height);
 
@@ -157,7 +162,7 @@ var game = (function(){
           center: previousGame.character.center,
           health: previousGame.character.health,
           keys: 0,
-          coins: score
+          coins: 0
       });
 
       character.loadAnimations();
@@ -167,10 +172,11 @@ var game = (function(){
         character.addKey();
       }
 
-      for(let j = 0; j < previousGame.character.coins; j++){
+      for(let j = 0; j < previousGame.coins; j++){
        character.addCoin();
         score += 1;
-    }
+      }
+      Stats.updateCoins(score);
 
       enemies = objects.loadEnemies(previousGame.enemies);
 
@@ -201,6 +207,7 @@ var game = (function(){
     physics.eventSensorStart(character, enemies);
     physics.eventSensorActive(character, enemies);
     physics.eventSensorEnd(character, enemies);
+    physics.potCollisionStart(character, pots);
 
     //allow enemies to damage character
     physics.enemyDamageEvent(character, enemies);
@@ -257,6 +264,10 @@ var game = (function(){
           center:{x:character.center.x , y:character.center.y},
           size: graphics.defineCamera(character.center.x, character.center.y).size - 300
         }
+    //console.log(character.returnIsHit());
+    //console.log(character.returnAttackState());
+    //console.log(pots[0].returnPosition().x);
+
     character.update(elapsedTime);
 
     graphics.setOffset(character.center.x, character.center.y);
@@ -342,7 +353,7 @@ for(let j = 0; j < visibleObjects.length; j++){
       }
     }
 
-    
+
 
     //set the offset to the body position
     //we dont use quite use offset anymore
@@ -369,10 +380,16 @@ for(let j = 0; j < visibleObjects.length; j++){
        that.quit();
        addScore(score);
        navigation.showScreen('game-over');
-       document.getElementById("score").innerHTML = "You Scored " + score + " points";
+       document.getElementById("lose-score").innerHTML = "You Scored " + score + " points";
      }
 
      objects.updateCoinSprite(elapsedTime);
+
+     //update the pots!
+     for(let pot = 0; pot < pots.length; pot++){
+       pots[pot].update();
+     }
+
   };
 
   function render(elapsedTime){
@@ -388,7 +405,7 @@ for(let j = 0; j < visibleObjects.length; j++){
       //translates the context to where the characters center is
       graphics.drawCamera(character);
 
-      graphics.renderMaze(maze, character);
+      graphics.renderMaze(maze, character); //<------THIS IS WHAT YOU NEED TO CHANGE TO TURN OFF GRAPHICS
     }
 
     that.dustParticles.render();
@@ -398,6 +415,10 @@ for(let j = 0; j < visibleObjects.length; j++){
 
     for(let object = 0; object < visibleObjects.length; object++){
       visibleObjects[object].render(elapsedTime);
+    }
+
+    for(let pot = 0; pot < pots.length; pot++){
+      graphics.renderPots(pots[pot]);
     }
 
     character.render(elapsedTime);
