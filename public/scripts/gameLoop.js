@@ -8,6 +8,11 @@ var game = (function(){
   let exitKeys = [];
   let maxKeys;
   let visibleObjects = [];
+  that.upgrade = {
+    health: false,
+    item: false,
+    attack: false
+  };
 
   that.y = {};
   let renderGraphics;
@@ -27,19 +32,19 @@ var game = (function(){
 
     //physics initialize
     physics.initialize();
-    // characterBody = physics.createRectanglceBody(800, 800, 75, 75);
-    // physics.addToWorld(characterBody);
-    // //physics.setStaticBody(boxA, true);
-    // physics.setFrictionAir(0.075, characterBody);  //how much friction in the air when it moves
-    // physics.setRestitution(2,characterBody);      //how bouncy/elastic
-    //end
 
     let previousGame = memory.loadGame();
     if(load){ that.level = previousGame.level}
 
     let imgChar = new Image();
     imgChar.src = "assets/linkToThePast.png";
-    if(that.level === 1){ maxKeys = 2; }
+    //should never have upgrades on first level
+    if(that.level === 1){ maxKeys = 2;
+    that.upgrade = {
+      health: false,
+      item: false,
+      attack: false
+    };}
     else if(that.level === 2){ maxKeys = 3;}
     else if(that.level === 3){ maxKeys = 5;}
     Stats.initialize(maxKeys);
@@ -82,6 +87,9 @@ var game = (function(){
       }
       objects.initialize(maze.width, maze.height);
 
+      let health = 5;
+      if (that.upgrade["health"]) health = 10;
+
       character = objects.Character({
           image: imgChar,
           view:{width:1000, height:1000},
@@ -97,9 +105,11 @@ var game = (function(){
           coolDown: 0,
           tag: 'Character',
           center: {x:1000/2, y:1000/2},
-          health: 5,
+          health: health,
           keys: 0
       });
+
+      Stats.updateHealth(health);
 
       enemies = objects.initializeEnemies(numEnemies, maze.width, maze.height, maze.cellWidth);
 
@@ -109,6 +119,9 @@ var game = (function(){
     }
     //load game
     else{
+      that.upgrade = previousGame.upgrade;
+      navigation.screens['levelUp'].registerUpgrades();
+
       maze = previousGame.maze;
       maze.width = maze.length;
       maze.height = maze[0].length;
@@ -190,22 +203,6 @@ var game = (function(){
     keyboard.registerCommand(controlScheme.down, character.moveDown);
     //key for attacking
     keyboard.registerCommand(controlScheme.attack, coolDownCheck);
-
-    //allows us to turn on and off the rendering of the maze
-    //keyboard.registerCommand(KeyEvent.DOM_VK_G, turnOffGraphics);
-    //keyboard.registerCommand(KeyEvent.DOM_VK_H, turnOnGraphics);
-  }
-
-  function turnOffGraphics(){
-    if(renderGraphics === true){
-      renderGraphics = false;
-    }
-  }
-
-  function turnOnGraphics(){
-    if(renderGraphics === false){
-      renderGraphics = true;
-    }
   }
 
   //checking cooldown of attack
@@ -394,7 +391,8 @@ var game = (function(){
       character: saveCharacter,
       enemies: saveEnemies,
       keys: saveKeys,
-      level: that.level
+      level: that.level,
+      upgrade: that.upgrade
     }
     memory.saveGame(spec);
   }

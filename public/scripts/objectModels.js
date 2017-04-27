@@ -333,6 +333,7 @@ var objects = (function(){
       //allows the character or enemy to receive damage
       that.damaged = function(){
         spec.health--;
+        if(game.upgrade['attack']) spec.health--;
       };
 
       that.returnHealth = function(){
@@ -455,7 +456,7 @@ var objects = (function(){
                   //audio.pauseSound('assets/bat-sound');
 
               }
-              
+
             if(spec.health < 1){
                 spec.isDead = true;
             }
@@ -518,6 +519,7 @@ var objects = (function(){
   that.Key = function(spec, maze){
     //keep the keys from generating in walls
     if(spec.x % maze.cellWidth < 125) spec.x += 125;
+    if(spec.x % maze.cellWidth > 480) spec.x -= 20;
     if(spec.y % maze.cellHeight < 200) spec.y += 200;
     if(spec.y % maze.cellHeight > 475) spec.y -= 75;
     let that = {
@@ -530,9 +532,11 @@ var objects = (function(){
       tag: "item"
     };
 
+    //pick up distance
     that.update = function(elapsedTime, position){
       if(Math.abs(that.center.x - position.x) < 30 && Math.abs(that.center.y - position.y) < 50) that.isDead = true;
     };
+    //basic render
     that.render = function(){
       graphics.drawKey(that);
     };
