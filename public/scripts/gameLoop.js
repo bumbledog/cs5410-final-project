@@ -207,7 +207,7 @@ var game = (function(){
     physics.eventSensorStart(character, enemies);
     physics.eventSensorActive(character, enemies);
     physics.eventSensorEnd(character, enemies);
-    physics.potCollisionStart(character, pots);
+    physics.potCollisionStart(character, pots, totCoins);
 
     //allow enemies to damage character
     physics.enemyDamageEvent(character, enemies);
@@ -277,23 +277,23 @@ var game = (function(){
     visibleObjects = objects.quadTree.visibleObjects(graphics.defineCamera(character.center.x, character.center.y));
 
 
-for(let j = 0; j < visibleObjects.length; j++){
-    if(math.objectInSquare(visibleObjects[j], square)){
-       if(visibleObjects[j].enemyType === 1){
-         count1++;
-       }
-       else if(visibleObjects[j].enemyType === 0){
-         count2++;
-       }
-    }
-  }
+    for(let j = 0; j < visibleObjects.length; j++){
+        if(math.objectInSquare(visibleObjects[j], square)){
+          if(visibleObjects[j].enemyType === 1){
+            count1++;
+          }
+          else if(visibleObjects[j].enemyType === 0){
+            count2++;
+          }
+        }
+      }
 
-  if(count1 === 0){
-    audio.sounds['assets/slime-sound'].pause()
-  }
-  if(count2 === 0){
-    audio.sounds['assets/bat-sound'].pause()
-  }
+    if(count1 === 0){
+      audio.sounds['assets/slime-sound'].pause()
+    }
+    if(count2 === 0){
+      audio.sounds['assets/bat-sound'].pause()
+    }
 
     that.dustParticles.update(elapsedTime);
     for(let i = 0; i < particles.length; i++){
@@ -387,7 +387,11 @@ for(let j = 0; j < visibleObjects.length; j++){
 
      //update the pots!
      for(let pot = 0; pot < pots.length; pot++){
-       pots[pot].update();
+       pots[pot].update(totCoins);
+       if(pots[pot].isBroken() === true){
+          physics.removeFromWorld(pots[pot].returnBody());
+          pots.splice(pot, 1);
+       }
      }
 
   };
