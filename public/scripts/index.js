@@ -4,7 +4,7 @@ function addScore(newScore){
     $.ajax({
         url: 'http://localhost:3000/v1/scores?score=' + score,
         type: 'POST',
-        error: function() {console.log('POST failed');},
+        error: function() {alert('POST failed');},
         success:function(){
             showScores();
         }
@@ -17,7 +17,7 @@ function showScores(){
         url: 'http://localhost:3000/v1/scores',
         cache: false,
         type: 'GET',
-        error: function() {console.log('GET failed'); },
+        error: function() {alert('GET failed'); },
         success: function(data) {
             var list = $("#id-scores"),
             value,
