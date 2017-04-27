@@ -136,7 +136,7 @@ var game = (function(){
       maze.height = maze[0].length;
       maze.cellHeight = 500;
       maze.cellWidth = 500;
-      physics.addMazeBodies(maze);
+      physics.addMazeBodies(maze, pots);
 
       objects.initialize(maze.width, maze.height);
 
