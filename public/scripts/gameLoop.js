@@ -45,12 +45,15 @@ var game = (function(){
     let imgChar = new Image();
     imgChar.src = "assets/Character/downCharacter.png";
     //should never have upgrades on first level
-    if(that.level === 1){ maxKeys = 2;
-    that.upgrade = {
+    if(that.level === 1){
+      maxKeys = 2;
+      that.upgrade = {
       health: false,
       item: false,
       attack: false
-    };}
+      };
+      navigation.registerUpgrades();
+    }
     else if(that.level === 2){ maxKeys = 3;}
     else if(that.level === 3){ maxKeys = 5;}
     Stats.initialize(maxKeys);
@@ -214,7 +217,7 @@ var game = (function(){
 
     canExit = false;
     dropPercent = 40;
-    if(that.upgrade["item"]) dropPercent = 85; 
+    if(that.upgrade["item"]) dropPercent = 85;
 
     gameLoop();
   };
