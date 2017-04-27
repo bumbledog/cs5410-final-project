@@ -52,7 +52,7 @@ var game = (function(){
       item: false,
       attack: false
       };
-      navigation.registerUpgrades();
+      navigation.screens["levelUp"].registerUpgrades();
     }
     else if(that.level === 2){ maxKeys = 3;}
     else if(that.level === 3){ maxKeys = 5;}
@@ -373,7 +373,7 @@ var game = (function(){
           that.level++;
         }else{
           navigation.showScreen('win');
-          //addScore(score);
+          addScore(score);
           document.getElementById("win-score").innerHTML = "You Scored " + score + " points";
         }
         that.quit();
@@ -381,7 +381,7 @@ var game = (function(){
     }
      if(character.isDead){
        that.quit();
-       //addScore(score);
+       addScore(score);
        navigation.showScreen('game-over');
        document.getElementById("lose-score").innerHTML = "You Scored " + score + " points";
      }
