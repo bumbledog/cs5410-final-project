@@ -12,6 +12,7 @@ var graphics = (function(){
   let camera;
   let tiles;
   let wallImage1, wallImage2;
+  let doorOpened;
 
   that.initialize = function(maze){
     canvas = document.getElementById('canvas-main');
@@ -32,6 +33,10 @@ var graphics = (function(){
 
     wallImage2 = new Image();
     wallImage2.src = 'assets/VerticalWall.png';
+
+    doorImage = new Image();
+    doorImage.src = 'assets/doorClosed.png';
+    doorOpened = false;
 
     tiles = {
       size: 500,
@@ -210,13 +215,15 @@ var graphics = (function(){
     let viewport = that.defineCamera(character.center.x, character.center.y);
     cellXStart = Math.max(Math.floor(viewport.pt1.x/tiles.size), 0);
     cellXEnd = Math.min(Math.floor(viewport.pt3.x/tiles.size), maze.width - 1);
-    cellYStart =  Math.max(Math.floor(viewport.pt1.y/tiles.size), 0);
+    cellYStart =  Math.max(Math.floor(viewport.pt1.y/tiles.size) - 1, 0);
     cellYEnd = Math.min(Math.floor(viewport.pt2.y/tiles.size), maze.height - 1);
 
     //draw north and west of each cell
   	for (let row = cellXStart; row <= cellXEnd; row++) {
   		for (let col = cellYStart; col <= cellYEnd; col++) {
-        drawCell(maze[row][col], maze.cellWidth, maze.cellHeight);
+        let isDoor = false;
+        if(row === maze.width - 1 && col === 0) isDoor = true;
+        drawCell(maze[row][col], maze.cellWidth, maze.cellHeight, isDoor);
   		}
   	}
 
@@ -235,7 +242,7 @@ var graphics = (function(){
   };
 
   //just for testing
-  function drawCell(cell, cellW, cellH) {
+  function drawCell(cell, cellW, cellH, isDoor) {
     var box = physics.createRectangleBody(0, 0, 0, 0);
     switch (cell.biome) {
       case 0:
@@ -261,8 +268,12 @@ var graphics = (function(){
 
     //added physics bodies and updated the position of their bodies
     //NORTH
-    if(cell.edges.n.hasOwnProperty('position')){
-      context.drawImage(wallImage1, cellLeft, cellTop, 500, 148);
+    if(isDoor){
+      context.drawImage(doorImage, cellLeft, cellTop, 500, 148);
+    }else{
+      if(cell.edges.n.hasOwnProperty('position')){
+        context.drawImage(wallImage1, cellLeft, cellTop, 500, 148);
+      }
     }
 
     //WEST
@@ -314,11 +325,6 @@ var graphics = (function(){
      audio.sounds['assets/bat-sound'].pause()
    }
   }
-  that.drawKey = function(spec){
-    //draw the character and the body in the same aread
-    context.drawImage(spec.image,
-    (spec.center.x - (spec.width)/2), (spec.center.y - (spec.height)/2), spec.width, spec.height)
-  };
 
   that.drawKey = function(spec){
     //draw the character and the body in the same aread
@@ -347,6 +353,13 @@ var graphics = (function(){
 			y - sprite.height / 2,
 			sprite.width, sprite.height);
 	};
+
+  that.openDoor = function(){
+    if(!doorOpened){
+      doorImage = new Image();
+      doorImage.src = 'assets/doorOpen.png'
+    }
+  };
 
   return that;
 }());
