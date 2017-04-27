@@ -1,4 +1,4 @@
-game.Maze = function(spec){
+game.Maze = function(spec, pots){
   let grid = [];
   grid.width = spec.width;
   grid.height = spec.height;
@@ -111,7 +111,7 @@ game.Maze = function(spec){
   }
 
   //add physics bodies
-  physics.addMazeBodies(grid);
+  physics.addMazeBodies(grid, pots);
 
   //we don't use the references for anything, so false just means no wall
   //easier to save data this way
