@@ -39,6 +39,20 @@ var objects = (function(){
 
     imgKey = new Image();
     imgKey.src = "assets/key.png";
+
+    imgCoin = new Image();
+     imgCoin.src = "assets/coin.png"
+
+     that.coinSprite = AnimatedSprite({
+                spriteSheet: imgCoin,
+                 spriteCount: 8,
+                 spriteTime: [200, 200, 200, 200, 200, 200, 200 ,200],
+                 spriteSize: 50,
+                 width: 50,
+                 height: 50,
+                 pixelWidth: 32,
+                 pixelHeight: 32
+      })
   };
 
   function randPotLocation(){
@@ -180,6 +194,42 @@ var objects = (function(){
     //if we want to have a minimum # of enemies per room, this may need to be changed
     return enemies;
   };
+
+  that.updateSprite = function(spriteToPlay, elapsedTime){
+     spriteToPlay.sprite.update(elapsedTime);
+ }
+
+   that.Coin = function(spec){
+       var that = {
+       get center(){return spec.center},
+       get spec(){return spec},
+       get width(){return spec.width},
+       get height(){return spec.height},
+       get radius(){return spec.radius},
+       get isDead(){return spec.isDead},
+       get tag(){return spec.tag}
+       }
+
+       that.update = function(elapsedTime, position){
+         if(Math.abs(that.center.x - position.x) < 30 && Math.abs(that.center.y - position.y) < 50) spec.isDead = true;
+     };
+       that.render = function(elapsedTime){
+           spec.sprite.render(spec.center.x, spec.center.y);
+       }
+
+      that.intersects = function(other) {
+   		var distance = Math.pow((that.center.x - other.center.x), 2) + Math.pow((that.center.y - other.center.y), 2);
+  		return (distance < Math.pow(that.radius + other.radius, 2));  	};
+      return that;
+};
+
+  that.loadCoins = function(array, maze){
+             let coins = [];
+             for(let i = 0; i < array.length; i++){
+                 coins.push(that.Coin({center: array[i], radius:50/2, sprite: objects.coinSprite, isDead: false, tag: "coin"}, maze));
+             }
+             return coins;
+     }
 
   //---------------------------------
   //Character model. spec must include:
@@ -361,6 +411,13 @@ var objects = (function(){
       that.addKey = function(){
         Stats.updateKeys(++spec.keys);
       };
+
+      that.addCoin = function(){
+           spec.coins += 1;
+      }
+       that.returnCoinTotal = function(){
+           return spec.coins;
+     }
 
 
 //MOVEMENT:
@@ -653,7 +710,7 @@ var objects = (function(){
                         spec.attacking = false;
                     }
                     spec.image.update(elapsedTime);
-                    
+
                 }
                 else if(spec.body.force.x === 0 && spec.body.force.y === 0){
                     spec.image = spec.spritesheet['leftIdle'];
@@ -722,7 +779,7 @@ var objects = (function(){
 
           if(spec.tag === 'Character'){
             physics.setPosition(spec.body, spec.center.x, spec.center.y);
-            
+
             if(spec.direction === 'right'){
                 if(spec.attacking === true){
                     spec.image.render(spec.center.x + 20, spec.center.y - 23);
@@ -737,7 +794,7 @@ var objects = (function(){
                 }
                 else{
                     spec.image.render(spec.center.x, spec.center.y);
-                }  
+                }
             }
             else if(spec.direction === 'up'){
                 if(spec.attacking === true){
@@ -793,7 +850,7 @@ var objects = (function(){
       width: 75, height: 75,
       radius: 75/2,
       isDead: false,
-      tag: "item"
+      tag: "key"
     };
 
     //pick up distance

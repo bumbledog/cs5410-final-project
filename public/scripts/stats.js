@@ -12,6 +12,9 @@ var Stats = (function(){
     let healthBar;
     let healthImg = [];
     let keyImg, noKeyImg;
+    let coinDisplay;
+    let coinImg;
+    let scoreDraw;
 
     //initialization of the stats
     that.initialize = function(maxKeys){
@@ -37,12 +40,23 @@ var Stats = (function(){
           healthImg.push(nextImg);
         }
 
+        coinImg = new Image();
+        coinImg.src = 'assets/coinDisplay.png';
+
         keyImg = new Image();
         keyImg.src = 'assets/key.png'
 
         noKeyImg = new Image();
         noKeyImg.src = 'assets/missing-key.png';
         noKeyImg.onload = function(){changed = true;};
+
+        coinDisplay = StatItem({
+             image: coinImg,
+             position: {x: 10 , y: 900},
+             width: 64,
+             height: 64
+         });
+
 
         //creates and initializes a healthbar for the character
         healthBar = StatItem({
@@ -53,6 +67,15 @@ var Stats = (function(){
             width: 400,
             height: 100
         });
+
+        scoreDraw = this.Text({
+           text: 0,
+           font: '64px Comic Sans MS Bold',
+           fill: 'rgb(0, 0, 0)',
+           stroke: 'rgba(0, 0, 0, 1)',
+           position: {x:100, y: 900},
+           rotation: 0
+       });
 
         for(let amount = 0; amount < maxKeys; amount++){
           allKeys.push(StatItem({
@@ -110,6 +133,11 @@ var Stats = (function(){
       changed = true;
     };
 
+    that.updateCoins = function(numOfCoins){
+      scoreDraw.changeText(numOfCoins)
+      changed = true;
+    };
+
     that.render = function(){
       if(changed){
         statContext.clear();
@@ -117,9 +145,87 @@ var Stats = (function(){
         for(let i = 0; i < allKeys.length; i++){
           allKeys[i].render();
         }
+        scoreDraw.draw();
+        coinDisplay.render();
         changed = false;
       }
     };
+
+    //rendering the overlay stats page
+
+    //rendering text
+    that.Text = function(spec){
+      let textThat = {};
+
+      //measures the height of the text
+      function measureTextHeight(spec) {
+  			statContext.save();
+
+  			statContext.font = spec.font;
+  			statContext.fillStyle = spec.fill;
+  			statContext.strokeStyle = spec.stroke;
+
+  			var height = statContext.measureText('m').width;
+
+  			statContext.restore();
+
+  			return height;
+  		}
+
+      textThat.changeText = function(textToChange){
+         spec.text = textToChange;
+      }
+
+      //measures the width of the text
+      function measureTextWidth(spec) {
+  			statContext.save();
+
+  			statContext.font = spec.font;
+  			statContext.fillStyle = spec.fill;
+  			statContext.strokeStyle = spec.stroke;
+
+  			var width = statContext.measureText(spec.text).width;
+
+  			statContext.restore();
+
+  			return width;
+  		}
+
+      //main draw function
+      textThat.draw = function() {
+  			statContext.save();
+
+  			statContext.font = spec.font;
+  			statContext.fillStyle = spec.fill;
+  			statContext.strokeStyle = spec.stroke;
+  			statContext.textBaseline = 'top';
+
+  			statContext.translate(spec.position.x + textThat.width / 2, spec.position.y + textThat.height / 2);
+  			statContext.translate(-(spec.position.x + textThat.width / 2), -(spec.position.y + textThat.height / 2));
+
+  			statContext.fillText(spec.text, spec.position.x, spec.position.y);
+  			statContext.strokeText(spec.text, spec.position.x, spec.position.y);
+
+  			statContext.restore();
+  		};
+
+  		//
+  		// Compute and expose some public properties for this text.
+  		textThat.height = measureTextHeight(spec);
+  		textThat.width = measureTextWidth(spec);
+  		textThat.position = spec.position;
+
+
+      return textThat;
+    };
+
+
+    that.initializeStats = function(spec){
+
+    };
+
+
+    //end
 
     return that;
 

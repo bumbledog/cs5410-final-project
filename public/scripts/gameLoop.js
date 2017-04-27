@@ -2,7 +2,7 @@ var game = (function(){
   let that = {};
   let time, canceled, maze, keyboard;
   let boxA;
-  let score = 500;
+  let score = 0;
 
   let keyStats = [];
   let exitKeys = [];
@@ -19,6 +19,7 @@ var game = (function(){
   let character, enemies, particles;
   that.dustParticles;
   that.level = 1;
+  let totCoins = [];
 
     //categories:
     var defaultCategory = 0x0001;
@@ -151,7 +152,8 @@ var game = (function(){
           tag: 'Character',
           center: previousGame.character.center,
           health: previousGame.character.health,
-          keys: 0
+          keys: 0,
+          coins: 0
       });
 
       character.loadAnimations();
@@ -161,9 +163,15 @@ var game = (function(){
         character.addKey();
       }
 
+      for(let j = 0; j < previousGame.character.coins; j++){
+       character.addCoin();
+        score += 1;
+    }
+
       enemies = objects.loadEnemies(previousGame.enemies);
 
-      exitKeys = objects.loadKeys(previousGame.keys, maze)
+      exitKeys = objects.loadKeys(previousGame.keys, maze);
+      totCoins = objects.loadCoins(previousGame.coins, maze);
     }
 
     graphics.initialize(maze);
@@ -236,16 +244,12 @@ var game = (function(){
   };
 
   function update(elapsedTime){
-
-    //console.log(character.returnIsHit());
-    console.log(character.returnAttackState());
-
     character.update(elapsedTime);
 
     graphics.setOffset(character.center.x, character.center.y);
 
     //we pass all the objects we want to be in the visible objects in one array
-    objects.buildQuadTree(8, exitKeys.concat(enemies), maze.width*maze.cellWidth);
+    objects.buildQuadTree(8, exitKeys.concat(totCoins).concat(enemies), maze.width*maze.cellWidth);
     visibleObjects = objects.quadTree.visibleObjects(graphics.defineCamera(character.center.x, character.center.y));
 
     that.dustParticles.update(elapsedTime);
@@ -269,6 +273,13 @@ var game = (function(){
             speed: 30,
             lifetime: {avg: .3, dist: .2}
           });
+          totCoins.push(objects.Coin({
+             sprite: objects.coinSprite,
+            center: visibleObjects[enemy].center,
+             radius: 50/2,
+            isDead: false,
+             tag: "coin"
+           }));
           enemiesDissolve.createParticles(20, visibleObjects[enemy].center.x, visibleObjects[enemy].center.y, 25);
           particles.push(enemiesDissolve);
           //remove dead enemy from world
@@ -277,11 +288,18 @@ var game = (function(){
           enemies.splice(index, 1);
         }
         //pick up key
-        else if(visibleObjects[enemy].tag === "item"){
+        else if(visibleObjects[enemy].tag === "key"){
           let index = exitKeys.indexOf(visibleObjects[enemy]);
           exitKeys.splice(index, 1);
           character.addKey();
         }
+        else if(visibleObjects[enemy].tag === "coin"){
+           let index2 = totCoins.indexOf(visibleObjects[enemy]);
+           totCoins.splice(index2, 1);
+           character.addCoin();
+           score += 1;
+           Stats.updateCoins(score);
+         }
         visibleObjects.splice(enemy--, 1);
       }
     }
@@ -301,13 +319,17 @@ var game = (function(){
           that.level++;
         }else{
           navigation.showScreen('win');
+          addScore(score);
+          document.getElementById("win-score").innerHTML = "You Scored " + score + " points";
         }
         that.quit();
       }
     }
      if(character.isDead){
        that.quit();
+       addScore(score);
        navigation.showScreen('game-over');
+       document.getElementById("score").innerHTML = "You Scored " + score + " points";
      }
   };
 
@@ -369,6 +391,12 @@ var game = (function(){
       saveKeys.push(current.center);
     }
 
+    let saveCoins = [];
+     for(let j = 0; j < totCoins.length; j++){
+       let current2 = totCoins[j];
+      saveCoins.push(current2.center);
+    }
+
     let saveEnemies = [];
     for(let i = 0; i < enemies.length; i++){
       let current = enemies[i];
@@ -392,15 +420,14 @@ var game = (function(){
       enemies: saveEnemies,
       keys: saveKeys,
       level: that.level,
-      upgrade: that.upgrade
+      upgrade: that.upgrade,
+      coins: saveCoins
     }
     memory.saveGame(spec);
   }
 
   that.quit = function(){
        canceled = true;
-       addScore(score);
-       document.getElementById("score").innerHTML = "You Scored " + score + " points";
   }
 
   return that;
