@@ -64,27 +64,6 @@ var objects = (function(){
       return randLoc;
   }
 
-  function initializePots(){
-      var avgPotCount = 50;
-      var dev = 15;
-      var potsWithItems = 15;
-      var dev2 = 5;
-      for(let i = 0; i < math.gaussian(avgPotCount, dev); i++){
-          pots.push({
-              location:randPotLocation(),
-              isBroken:false,
-              hasItem:false,
-              radius:1000*(potSizePercent.y/100),
-              radiusSq: (1000*(potSizePercent.y/100))*(1000*(potSizePercent.y/100))
-            });
-      }
-
-      for(let i = 0; i < math.gaussian(potsWithItems, dev); i++){
-          pots[i].hasItem = true;
-      }
-
-  }
-
   that.initializeEnemies = function(avgEnemyCount, width, height, size){
       enemies = [];
       let dev = 10;
@@ -195,9 +174,10 @@ var objects = (function(){
     return enemies;
   };
 
+
   that.updateSprite = function(spriteToPlay, elapsedTime){
      spriteToPlay.sprite.update(elapsedTime);
- }
+    }
 
    that.Coin = function(spec){
        var that = {
@@ -234,6 +214,7 @@ that.updateCoinSprite = function(elapsedTime){
              }
              return coins;
      }
+
 
   //---------------------------------
   //Character model. spec must include:
