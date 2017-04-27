@@ -52,7 +52,7 @@ var game = (function(){
       item: false,
       attack: false
       };
-      navigation.registerUpgrades();
+      navigation.screens['levelUp'].registerUpgrades();
     }
     else if(that.level === 2){ maxKeys = 3;}
     else if(that.level === 3){ maxKeys = 5;}
