@@ -90,6 +90,7 @@ var game = (function(){
 
         numEnemies = 100;
       }
+      Stats.updateCoins(score);
       objects.initialize(maze.width, maze.height);
 
       let health = 5;
@@ -128,6 +129,7 @@ var game = (function(){
     }
     //load game
     else{
+      score = 0;
       that.upgrade = previousGame.upgrade;
       navigation.screens['levelUp'].registerUpgrades();
 
@@ -158,7 +160,7 @@ var game = (function(){
           center: previousGame.character.center,
           health: previousGame.character.health,
           keys: 0,
-          coins: score
+          coins: 0
       });
 
       character.loadAnimations();
@@ -168,10 +170,11 @@ var game = (function(){
         character.addKey();
       }
 
-      for(let j = 0; j < previousGame.character.coins; j++){
+      for(let j = 0; j < previousGame.coins; j++){
        character.addCoin();
         score += 1;
-    }
+      }
+      Stats.updateCoins(score);
 
       enemies = objects.loadEnemies(previousGame.enemies);
 
@@ -340,7 +343,7 @@ for(let j = 0; j < visibleObjects.length; j++){
       }
     }
 
-    
+
 
     //set the offset to the body position
     //we dont use quite use offset anymore
@@ -367,7 +370,7 @@ for(let j = 0; j < visibleObjects.length; j++){
        that.quit();
        addScore(score);
        navigation.showScreen('game-over');
-       document.getElementById("score").innerHTML = "You Scored " + score + " points";
+       document.getElementById("lose-score").innerHTML = "You Scored " + score + " points";
      }
 
      objects.updateCoinSprite(elapsedTime);
