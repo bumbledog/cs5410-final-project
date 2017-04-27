@@ -28,6 +28,10 @@ var AnimatedSprite = function(spec){
       spec.sprite = spec.sprite % spec.spriteCount;
     }
   };
+  
+  that.returnSprite = function(){
+    return spec.sprite;
+  };
 
   return that;
 }

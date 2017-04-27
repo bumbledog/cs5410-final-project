@@ -359,7 +359,7 @@ var objects = (function(){
       //whenever the character gets a new key
       function updateKeys(){
         for(let key = 0; key < spec.keys; key++){
-            spec.keyInventory[key].setImage('assets/key.png');
+            //spec.keyInventory[key].setImage('assets/key.png');
         }
       }
 
@@ -368,9 +368,6 @@ var objects = (function(){
       that.moveRight = function(elapsedTime){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: 0.002 * spec.body.mass, y:0});
           game.dustParticles.createParticles(1, spec.center.x , spec.center.y + 20, 20);
-        //   if(spec.direction === 'down' || spec.direction === 'up'){
-        //     Matter.Body.setAngle(spec.sensor, 90);
-        //   }
           spec.direction = 'right';
       };
 
@@ -390,6 +387,187 @@ var objects = (function(){
           Matter.Body.applyForce(spec.body, spec.body.position, {x: 0, y:0.002 * spec.body.mass});
           game.dustParticles.createParticles(1, spec.center.x , spec.center.y + 20, 20);
           spec.direction = 'down';
+      };
+
+      that.setAttackAnimation = function(index){
+          spec.image = spec.spritesheet[index];
+      };
+
+      //load ALL the animations and images related to the character
+      that.loadAnimations = function(){
+          //idle images
+            let downIdle = new Image();
+            downIdle.src = "assets/Character/downCharacter.png";
+
+            let upIdle = new Image();
+            upIdle.src = "assets/Character/upCharacter.png";
+
+            let leftIdle = new Image();
+            leftIdle.src = "assets/Character/leftCharacter.png";
+
+            let rightIdle = new Image();
+            rightIdle.src = "assets/Character/rightCharacter.png";
+
+            //getting the animation sheets in
+            let downSprite = new Image();
+            downSprite.src = "assets/Character/down-animation.png";
+
+            let upSprite = new Image();
+            upSprite.src = "assets/Character/up-animation.png";
+
+            let leftSprite = new Image();
+            leftSprite.src = "assets/Character/left-animation.png";
+
+            let rightSprite = new Image();
+            rightSprite.src = "assets/Character/right-animation.png";
+
+            //attack animations
+            let downAttackSprite = new Image();
+            downAttackSprite.src = "assets/Character/downAttackAnimation.png";
+
+            let upAttackSprite = new Image();
+            upAttackSprite.src = "assets/Character/upAttackAnimation.png";
+
+            let leftAttackSprite = new Image();
+            leftAttackSprite.src = "assets/Character/leftAttackAnimation.png";
+
+            let rightAttackSprite = new Image();
+            rightAttackSprite.src = "assets/Character/rightAttackAnimation.png";
+
+            //hash array to hold the directions of animations
+            var animationHash = {};
+
+            // animationHash['downIdle'] = downIdle;
+            // animationHash['upIdle'] = upIdle;
+            // animationHash['leftIdle'] = leftIdle;
+            // animationHash['rightIdle'] = rightIdle;
+
+            animationHash['down'] = AnimatedSprite({
+                spriteSheet: downSprite,
+                spriteCount: 12,
+                spriteTime: [80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80],
+                spriteSize: 50,
+                width: 100,
+                height: 100,
+                pixelWidth: 80,
+                pixelHeight: 112
+            });
+            animationHash['up'] = AnimatedSprite({
+                spriteSheet: upSprite,
+                spriteCount: 12,
+                spriteTime: [80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80],
+                spriteSize: 50,
+                width: 80,
+                height: 100,
+                pixelWidth: 64,
+                pixelHeight: 113
+            });
+            animationHash['left'] = AnimatedSprite({
+                spriteSheet: leftSprite,
+                spriteCount: 12,
+                spriteTime: [80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80],
+                spriteSize: 50,
+                width: 100,
+                height: 100,
+                pixelWidth: 96,
+                pixelHeight: 112
+            });
+            animationHash['right'] = AnimatedSprite({
+                spriteSheet: rightSprite,
+                spriteCount: 12,
+                spriteTime: [80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80],
+                spriteSize: 50,
+                width: 100,
+                height: 100,
+                pixelWidth: 96,
+                pixelHeight: 112
+            });
+
+            //attack animations
+            animationHash['attackDown'] = AnimatedSprite({
+                spriteSheet: downAttackSprite,
+                spriteCount: 7,
+                spriteTime: [80, 80, 80, 80, 80, 80, 80],
+                spriteSize: 50,
+                width: 140,
+                height: 160,
+                pixelWidth: 128,
+                pixelHeight: 168
+            });
+            animationHash['attackUp'] = AnimatedSprite({
+                spriteSheet: upAttackSprite,
+                spriteCount: 5,
+                spriteTime: [80, 80, 80, 80, 80],
+                spriteSize: 50,
+                width: 140,
+                height: 160,
+                pixelWidth: 128,
+                pixelHeight: 168
+            });
+            animationHash['attackRight'] = AnimatedSprite({
+                spriteSheet: rightAttackSprite,
+                spriteCount: 7,
+                spriteTime: [80, 80, 80, 80, 80, 80, 80],
+                spriteSize: 50,
+                width: 180,
+                height: 140,
+                pixelWidth: 144,
+                pixelHeight: 168
+            });
+            animationHash['attackLeft'] = AnimatedSprite({
+                spriteSheet: leftAttackSprite,
+                spriteCount: 7,
+                spriteTime: [80, 80, 80, 80, 80, 80, 80],
+                spriteSize: 50,
+                width: 180,
+                height: 140,
+                pixelWidth: 144,
+                pixelHeight: 168
+            });
+
+            //idle animations
+            animationHash['downIdle'] = AnimatedSprite({
+                spriteSheet: downIdle,
+                spriteCount: 1,
+                spriteTime: [0],
+                spriteSize: 50,
+                width: 90,
+                height: 100,
+                pixelWidth: 80,
+                pixelHeight: 120
+            });
+            animationHash['upIdle'] = AnimatedSprite({
+                spriteSheet: upIdle,
+                spriteCount: 1,
+                spriteTime: [0],
+                spriteSize: 50,
+                width: 90,
+                height: 100,
+                pixelWidth: 80,
+                pixelHeight: 120
+            });
+            animationHash['rightIdle'] = AnimatedSprite({
+                spriteSheet: rightIdle,
+                spriteCount: 1,
+                spriteTime: [0],
+                spriteSize: 50,
+                width: 100,
+                height: 100,
+                pixelWidth: 80,
+                pixelHeight: 120
+            });
+            animationHash['leftIdle'] = AnimatedSprite({
+                spriteSheet: leftIdle,
+                spriteCount: 1,
+                spriteTime: [0],
+                spriteSize: 50,
+                width: 100,
+                height: 100,
+                pixelWidth: 80,
+                pixelHeight: 120
+            });
+
+            spec.spritesheet = animationHash;
       };
 
 
@@ -415,18 +593,83 @@ var objects = (function(){
 
             //change sensor position
             if(spec.direction === 'down'){
+                //spec.image.src = "assets/Character/downCharacter.png";
+                if(spec.attacking === true){
+                    spec.image = spec.spritesheet['attackDown'];
+                    spec.image.update(elapsedTime);
+                    if(spec.image.returnSprite() === 0){
+                        spec.attacking = false;
+                    }
+                }
+                else if(spec.body.force.x === 0 && spec.body.force.y === 0){
+                    spec.image = spec.spritesheet['downIdle'];
+                    spec.image.update(elapsedTime);
+                }
+                else{
+                    spec.image = spec.spritesheet['down'];
+                    spec.image.update(elapsedTime);
+                }
                 physics.setPosition(spec.sensor, spec.center.x, spec.center.y + 85);
             }
             if(spec.direction === 'up'){
+                //spec.image.src = "assets/Character/upCharacter.png";
+                if(spec.attacking === true){
+                    spec.image = spec.spritesheet['attackUp'];
+                    spec.image.update(elapsedTime);
+                    if(spec.image.returnSprite() === 0){
+                        spec.attacking = false;
+                    }
+                }
+                else if(spec.body.force.x === 0 && spec.body.force.y === 0){
+                    spec.image = spec.spritesheet['upIdle'];
+                    spec.image.update(elapsedTime);
+                }
+                else{
+                    spec.image = spec.spritesheet['up'];
+                    spec.image.update(elapsedTime);
+                }
                 physics.setPosition(spec.sensor, spec.center.x, spec.center.y - 85);
             }
             if(spec.direction === 'right'){
+                //spec.image.src = "assets/Character/rightCharacter.png";
+                if(spec.attacking === true){
+                    spec.image = spec.spritesheet['attackRight'];
+                    spec.image.update(elapsedTime);
+                    if(spec.image.returnSprite() === 0){
+                        spec.attacking = false;
+                    }
+                }
+                else if(spec.body.force.x === 0 && spec.body.force.y === 0){
+                    spec.image = spec.spritesheet['rightIdle'];
+                    spec.image.update(elapsedTime);
+                }
+                else{
+                    spec.image = spec.spritesheet['right'];
+                    spec.image.update(elapsedTime);
+                }
                 physics.setPosition(spec.sensor, spec.center.x + 85, spec.center.y);
             }
             if(spec.direction === 'left'){
+                //spec.image.src = "assets/Character/leftCharacter.png";
+                if(spec.attacking === true){
+                    spec.image = spec.spritesheet['attackLeft'];
+                    if(spec.image.returnSprite() === 0){
+                        spec.attacking = false;
+                    }
+                    spec.image.update(elapsedTime);
+                    
+                }
+                else if(spec.body.force.x === 0 && spec.body.force.y === 0){
+                    spec.image = spec.spritesheet['leftIdle'];
+                    spec.image.update(elapsedTime);
+                }
+                else{
+                    spec.image = spec.spritesheet['left'];
+                    spec.image.update(elapsedTime);
+                }
                 physics.setPosition(spec.sensor, spec.center.x - 85, spec.center.y);
             }
-
+            //spec.image.update(elapsedTime);
             updateKeys();
         }
 
@@ -467,19 +710,51 @@ var objects = (function(){
 
           if(spec.tag === 'Character'){
             physics.setPosition(spec.body, spec.center.x, spec.center.y);
-
-
-          graphics.drawCharacter({
-              x:spec.center.x,
-              y:spec.center.y,
-              width:spec.width,
-              height:spec.height,
-              image:spec.image
-          })
+            
+            if(spec.direction === 'right'){
+                if(spec.attacking === true){
+                    spec.image.render(spec.center.x + 20, spec.center.y - 23);
+                }
+                else{
+                    spec.image.render(spec.center.x, spec.center.y);
+                }
+            }
+            else if(spec.direction === 'left'){
+                if(spec.attacking === true){
+                    spec.image.render(spec.center.x - 20, spec.center.y - 23);
+                }
+                else{
+                    spec.image.render(spec.center.x, spec.center.y);
+                }  
+            }
+            else if(spec.direction === 'up'){
+                if(spec.attacking === true){
+                    spec.image.render(spec.center.x, spec.center.y - 20);
+                }
+                else{
+                    spec.image.render(spec.center.x, spec.center.y);
+                }
+            }
+            else if(spec.direction === 'down'){
+                if(spec.attacking === true){
+                    spec.image.render(spec.center.x, spec.center.y + 20);
+                }
+                else{
+                    spec.image.render(spec.center.x, spec.center.y);
+                }
+            }
           }
           else{
             //characters with a sprite
             spec.sprite.render(spec.center.x, spec.center.y);
+            // graphics.drawCharacter({
+            //     x:spec.center.x,
+            //     y:spec.center.y,
+            //     width:spec.width,
+            //     height:spec.height,
+            //     image:spec.image,
+            //     scaleOffset: 50
+            // });
           }
       };
 
@@ -487,7 +762,7 @@ var objects = (function(){
           var distance = Math.pow((spec.center.x - other.center.x), 2) + Math.pow((spec.center.y - other.center.y), 2)
 
           return (distance < Math.pow(spec.radius + other.radius, 2));
-      }
+      };
 
       
 

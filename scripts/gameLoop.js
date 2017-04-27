@@ -32,8 +32,9 @@ var game = (function(){
 
     audio.initialize();
 
+    //initial image
     let imgChar = new Image();
-    imgChar.src = "assets/linkToThePast.png";
+    imgChar.src = "assets/Character/downCharacter.png";
 
     let previousGame = memory.loadGame();
 
@@ -49,8 +50,11 @@ var game = (function(){
 
       objects.initialize(maze.width, maze.height);
 
+      
+
       character = objects.Character({
           image: imgChar,
+          spritesheet: null,
           view:{width:1000, height:1000},
           moveRate: 450/1000, //pixels per millisecond
           radius: 1000*(1/100),
@@ -65,9 +69,12 @@ var game = (function(){
           tag: 'Character',
           center: {x:1000/2, y:1000/2},
           health: 5,
-          keys: 0,
+          keys: 2,
           keyInventory: keys //relates to the key images
       });
+
+      //loads all the spritesheets and animations on initial
+      character.loadAnimations();
 
       enemies = objects.initializeEnemies(50, maze.width, maze.height, maze.cellWidth);
     }
@@ -84,6 +91,7 @@ var game = (function(){
 
       character = objects.Character({
           image: imgChar,
+          spritesheet: null,
           view:{width:1000, height:1000},
           moveRate: 450/1000, //pixels per millisecond
           radius: 1000*(1/100),
@@ -101,6 +109,8 @@ var game = (function(){
           keys: previousGame.character.keys,
           keyInventory: previousGame.character.keyInventory //relates to the key images
       });
+
+      character.loadAnimations();
 
       enemies = objects.loadEnemies(previousGame.enemies);
     }
@@ -193,13 +203,11 @@ var game = (function(){
 
   //checking cooldown of attack
   function coolDownCheck(){
-    if(character.returnCoolDown() < time){
-      character.attack(true);
-      character.setCoolDown(time + 500);
-    }
-    else{
-      character.attack(false);
-    }
+    // if(character.returnCoolDown() < time){
+    //   character.attack(true);
+    //   character.setCoolDown(time + 500);
+    // }
+    character.attack(true);
   }
 
   function gameLoop(){
@@ -224,7 +232,7 @@ var game = (function(){
   function update(elapsedTime){
 
     //console.log(character.returnIsHit());
-    console.log(character.returnHealth());
+    //console.log(character.returnAttackState());
 
     character.update(elapsedTime);
 
