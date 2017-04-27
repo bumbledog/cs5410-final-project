@@ -518,6 +518,7 @@ var objects = (function(){
   that.Key = function(spec, maze){
     //keep the keys from generating in walls
     if(spec.x % maze.cellWidth < 125) spec.x += 125;
+    if(spec.x % maze.cellWidth > 480) spec.x -= 20;
     if(spec.y % maze.cellHeight < 200) spec.y += 200;
     if(spec.y % maze.cellHeight > 475) spec.y -= 75;
     let that = {

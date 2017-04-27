@@ -214,9 +214,9 @@ navigation.screens['levelUp'] = function(){
         }
       }
 
-      for(var upgrade in game.upgrades){
-        if(game.upgrades.hasOwnProperty(upgrade)){
-          upgradeControl[upgrade].disabled = true;
+      for(var upgrade in game.upgrade){
+        if(game.upgrade.hasOwnProperty(upgrade)){
+          if(game.upgrade[upgrade]) upgradeControl[upgrade].disabled = true;
         }
       }
     }
