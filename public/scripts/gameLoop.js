@@ -20,6 +20,7 @@ var game = (function(){
   that.dustParticles;
   that.level = 1;
   let totCoins = [];
+  let dropPercent;
 
     //categories:
     var defaultCategory = 0x0001;
@@ -30,6 +31,7 @@ var game = (function(){
     renderGraphics = true;
     canceled = false;
     time = performance.now();
+
 
     //physics initialize
     physics.initialize();
@@ -204,6 +206,8 @@ var game = (function(){
     physics.enemyDamageEvent(character, enemies);
 
     canExit = false;
+    dropPercent = 40;
+    if(that.upgrade["item"]) dropPercent = 85; 
 
     gameLoop();
   };
@@ -301,13 +305,17 @@ for(let j = 0; j < visibleObjects.length; j++){
             speed: 30,
             lifetime: {avg: .3, dist: .2}
           });
-          totCoins.push(objects.Coin({
-             sprite: objects.coinSprite,
-            center: visibleObjects[enemy].center,
-             radius: 50/2,
-            isDead: false,
-             tag: "coin"
-           }));
+
+          toDrop = Math.random()*100;
+          if(toDrop < (dropPercent)){
+              totCoins.push(objects.Coin({
+                sprite: objects.coinSprite,
+                center: visibleObjects[enemy].center,
+                radius: 50/2,
+                isDead: false,
+                tag: "coin"
+              }));
+          }
           enemiesDissolve.createParticles(20, visibleObjects[enemy].center.x, visibleObjects[enemy].center.y, 25);
           particles.push(enemiesDissolve);
           //remove dead enemy from world
@@ -318,11 +326,13 @@ for(let j = 0; j < visibleObjects.length; j++){
         //pick up key
         else if(visibleObjects[enemy].tag === "key"){
           let index = exitKeys.indexOf(visibleObjects[enemy]);
+          audio.playSound('assets/coin-sound');
           exitKeys.splice(index, 1);
           character.addKey();
         }
         else if(visibleObjects[enemy].tag === "coin"){
            let index2 = totCoins.indexOf(visibleObjects[enemy]);
+           audio.playSound('assets/coin-sound');
            totCoins.splice(index2, 1);
            character.addCoin();
            score += 1;
