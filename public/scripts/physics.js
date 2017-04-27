@@ -192,7 +192,7 @@ var physics = (function(){
                     if(character.returnDirection() === 'down' && character.returnAttackState()){
                         Matter.Body.setPosition(pair.bodyB, {x: pair.bodyB.position.x, y: pair.bodyB.position.y + 50});
                         Matter.Body.setVelocity(pair.bodyB, { x: 0, y: 10 });
-                        enemyMatchingId(enemies, pair.bodyB.id).damaged();
+                        // enemyMatchingId(enemies, pair.bodyB.id).damaged();
                         //console.log(enemies[pair.bodyB.id].returnHealth());
                         //console.log('hit active');
                         // if(enemies[pair.bodyB.id].returnHealth() <= 1){
@@ -204,7 +204,7 @@ var physics = (function(){
                     if(character.returnDirection() === 'up' && character.returnAttackState()){
                         Matter.Body.setPosition(pair.bodyB, {x: pair.bodyB.position.x, y: pair.bodyB.position.y - 50});
                         Matter.Body.setVelocity(pair.bodyB, { x: 0, y: -10 });
-                        enemyMatchingId(enemies, pair.bodyB.id).damaged();
+                        // enemyMatchingId(enemies, pair.bodyB.id).damaged();
                         //console.log(enemies[pair.bodyB.id].returnHealth());
                         //console.log('hit active');
                         // if(enemies[pair.bodyB.id].returnHealth() <= 1){
@@ -216,7 +216,7 @@ var physics = (function(){
                     if(character.returnDirection() === 'right' && character.returnAttackState()){
                         Matter.Body.setPosition(pair.bodyB, {x: pair.bodyB.position.x + 50, y: pair.bodyB.position.y});
                         Matter.Body.setVelocity(pair.bodyB, { x: 10, y: 0 });
-                        enemyMatchingId(enemies, pair.bodyB.id).damaged();
+                        // enemyMatchingId(enemies, pair.bodyB.id).damaged();
                         //console.log(enemies[pair.bodyB.id].returnHealth());
                         //console.log('hit active');
                         // if(enemies[pair.bodyB.id].returnHealth() <= 1){
@@ -228,7 +228,7 @@ var physics = (function(){
                     if(character.returnDirection() === 'left' && character.returnAttackState()){
                         Matter.Body.setPosition(pair.bodyB, {x: pair.bodyB.position.x - 50, y: pair.bodyB.position.y});
                         Matter.Body.setVelocity(pair.bodyB, { x: -10, y: 0 });
-                        enemyMatchingId(enemies, pair.bodyB.id).damaged();
+                        // enemyMatchingId(enemies, pair.bodyB.id).damaged();
                         //console.log(enemies[pair.bodyB.id].returnHealth());
                         //console.log('hit active');
                         // if(enemies[pair.bodyB.id].returnHealth() <= 1){
@@ -245,7 +245,7 @@ var physics = (function(){
                     if(character.returnDirection() === 'down' && character.returnAttackState()){
                         Matter.Body.setVelocity(pair.bodyA, { x: 0, y: 10});
                         Matter.Body.setPosition(pair.bodyA, {x: pair.bodyB.position.x, y: pair.bodyA.position.y + 50});
-                        enemyMatchingId(enemies, pair.bodyA.id).damaged();
+                        // enemyMatchingId(enemies, pair.bodyA.id).damaged();
                         //console.log(enemies[pair.bodyA.id].returnHealth());
                         //console.log('hit active');
                         // if(enemies[pair.bodyA.id].returnHealth() <= 1){
@@ -257,7 +257,7 @@ var physics = (function(){
                     if(character.returnDirection() === 'up' && character.returnAttackState()){
                         Matter.Body.setVelocity(pair.bodyA, { x: 0, y: -10});
                         Matter.Body.setPosition(pair.bodyA, {x: pair.bodyB.position.x, y: pair.bodyA.position.y - 50});
-                        enemyMatchingId(enemies, pair.bodyA.id).damaged();
+                        // enemyMatchingId(enemies, pair.bodyA.id).damaged();
                         //console.log(enemies[pair.bodyA.id].returnHealth());
                         //console.log('hit active');
                         // if(enemies[pair.bodyA.id].returnHealth() <= 1){
@@ -269,7 +269,7 @@ var physics = (function(){
                     if(character.returnDirection() === 'right' && character.returnAttackState()){
                         Matter.Body.setVelocity(pair.bodyA, { x: 10, y: 0});
                         Matter.Body.setPosition(pair.bodyA, {x: pair.bodyB.position.x + 50, y: pair.bodyA.position.y});
-                        enemyMatchingId(enemies, pair.bodyA.id).damaged();
+                        // enemyMatchingId(enemies, pair.bodyA.id).damaged();
                         //console.log(enemies[pair.bodyA.id].returnHealth());
                         //console.log('hit active');
                         // if(enemies[pair.bodyA.id].returnHealth() <= 1){
@@ -281,7 +281,7 @@ var physics = (function(){
                     if(character.returnDirection() === 'left' && character.returnAttackState()){
                         Matter.Body.setVelocity(pair.bodyA, { x: -10, y: 0});
                         Matter.Body.setPosition(pair.bodyA, {x: pair.bodyB.position.x - 50, y: pair.bodyA.position.y});
-                        enemyMatchingId(enemies, pair.bodyA.id).damaged();
+                        //enemyMatchingId(enemies, pair.bodyA.id).damaged();
                         //console.log(enemies[pair.bodyA.id].returnHealth());
                         //console.log('hit active');
                         // if(enemies[pair.bodyA.id].returnHealth() <= 1){
@@ -306,33 +306,107 @@ var physics = (function(){
                 var pair = pairs[i];
 
                 if(pair.bodyA === character.returnSensor()) {
-                    character.attack(false);
-                    // if(enemies[pair.bodyB.id] === pair.bodyB){
-                    //     if(enemies[pair.bodyB.id].returnHealth() <= 0){
-                    //         enemies.splice(pair.bodyB.id, 1);
-                    //         physics.removeFromWorld(pair.bodyB);
-                    //     }
-                    // }
-                    // if(enemies[pair.bodyB.id].returnHealth() <= 1){
-                    //     physics.removeFromWorld(enemies[pair.bodyB.id].returnCharacterBody());
-                    //     enemies.splice(pair.bodyB.id, 1);
-                    // }
-                    //console.log('hit end');
+                    if(character.returnDirection() === 'down' && character.returnAttackState()){
+                        // Matter.Body.setPosition(pair.bodyB, {x: pair.bodyB.position.x, y: pair.bodyB.position.y + 50});
+                        // Matter.Body.setVelocity(pair.bodyB, { x: 0, y: 10 });
+                        enemyMatchingId(enemies, pair.bodyB.id).damaged();
+                        //console.log(enemies[pair.bodyB.id].returnHealth());
+                        //console.log('hit active');
+                        // if(enemies[pair.bodyB.id].returnHealth() <= 1){
+                        //     physics.removeFromWorld(enemies[pair.bodyB.id].returnCharacterBody());
+                        //     enemies.splice(pair.bodyB.id, 1);
+                        //     pairs.splice(i, 1);
+                        // }
+                    }
+                    if(character.returnDirection() === 'up' && character.returnAttackState()){
+                        // Matter.Body.setPosition(pair.bodyB, {x: pair.bodyB.position.x, y: pair.bodyB.position.y - 50});
+                        // Matter.Body.setVelocity(pair.bodyB, { x: 0, y: -10 });
+                        enemyMatchingId(enemies, pair.bodyB.id).damaged();
+                        //console.log(enemies[pair.bodyB.id].returnHealth());
+                        //console.log('hit active');
+                        // if(enemies[pair.bodyB.id].returnHealth() <= 1){
+                        //     physics.removeFromWorld(enemies[pair.bodyB.id].returnCharacterBody());
+                        //     enemies.splice(pair.bodyB.id, 1);
+                        //     pairs.splice(i, 1);
+                        // }
+                    }
+                    if(character.returnDirection() === 'right' && character.returnAttackState()){
+                        // Matter.Body.setPosition(pair.bodyB, {x: pair.bodyB.position.x + 50, y: pair.bodyB.position.y});
+                        // Matter.Body.setVelocity(pair.bodyB, { x: 10, y: 0 });
+                        enemyMatchingId(enemies, pair.bodyB.id).damaged();
+                        //console.log(enemies[pair.bodyB.id].returnHealth());
+                        //console.log('hit active');
+                        // if(enemies[pair.bodyB.id].returnHealth() <= 1){
+                        //     physics.removeFromWorld(enemies[pair.bodyB.id].returnCharacterBody());
+                        //     enemies.splice(pair.bodyB.id, 1);
+                        //     pairs.splice(i, 1);
+                        // }
+                    }
+                    if(character.returnDirection() === 'left' && character.returnAttackState()){
+                        // Matter.Body.setPosition(pair.bodyB, {x: pair.bodyB.position.x - 50, y: pair.bodyB.position.y});
+                        // Matter.Body.setVelocity(pair.bodyB, { x: -10, y: 0 });
+                        enemyMatchingId(enemies, pair.bodyB.id).damaged();
+                        //console.log(enemies[pair.bodyB.id].returnHealth());
+                        //console.log('hit active');
+                        // if(enemies[pair.bodyB.id].returnHealth() <= 1){
+                        //     physics.removeFromWorld(enemies[pair.bodyB.id].returnCharacterBody());
+                        //     enemies.splice(pair.bodyB.id, 1);
+                        //     pairs.splice(i, 1);
+                        // }
+                    }
+
                 }
                 else if(pair.bodyB === character.returnSensor()) {
-                    character.attack(false);
-                    //audio.playSound('assets/song-1');
-                    // if(enemies[pair.bodyA.id] === pair.bodyA){
-                    //     if(enemies[pair.bodyA.id].returnHealth() <= 0){
-                    //         enemies.splice(pair.bodyA.id, 1);
-                    //         physics.removeFromWorld(pair.bodyA);
-                    //     }
-                    // }
-                    // if(enemies[pair.bodyA.id].returnHealth() <= 1){
-                    //     physics.removeFromWorld(enemies[pair.bodyA.id].returnCharacterBody());
-                    //     enemies.splice(pair.bodyA.id, 1);
-                    // }
-                    //console.log('hit end');
+                    //pair.bodyB.isStatic = false;
+                    // Matter.Body.applyForce(pair.bodyA, pair.bodyA.position, {x: 100 * pair.bodyA.mass, y:0});
+                    if(character.returnDirection() === 'down' && character.returnAttackState()){
+                        // Matter.Body.setVelocity(pair.bodyA, { x: 0, y: 10});
+                        // Matter.Body.setPosition(pair.bodyA, {x: pair.bodyB.position.x, y: pair.bodyA.position.y + 50});
+                        enemyMatchingId(enemies, pair.bodyA.id).damaged();
+                        //console.log(enemies[pair.bodyA.id].returnHealth());
+                        //console.log('hit active');
+                        // if(enemies[pair.bodyA.id].returnHealth() <= 1){
+                        //     physics.removeFromWorld(enemies[pair.bodyA.id].returnCharacterBody());
+                        //     enemies.splice(pair.bodyA.id, 1);
+                        //     pairs.splice(i, 1);
+                        // }
+                    }
+                    if(character.returnDirection() === 'up' && character.returnAttackState()){
+                        // Matter.Body.setVelocity(pair.bodyA, { x: 0, y: -10});
+                        // Matter.Body.setPosition(pair.bodyA, {x: pair.bodyB.position.x, y: pair.bodyA.position.y - 50});
+                        enemyMatchingId(enemies, pair.bodyA.id).damaged();
+                        //console.log(enemies[pair.bodyA.id].returnHealth());
+                        //console.log('hit active');
+                        // if(enemies[pair.bodyA.id].returnHealth() <= 1){
+                        //     physics.removeFromWorld(enemies[pair.bodyA.id].returnCharacterBody());
+                        //     enemies.splice(pair.bodyA.id, 1);
+                        //     pairs.splice(i, 1);
+                        // }
+                    }
+                    if(character.returnDirection() === 'right' && character.returnAttackState()){
+                        // Matter.Body.setVelocity(pair.bodyA, { x: 10, y: 0});
+                        // Matter.Body.setPosition(pair.bodyA, {x: pair.bodyB.position.x + 50, y: pair.bodyA.position.y});
+                        enemyMatchingId(enemies, pair.bodyA.id).damaged();
+                        //console.log(enemies[pair.bodyA.id].returnHealth());
+                        //console.log('hit active');
+                        // if(enemies[pair.bodyA.id].returnHealth() <= 1){
+                        //     physics.removeFromWorld(enemies[pair.bodyA.id].returnCharacterBody());
+                        //     enemies.splice(pair.bodyA.id, 1);
+                        //     pairs.splice(i, 1);
+                        // }
+                    }
+                    if(character.returnDirection() === 'left' && character.returnAttackState()){
+                        // Matter.Body.setVelocity(pair.bodyA, { x: -10, y: 0});
+                        // Matter.Body.setPosition(pair.bodyA, {x: pair.bodyB.position.x - 50, y: pair.bodyA.position.y});
+                        enemyMatchingId(enemies, pair.bodyA.id).damaged();
+                        //console.log(enemies[pair.bodyA.id].returnHealth());
+                        //console.log('hit active');
+                        // if(enemies[pair.bodyA.id].returnHealth() <= 1){
+                        //     physics.removeFromWorld(enemies[pair.bodyA.id].returnCharacterBody());
+                        //     enemies.splice(pair.bodyA.id, 1);
+                        //     pairs.splice(i, 1);
+                        // }
+                    }
                 }
             }
         });
