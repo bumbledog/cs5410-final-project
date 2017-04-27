@@ -37,7 +37,7 @@ var game = (function(){
     if(load){ that.level = previousGame.level}
 
     let imgChar = new Image();
-    imgChar.src = "assets/linkToThePast.png";
+    imgChar.src = "assets/Character/downCharacter.png";
     //should never have upgrades on first level
     if(that.level === 1){ maxKeys = 2;
     that.upgrade = {
@@ -92,6 +92,7 @@ var game = (function(){
 
       character = objects.Character({
           image: imgChar,
+          spritesheet: null,
           view:{width:1000, height:1000},
           moveRate: 450/1000, //pixels per millisecond
           radius: 1000*(1/100),
@@ -110,6 +111,8 @@ var game = (function(){
       });
 
       Stats.updateHealth(health);
+
+      character.loadAnimations();
 
       enemies = objects.initializeEnemies(numEnemies, maze.width, maze.height, maze.cellWidth);
 
@@ -133,6 +136,7 @@ var game = (function(){
 
       character = objects.Character({
           image: imgChar,
+          spritesheet: null,
           view:{width:1000, height:1000},
           moveRate: 450/1000, //pixels per millisecond
           radius: 1000*(1/100),
@@ -149,6 +153,8 @@ var game = (function(){
           health: previousGame.character.health,
           keys: 0
       });
+
+      character.loadAnimations();
 
       Stats.updateHealth(previousGame.character.health);
       for(let i = 0; i < previousGame.character.keys; i++){
@@ -207,13 +213,7 @@ var game = (function(){
 
   //checking cooldown of attack
   function coolDownCheck(){
-    if(character.returnCoolDown() < time){
-      character.attack(true);
-      character.setCoolDown(time + 500);
-    }
-    else{
-      character.attack(false);
-    }
+    character.attack(true);
   }
 
   function gameLoop(){
@@ -238,7 +238,7 @@ var game = (function(){
   function update(elapsedTime){
 
     //console.log(character.returnIsHit());
-    //console.log(character.returnHealth());
+    console.log(character.returnAttackState());
 
     character.update(elapsedTime);
 
